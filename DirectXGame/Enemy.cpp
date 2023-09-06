@@ -1,0 +1,44 @@
+#include "Enemy.h"
+
+void Enemy::Initialize(Model* model, Vector3& playerPosition, ViewProjection& viewProjection) {
+	assert(model);
+	// textureHandle_ = textureHandle;
+	BaseInit(viewProjection);
+	worldTransform_.Initialize();
+	worldTransform_.translation_ = playerPosition;
+	model_ = model;
+	//PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection);
+}
+Enemy::~Enemy() {}
+
+void Enemy::Update() {
+	OnUpdate();
+	Movement();
+	SetColliderPosition();
+	SetCollider(colliderPos_, radius_);
+	worldTransform_.UpdateMatrix();
+}
+
+void Enemy::Movement() {}
+
+void Enemy::OnCollision() { TurnRED(); }
+
+void Enemy::SetColliderPosition() {
+	colliderPos_.x = worldTransform_.translation_.x;
+	colliderPos_.y = worldTransform_.translation_.y + 1.0f;
+	colliderPos_.z = worldTransform_.translation_.z;
+}
+
+Vector3 Enemy::GetWorldPosition() {
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
+}
+
+void Enemy::Draw(ViewProjection& viewProjection) {
+	model_->Draw(worldTransform_, viewProjection);
+	//DrawCollider();
+}

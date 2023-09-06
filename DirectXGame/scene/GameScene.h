@@ -8,11 +8,15 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "Collider.h"
+#include "CollisionManager.h"
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class GameScene {
+class GameScene{
 
 public: // メンバ関数
 	/// <summary>
@@ -44,7 +48,24 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+	uint32_t textureHandle_ = 0;
+	uint32_t titleTextureHandle_ = 0;
+	Sprite* sprite_ = nullptr;
+	Sprite* titleScene_ = nullptr;
+	
+	//Skydome* skydome_ = nullptr;
+	WorldTransform worldTransform_;
+	ViewProjection viewProjection_;
+	bool isDebugCameraActive_ = false;
 
+	//Instances
+	Player* player_ = nullptr;
+	Enemy* enemy_ = nullptr;
+
+	//Model
+	Model* model_ = nullptr;
+	Model* modelSkydome_ = nullptr;
+	Model* modelPlayer_ = nullptr;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
