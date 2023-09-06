@@ -5,22 +5,25 @@
 #include "Vector3.h"
 #include "ViewProjection.h"
 #include <vector>
+#include <string>
 
 struct ColliderSphere {
 	Vector3 sphereCenter;
 	float radius;
+	
 };
 
 class Collider {
 private:
 	ColliderSphere colliderSphere_; // Collsion sphere
-	bool showCollider_ = true;      // Show collider or not
+	bool showCollider_;             // Show collider or not
 	Vector4 WHITE_ = {1.0f, 1.0f, 1.0f, 1.0f};
 	Vector4 RED_ = {1.0f, 0.0f, 0.0f, 1.0f};
 	Vector4 color_ = WHITE_;
+	const char* name_ = " ";
 
 public:
-	void BaseInit(ViewProjection& viewProjection);
+	void BaseInit(ViewProjection& viewProjection, bool& show, const char* name);
 	/// <summary>
 	/// Get the collider
 	/// </summary>

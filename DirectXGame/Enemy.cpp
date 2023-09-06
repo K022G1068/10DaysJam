@@ -1,9 +1,11 @@
 #include "Enemy.h"
 
-void Enemy::Initialize(Model* model, Vector3& playerPosition, ViewProjection& viewProjection) {
+void Enemy::Initialize(
+    Model* model, Vector3& playerPosition, ViewProjection& viewProjection, const char* name) {
 	assert(model);
 	// textureHandle_ = textureHandle;
-	BaseInit(viewProjection);
+	name_ = name;
+	BaseInit(viewProjection, showCollider_, name_);
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = playerPosition;
 	model_ = model;

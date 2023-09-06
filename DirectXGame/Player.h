@@ -6,7 +6,8 @@
 class Player : public Collider
 {
 public:
-	void Initialize(Model* model, Vector3& playerPosition, ViewProjection& viewProjection);
+	void Initialize(
+	    Model* model, Vector3& playerPosition, ViewProjection& viewProjection, const char* name);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	void SetParent(const WorldTransform* parent);
@@ -24,4 +25,6 @@ private:
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
 	float radius_ =1.0f;
+	bool showCollider_ = false;
+	const char* name_;
 };

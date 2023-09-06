@@ -7,7 +7,8 @@
 class Enemy : public Collider
 {
 public:
-	void Initialize(Model* model, Vector3& playerPosition, ViewProjection& viewProjection);
+	void Initialize(
+	    Model* model, Vector3& playerPosition, ViewProjection& viewProjection, const char* name);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	void Movement();
@@ -23,4 +24,6 @@ private:
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	float radius_ = 1.0f;
+	bool showCollider_ = true;
+	const char* name_;
 };

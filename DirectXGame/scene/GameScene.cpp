@@ -30,8 +30,8 @@ void GameScene::Initialize() {
 	//Initialize
 	Vector3 playerPosition(0, -5.0f, 10.0f);
 	Vector3 enemyPosition(2.0f, -5.0f, 10.0f);
-	player_->Initialize(modelPlayer_ ,playerPosition, viewProjection_);
-	enemy_->Initialize(modelPlayer_, enemyPosition, viewProjection_);
+	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
+	enemy_->Initialize(modelPlayer_, enemyPosition, viewProjection_, "Enemy1");
 }
 
 void GameScene::Update() 

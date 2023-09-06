@@ -1,12 +1,17 @@
 #include "Collider.h"
 #include <cstdint>
 
-void Collider::BaseInit(ViewProjection& viewProjection) {
+void Collider::BaseInit(ViewProjection& viewProjection, bool& show, const char* name) {
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection);
+	showCollider_ = show;
+	name_ = name;
 }
 
 void Collider::OnUpdate() {
 	color_ = WHITE_;
+	// ImGui
+	ImGui::Checkbox(name_, &showCollider_);
+	SetShowCollider(showCollider_);
 }
 
 void Collider::OnCollision() {}
