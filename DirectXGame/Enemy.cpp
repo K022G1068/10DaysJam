@@ -9,7 +9,6 @@ void Enemy::Initialize(
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = playerPosition;
 	model_ = model;
-	//PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection);
 }
 Enemy::~Enemy() {}
 
@@ -27,7 +26,7 @@ void Enemy::OnCollision() { TurnRED(); }
 
 void Enemy::SetColliderPosition() {
 	colliderPos_.x = worldTransform_.translation_.x;
-	colliderPos_.y = worldTransform_.translation_.y + 1.0f;
+	colliderPos_.y = worldTransform_.translation_.y + radius_;
 	colliderPos_.z = worldTransform_.translation_.z;
 }
 

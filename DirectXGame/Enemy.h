@@ -23,7 +23,7 @@ private:
 	Vector3 rotationSpeed_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
-	float radius_ = 1.0f;
+	float radius_ = 5.0f;
 	bool showCollider_ = true;
 	const char* name_;
 };

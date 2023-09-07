@@ -40,31 +40,31 @@ void Player::OnCollision() { ImGui::Text("HIOTTTTTTT"); }
 
 void Player::SetColliderPosition() {
 	colliderPos_.x = worldTransform_.translation_.x;
-	colliderPos_.y = worldTransform_.translation_.y + 1.0f;
+	colliderPos_.y = worldTransform_.translation_.y + radius_;
 	colliderPos_.z = worldTransform_.translation_.z;
 }
 
 void Player::Move() {
-	Vector3 move = {0, 0, 0};
+	Vector3 degree = {0, 0, 0};
 
 	const float kCharacterSpeed = 0.2f;
 
 	if (input_->PushKey(DIK_A)) {
-		move.x -= kCharacterSpeed;
+		degree.x -= kCharacterSpeed;
 	} else if (input_->PushKey(DIK_D)) {
-		move.x += kCharacterSpeed;
+		degree.x += kCharacterSpeed;
 	}
 
 	if (input_->PushKey(DIK_SPACE)) {
 		// move.y += kCharacterSpeed;
 	} else if (input_->PushKey(DIK_LSHIFT)) {
-		move.y -= kCharacterSpeed;
+		degree.y -= kCharacterSpeed;
 	}
 
 	if (input_->PushKey(DIK_S)) {
-		move.y -= kCharacterSpeed;
+		degree.y -= kCharacterSpeed;
 	} else if (input_->PushKey(DIK_W)) {
-		move.y += kCharacterSpeed;
+		degree.y += kCharacterSpeed;
 	}
 
 	const float kRotSpeed = 0.02f;
@@ -74,9 +74,9 @@ void Player::Move() {
 		worldTransform_.rotation_.y += kRotSpeed;
 	}
 
-	worldTransform_.translation_.x += move.x;
-	worldTransform_.translation_.y += move.y;
-	worldTransform_.translation_.z += move.z;
+	worldTransform_.translation_.x += degree.x;
+	worldTransform_.translation_.y += degree.y;
+	worldTransform_.translation_.z += degree.z;
 }
 
 void Player::Draw(ViewProjection& viewProjection) {

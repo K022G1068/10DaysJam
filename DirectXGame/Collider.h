@@ -9,8 +9,7 @@
 
 struct ColliderSphere {
 	Vector3 sphereCenter;
-	float radius;
-	
+	float radius;	
 };
 
 class Collider {

@@ -28,8 +28,8 @@ void GameScene::Initialize() {
 	enemy_ = new Enemy();
 
 	//Initialize
-	Vector3 playerPosition(0, -5.0f, 10.0f);
-	Vector3 enemyPosition(2.0f, -5.0f, 10.0f);
+	Vector3 playerPosition(0, -20.0f, 20.0f);
+	Vector3 enemyPosition(10.0f, -20.0f, 20.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
 	enemy_->Initialize(modelPlayer_, enemyPosition, viewProjection_, "Enemy1");
 }
