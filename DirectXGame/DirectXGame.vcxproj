@@ -114,6 +114,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Gauge.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathUtility.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Gauge.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="MathUtility.h" />

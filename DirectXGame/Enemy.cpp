@@ -29,7 +29,6 @@ Enemy::~Enemy() { delete gauge_; }
 
 void Enemy::Update() {
 	Movement();
-	SetColliderPosition();
 	gauge_->Update();
 
 	//Collider

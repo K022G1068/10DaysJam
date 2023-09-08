@@ -9,6 +9,7 @@ GameScene::~GameScene() {
 	delete player_;
 	delete enemy_;
 	delete model_;
+	delete followCamera_;
 }
 
 void GameScene::Initialize() {
@@ -26,19 +27,19 @@ void GameScene::Initialize() {
 	model_ = Model::Create();
 	
 	//Instances
-	playerCamera_ = new PlayerCamera();
 	player_ = new Player();
 	enemy_ = new Enemy();
+	followCamera_ = new FollowCamera();
 
 	//Initialize
 	Vector3 playerPosition(0, -30.0f, 100.0f);
 	Vector3 enemyPosition(30.0f, -20.0f, 20.0f);
 	Vector3 railPosition(0, 0, 0.0f);
-	enemy_->Initialize(modelPlayer_, model_, enemyPosition, viewProjection_, "Enemy1");
-	playerCamera_->Initialize(railPosition, {0, 0, 0});
 	player_->Initialize(modelPlayer_, model_, playerPosition, viewProjection_, "Player");
-	player_->SetParent(&playerCamera_->GetWorldTransform());
-	player_->SetPlayerCamera(playerCamera_);
+	enemy_->Initialize(modelPlayer_, model_, enemyPosition, viewProjection_, "Enemy1");
+	followCamera_->Initialize();
+	followCamera_->SetTarget(&player_->GetWorldTransform());
+	//player_->SetViewProjection(&followCamera_->GetViewProjection());
 	//Texture
 	
 }
@@ -49,11 +50,17 @@ void GameScene::Update()
 	player_->Update();
 
 	//Camera update
-	playerCamera_->Update();
-	viewProjection_.matView = playerCamera_->GetViewProjection().matView;
-	viewProjection_.matProjection = playerCamera_->GetViewProjection().matProjection;
-	viewProjection_.TransferMatrix();
+	//playerCamera_->Update();
+	//viewProjection_.matView = playerCamera_->GetViewProjection().matView;
+	//viewProjection_.matProjection = playerCamera_->GetViewProjection().matProjection;
+	//viewProjection_.TransferMatrix();
 
+	//Follow camera
+	followCamera_->Update();
+	viewProjection_.matView = followCamera_->GetViewProjection().matView;
+	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+	viewProjection_.TransferMatrix();
+	//Collision
 	CollisionManager::GetInstance()->Register(player_);
 	CollisionManager::GetInstance()->Register(enemy_);
 	CollisionManager::GetInstance()->CheckAllCollisions();

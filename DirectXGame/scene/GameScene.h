@@ -12,7 +12,7 @@
 #include "Enemy.h"
 #include "Collider.h"
 #include "CollisionManager.h"
-#include "PlayerCamera.h"
+#include "FollowCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -61,7 +61,7 @@ private: // メンバ変数
 	//Instances
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
-	PlayerCamera* playerCamera_ = nullptr;
+	FollowCamera* followCamera_ = nullptr;
 
 	//Model
 	Model* model_ = nullptr;

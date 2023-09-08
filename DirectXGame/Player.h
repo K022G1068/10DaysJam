@@ -5,7 +5,7 @@
 #include "Model.h"
 #include "Gauge.h"
 
-class PlayerCamera;
+//class PlayerCamera;
 class Player : public Collider
 {
 public:
@@ -21,10 +21,13 @@ public:
 	void OnCollision() override;
 	void SetColliderPosition();
 	Vector3 GetWorldPosition() override;
-	void SetPlayerCamera(PlayerCamera* camera) { playerCamera_ = camera; };
+	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+	//void SetPlayerCamera(PlayerCamera* camera) { playerCamera_ = camera; };
+	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection; };
 
 private:
 	WorldTransform worldTransform_;
+	const ViewProjection* viewProjection_ = nullptr;
 	Vector3 colliderPos_;
 	Vector3 rotationSpeed_;
 	Model* model_ = nullptr;
@@ -33,8 +36,9 @@ private:
 	float radius_ = 11.0f;
 	bool showCollider_ = true;
 	const char* name_;
-	Gauge* gauge_;
-	PlayerCamera* playerCamera_ = nullptr;
+	Model* mode_;
+	//Gauge* gauge_;
+	//PlayerCamera* playerCamera_ = nullptr;
 
 	//Gamepad
 	XINPUT_STATE joyState;
