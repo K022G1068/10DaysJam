@@ -15,10 +15,10 @@ void Player::Initialize(
 	input_ = Input::GetInstance();
 	mode_ = gaugeModel;
 	//Gauge
-	//gauge_ = new Gauge();
-	//Vector3 gaugePos_(0.0f, 15.0f, 0.0f);
-	//gauge_->Initialize(gaugeModel, gaugePos_, viewProjection, radius_);
-	//gauge_->SetParent(&worldTransform_);
+	gauge_ = new Gauge();
+	Vector3 gaugePos_(0.0f, 15.0f, 0.0f);
+	gauge_->Initialize(gaugeModel, gaugePos_, viewProjection, radius_);
+	gauge_->SetParent(&worldTransform_);
 
 
 	//Collider
@@ -32,9 +32,10 @@ Player::~Player() {}
 
 void Player::Update() {
 	Move();
-	//gauge_->Update();
+	gauge_->Update();
+	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
 	Collider::OnUpdate();
-
+	worldTransform_.rotation_.y -= 0.2f;
 	worldTransform_.UpdateMatrix();
 }
 
@@ -62,15 +63,18 @@ void Player::Move() {
 	
 	Vector3 move = {0, 0, 0};
 	
-	const float kCharacterSpeed = 0.2f;
+	const float kCharacterSpeed = 0.5f;
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		move = {
-		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed, 0.0f,
-		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed};
+		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.1f,
+		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
 
-		//move = move * viewProjection_->rotation_;
-		// move = Normalize(move) * kCharacterSpeed;
+		move = Normalize(move) * kCharacterSpeed;
+		move.y = 0.0f;
+
+		Matrix4x4 rotmat = MakeRotationMatrixY(viewProjection_->rotation_.y);
+		move = TransformNormal(move, rotmat);
 	} else {
 		ImGui::Text("No controller detected");
 	}
@@ -80,10 +84,10 @@ void Player::Move() {
 
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection);
-	//gauge_->Draw(viewProjection);
+	gauge_->Draw(viewProjection);
 }
 
 void Player::DrawPrimitive() { 
-	//gauge_->DrawBox();
+	gauge_->DrawBox();
 	Collider::DrawCollider();
 }

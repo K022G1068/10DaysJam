@@ -3,12 +3,13 @@
 #include "WorldTransform.h"
 #include "Model.h"
 #include <cassert>
+#include "MathUtility.h"
 
 class PlayerCamera;
 class Gauge {
 public:
 	void Initialize(Model* model, Vector3& pos, ViewProjection& viewProjection, float radius);
-	void SetCamera(PlayerCamera* camera) { camera_ = camera; };
+	void GetCameraRotation(float rotation) { rotation_ = rotation; };
 	void Update();
 	void SetParent(const WorldTransform* parent);
 	void Draw(ViewProjection& viewProjection);
@@ -27,4 +28,5 @@ private:
 	float width_ = 3.0f;
 	const char* name_;
 	uint32_t gaugeTexureHandle_ = 0;
+	float rotation_;
 };

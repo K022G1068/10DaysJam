@@ -14,6 +14,8 @@ void Gauge::Initialize(Model* model, Vector3& pos, ViewProjection& viewProjectio
 
 void Gauge::Update() { 
 	worldTransform_.scale_ = scale_;
+	Matrix4x4 rotMat = MakeRotationMatrixY(rotation_);
+	worldTransform_.rotation_ = TransformNormal(worldTransform_.rotation_, rotMat);
 	worldTransform_.UpdateMatrix();
 }
 

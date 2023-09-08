@@ -39,7 +39,7 @@ void GameScene::Initialize() {
 	enemy_->Initialize(modelPlayer_, model_, enemyPosition, viewProjection_, "Enemy1");
 	followCamera_->Initialize();
 	followCamera_->SetTarget(&player_->GetWorldTransform());
-	//player_->SetViewProjection(&followCamera_->GetViewProjection());
+	player_->SetViewProjection(&followCamera_->GetViewProjection());
 	//Texture
 	
 }

@@ -37,7 +37,7 @@ private:
 	bool showCollider_ = true;
 	const char* name_;
 	Model* mode_;
-	//Gauge* gauge_;
+	Gauge* gauge_;
 	//PlayerCamera* playerCamera_ = nullptr;
 
 	//Gamepad
