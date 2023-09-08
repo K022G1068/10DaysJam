@@ -6,6 +6,7 @@
 #include "ViewProjection.h"
 #include <vector>
 #include <string>
+#include "WorldTransform.h"
 
 struct ColliderSphere {
 	Vector3 sphereCenter;
@@ -20,6 +21,7 @@ private:
 	Vector4 RED_ = {1.0f, 0.0f, 0.0f, 1.0f};
 	Vector4 color_ = WHITE_;
 	const char* name_ = " ";
+	WorldTransform worldTransform_;
 
 public:
 	void BaseInit(ViewProjection& viewProjection, bool& show, const char* name);
@@ -38,20 +40,21 @@ public:
 	/// Get the world position
 	/// </summary>
 	/// <returns></returns>
-	virtual Vector3 GetWorldPosition() = 0;
+	virtual Vector3 GetWorldPosition();
 	/// <summary>
 	/// Set the collider
 	/// </summary>
 	/// <param name="center"></param>
 	/// <param name="radius"></param>
 	void SetCollider(Vector3& center, float radius);
+	void SetColliderParent(const WorldTransform* parent);
 	/// <summary>
 	/// Check the collision of 2 sphere
 	/// </summary>
 	/// <param name="s1"></param>
 	/// <param name="s2"></param>
 	/// <returns></returns>
-	bool SphereCollisionCheck(const ColliderSphere& s1, const ColliderSphere& s2);
+	bool SphereCollisionCheck(const Collider& s1, const Collider& s2);
 	/// <summary>
 	/// Draw the collidersphere
 	/// </summary>

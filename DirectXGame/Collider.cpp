@@ -3,6 +3,7 @@
 
 void Collider::BaseInit(ViewProjection& viewProjection, bool& show, const char* name) {
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection);
+	worldTransform_.Initialize();
 	showCollider_ = show;
 	name_ = name;
 }
@@ -12,21 +13,34 @@ void Collider::OnUpdate() {
 	// ImGui
 	ImGui::Checkbox(name_, &showCollider_);
 	SetShowCollider(showCollider_);
+
+	worldTransform_.UpdateMatrix();
 }
 
 void Collider::OnCollision() {}
 
 void Collider::OnColliderCollision() { color_ = RED_; }
 
+Vector3 Collider::GetWorldPosition() {
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
+}
+
 void Collider::SetCollider(Vector3& center, float radius) {
-	colliderSphere_.sphereCenter = center;
+	worldTransform_.translation_ = center;
 	colliderSphere_.radius = radius;
 }
 
-bool Collider::SphereCollisionCheck(const ColliderSphere& s1, const ColliderSphere& s2) {
-	Vector3 distanceVector = Subtract(s1.sphereCenter, s2.sphereCenter);
+void Collider::SetColliderParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
+
+bool Collider::SphereCollisionCheck(const Collider& s1, const Collider& s2) {
+	Vector3 distanceVector = Subtract(worldTransform_.translation_, s2.worldTransform_.translation_);
 	float distanceSq = Dot(distanceVector, distanceVector);
-	float sumRadius = s1.radius + s2.radius;
+	float sumRadius = s1.colliderSphere_.radius + s2.colliderSphere_.radius;
 	return distanceSq <= (sumRadius * sumRadius);
 }
 
@@ -44,24 +58,27 @@ void Collider::DrawCollider() {
 			for (uint32_t lonIndex = 0; lonIndex < kSubdivision; ++lonIndex) {
 				float lon = lonIndex * kLonEvery;
 				Vector3 a = {
-				    colliderSphere_.sphereCenter.x + colliderSphere_.radius * cosf(lat) * cosf(lon),
-				    colliderSphere_.sphereCenter.y + colliderSphere_.radius * sinf(lat),
-				    colliderSphere_.sphereCenter.z +
+				    worldTransform_.matWorld_.m[3][0] +
+				        colliderSphere_.radius * cosf(lat) * cosf(lon),
+				    worldTransform_.matWorld_.m[3][1] + colliderSphere_.radius * sinf(lat),
+				    worldTransform_.matWorld_.m[3][2] +
 				        colliderSphere_.radius * cosf(lat) * sinf(lon)};
 
 				Vector3 b = {
-				    colliderSphere_.sphereCenter.x +
+				    worldTransform_.matWorld_.m[3][0] +
 				        colliderSphere_.radius * cosf(lat + kLatEvery) * cosf(lon),
-				    colliderSphere_.sphereCenter.y + colliderSphere_.radius * sinf(lat + kLatEvery),
-				    colliderSphere_.sphereCenter.z +
+				    worldTransform_.matWorld_.m[3][1] +
+				        colliderSphere_.radius * sinf(lat + kLatEvery),
+				    worldTransform_.matWorld_.m[3][2] +
 				        colliderSphere_.radius * cosf(lat + kLatEvery) * sinf(lon),
 				};
 
 				Vector3 c = {
-				    colliderSphere_.sphereCenter.x +
+				    worldTransform_.matWorld_.m[3][0] +
 				        colliderSphere_.radius * cosf(lat + kLatEvery) * cosf(lon + kLonEvery),
-				    colliderSphere_.sphereCenter.y + colliderSphere_.radius * sinf(lat + kLatEvery),
-				    colliderSphere_.sphereCenter.z +
+				    worldTransform_.matWorld_.m[3][1] +
+				        colliderSphere_.radius * sinf(lat + kLatEvery),
+				    worldTransform_.matWorld_.m[3][2] +
 				        colliderSphere_.radius * cosf(lat + kLatEvery) * sinf(lon + kLonEvery),
 				};
 				PrimitiveDrawer::GetInstance()->DrawLine3d(a, b, color_);

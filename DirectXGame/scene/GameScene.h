@@ -12,6 +12,7 @@
 #include "Enemy.h"
 #include "Collider.h"
 #include "CollisionManager.h"
+#include "PlayerCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -48,8 +49,7 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
-	uint32_t textureHandle_ = 0;
-	uint32_t titleTextureHandle_ = 0;
+	
 	Sprite* sprite_ = nullptr;
 	Sprite* titleScene_ = nullptr;
 	
@@ -61,12 +61,15 @@ private: // メンバ変数
 	//Instances
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
+	PlayerCamera* playerCamera_ = nullptr;
 
 	//Model
 	Model* model_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 	Model* modelPlayer_ = nullptr;
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
+
+	//Texture
+	uint32_t textureHandle_ = 0;
+	uint32_t titleTextureHandle_ = 0;
+	
 };

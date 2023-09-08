@@ -28,9 +28,9 @@ void CollisionManager::CheckAllCollisions() {
 }
 
 bool CollisionManager::SphereCollisionCheck(Collider* s1, Collider* s2) {
-	Vector3 distanceVector = Subtract(s1->GetCollider().sphereCenter, s2->GetCollider().sphereCenter); 	
-	float distanceSq = Dot(distanceVector, distanceVector); 	
-	float sumRadius = s1->GetCollider().radius + s2->GetCollider().radius; 	
+	Vector3 distanceVector = Subtract(s1->GetWorldPosition(), s2->GetWorldPosition());
+	float distanceSq = Dot(distanceVector, distanceVector);
+	float sumRadius = s1->GetCollider().radius + s2->GetCollider().radius;
 	return distanceSq <= (sumRadius * sumRadius);
 }
 
