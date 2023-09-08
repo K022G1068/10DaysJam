@@ -30,7 +30,7 @@ Enemy::~Enemy() { delete gauge_; }
 void Enemy::Update() {
 	Movement();
 	gauge_->Update();
-
+	worldTransform_.rotation_.y -= 0.3f;
 	//Collider
 	Collider::OnUpdate();
 	worldTransform_.UpdateMatrix();

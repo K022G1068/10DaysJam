@@ -4,6 +4,7 @@
 #include "Collider.h"
 #include "Model.h"
 #include "Gauge.h"
+#include "Dash.h"
 
 //class PlayerCamera;
 class Player : public Collider
@@ -38,8 +39,9 @@ private:
 	const char* name_;
 	Model* mode_;
 	Gauge* gauge_;
-	//PlayerCamera* playerCamera_ = nullptr;
+	Dash* dash_;
 
 	//Gamepad
-	XINPUT_STATE joyState;
+	XINPUT_STATE joyState_;
+	XINPUT_STATE prevjoyState_;
 };

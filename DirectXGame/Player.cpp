@@ -26,6 +26,10 @@ void Player::Initialize(
 	Collider::BaseInit(viewProjection, showCollider_, name_);
 	Collider::SetCollider(colliderPos, radius_);
 	Collider::SetColliderParent(&worldTransform_);
+
+	//Dash
+	dash_ = new Dash();
+	dash_->Initialize(rotationSpeed_);
 }
 
 Player::~Player() {}
@@ -35,7 +39,9 @@ void Player::Update() {
 	gauge_->Update();
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
 	Collider::OnUpdate();
-	worldTransform_.rotation_.y -= 0.2f;
+	//worldTransform_.rotation_.y -= viewProjection_->rotation_.y;
+	worldTransform_.rotation_.y -= 0.25f;
+	
 	worldTransform_.UpdateMatrix();
 }
 
@@ -51,7 +57,7 @@ Vector3 Player::GetWorldPosition() {
 
 void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
 
-void Player::OnCollision() { ImGui::Text("HIOTTTTTTT"); }
+void Player::OnCollision() { ImGui::Text("HOOOOTTTTTTT"); }
 
 void Player::SetColliderPosition() {
 	colliderPos_.x = worldTransform_.translation_.x;
@@ -65,16 +71,24 @@ void Player::Move() {
 	
 	const float kCharacterSpeed = 0.5f;
 
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		move = {
-		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.1f,
-		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
+	if (Input::GetInstance()->GetJoystickState(0, joyState_)) {
+		if (Input::GetInstance()->GetJoystickStatePrevious(0, prevjoyState_))
+		{
+			move = {
+			    (float)joyState_.Gamepad.sThumbLX / SHRT_MAX, 0.1f,
+			    (float)joyState_.Gamepad.sThumbLY / SHRT_MAX};
 
-		move = Normalize(move) * kCharacterSpeed;
-		move.y = 0.0f;
+			if (joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A && !prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
+				worldTransform_.translation_ += dash_->easeOutQuint({0.0f, 0.0f, 50.0f});
+			}
 
-		Matrix4x4 rotmat = MakeRotationMatrixY(viewProjection_->rotation_.y);
-		move = TransformNormal(move, rotmat);
+			move = Normalize(move) * kCharacterSpeed;
+			move.y = 0.0f;
+
+			Matrix4x4 rotmat = MakeRotationMatrixY(viewProjection_->rotation_.y);
+			move = TransformNormal(move, rotmat);
+		}
+		
 	} else {
 		ImGui::Text("No controller detected");
 	}
