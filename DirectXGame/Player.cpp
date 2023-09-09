@@ -21,7 +21,7 @@ void Player::Update() {
 	Move();
 	SetColliderPosition();
 	SetCollider(colliderPos_, radius_);
-	worldTransform_.translation_.y=stage_->GetGrandPosY(worldTransform_.translation_);
+	worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_);
 	worldTransform_.UpdateMatrix();
 }
 
@@ -60,8 +60,6 @@ void Player::Move() {
 	} else if (input_->PushKey(DIK_W)) {
 		move.z += kCharacterSpeed;
 	}
-
-
 
 	const float kRotSpeed = 0.02f;
 	if (input_->PushKey(DIK_Q)) {
