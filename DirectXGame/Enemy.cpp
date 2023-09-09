@@ -76,3 +76,4 @@ void Enemy::DrawPrimitive() {
 	//gauge_->DrawBox();
 	Collider::DrawCollider();
 }
+
