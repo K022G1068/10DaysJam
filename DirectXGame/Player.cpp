@@ -87,7 +87,8 @@ void Player::Move() {
 		if (Input::GetInstance()->GetJoystickStatePrevious(0, prevjoyState_))
 		{
 			Vector3 move = {0, 0, 0};
-
+			Vector3 totalDash = {0, 0, 0};
+			
 			const float kCharacterSpeed = 0.5f;
 			if (easing_.time <= easing_.duration) {
 				easing_.time += 0.01f;
@@ -108,17 +109,22 @@ void Player::Move() {
 				ImGui::Text("DASSSHHHH" );
 				dash_->ActivateDash();
 			} 
-			else {
+			
+			if (dash_->GetDash() == true)
+			{
+				move *= dash_->EaseInQuad(easing_) * 5.0f;
+				totalDash += dash_->EaseInQuad(easing_);
+				if (Length(totalDash) >= 20.0f)
+				{
+					dash_->DisactivateDash(easing_);
+				}
+				move.y = 0.0f;
+			} else {
 				dash_->DisactivateDash(easing_);
 			}
 
-			if (dash_->GetDash())
-			{
-				move *= dash_->EaseInQuad(easing_) * 5.0f;
-				move.y = 0.0f;
-			}
 
-
+			ImGui::Text("TotalDash", Length(totalDash));
 			worldTransform_.translation_ += move;
 		}
 		
