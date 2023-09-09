@@ -2,7 +2,7 @@
 //#include "PlayerCamera.h"
 
 void Player::Initialize(
-    Model* model, Model* gaugeModel, Vector3& playerPosition, ViewProjection& viewProjection,
+    Model* model, Vector3& playerPosition, ViewProjection& viewProjection,
     const char* name) {
 	assert(model);
 	//textureHandle_ = textureHandle;
@@ -13,13 +13,6 @@ void Player::Initialize(
 	worldTransform_.scale_ = {1.4f, 1.4f, 1.4f};
 	model_ = model;
 	input_ = Input::GetInstance();
-	mode_ = gaugeModel;
-	//Gauge
-	gauge_ = new Gauge();
-	Vector3 gaugePos_(0.0f, 15.0f, 0.0f);
-	gauge_->Initialize(gaugeModel, gaugePos_, viewProjection, radius_);
-	gauge_->SetParent(&worldTransform_);
-
 
 	//Collider
 	Vector3 colliderPos(0, 5.0f, 0.0f);
@@ -30,18 +23,41 @@ void Player::Initialize(
 	//Dash
 	dash_ = new Dash();
 	dash_->Initialize(rotationSpeed_);
+
+	//Easing
+	easing_.time = 0;
+	easing_.startPos = {0,0,0};
+	easing_.duration = 20.0f;
+	easing_.change = 10;
+}
+
+void Player::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
+	// Gauge
+	gauge_ = new Gauge();
+	Vector3 gaugePos_(0.0f, 15.0f, 0.0f);
+	gauge_->Initialize(gaugeModel, gaugeModelBox,gaugePos_, viewProjection_, radius_);
+	
 }
 
 Player::~Player() {}
 
 void Player::Update() {
 	Move();
-	gauge_->Update();
+	worldTransform_.rotation_ += rotationSpeed_;
+
+	//Gauge
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
+	gauge_->SetPosition(worldTransform_.translation_);
+	gauge_->GetRotation(rotationSpeed_);
+	gauge_->Update();
+
+
+
 	Collider::OnUpdate();
-	//worldTransform_.rotation_.y -= viewProjection_->rotation_.y;
-	worldTransform_.rotation_.y -= 0.25f;
-	
+
+	//ImGui
+	ImGui::DragFloat3("Rotation", &rotationSpeed_.x, 0.001f);
+
 	worldTransform_.UpdateMatrix();
 }
 
@@ -66,34 +82,51 @@ void Player::SetColliderPosition() {
 }
 
 void Player::Move() {
-	
-	Vector3 move = {0, 0, 0};
-	
-	const float kCharacterSpeed = 0.5f;
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState_)) {
 		if (Input::GetInstance()->GetJoystickStatePrevious(0, prevjoyState_))
 		{
-			move = {
-			    (float)joyState_.Gamepad.sThumbLX / SHRT_MAX, 0.1f,
-			    (float)joyState_.Gamepad.sThumbLY / SHRT_MAX};
+			Vector3 move = {0, 0, 0};
 
-			if (joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A && !prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
-				worldTransform_.translation_ += dash_->easeOutQuint({0.0f, 0.0f, 50.0f});
+			const float kCharacterSpeed = 0.5f;
+			if (easing_.time <= easing_.duration) {
+				easing_.time += 0.01f;
 			}
 
+			move = {
+			    (float)joyState_.Gamepad.sThumbLX / SHRT_MAX, 0.1f,
+			    (float)joyState_.Gamepad.sThumbLY / SHRT_MAX
+			};
+			
 			move = Normalize(move) * kCharacterSpeed;
 			move.y = 0.0f;
 
 			Matrix4x4 rotmat = MakeRotationMatrixY(viewProjection_->rotation_.y);
 			move = TransformNormal(move, rotmat);
+
+			if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && dash_->GetCanDash()) {
+				ImGui::Text("DASSSHHHH" );
+				dash_->ActivateDash();
+			} 
+			else {
+				dash_->DisactivateDash(easing_);
+			}
+
+			if (dash_->GetDash())
+			{
+				move *= dash_->EaseInQuad(easing_) * 5.0f;
+				move.y = 0.0f;
+			}
+
+
+			worldTransform_.translation_ += move;
 		}
 		
 	} else {
 		ImGui::Text("No controller detected");
 	}
 	
-	worldTransform_.translation_ += move;
+	
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
@@ -102,6 +135,6 @@ void Player::Draw(ViewProjection& viewProjection) {
 }
 
 void Player::DrawPrimitive() { 
-	gauge_->DrawBox();
+	//gauge_->DrawBox();
 	Collider::DrawCollider();
 }

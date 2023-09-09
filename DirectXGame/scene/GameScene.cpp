@@ -10,6 +10,8 @@ GameScene::~GameScene() {
 	delete enemy_;
 	delete model_;
 	delete followCamera_;
+	delete modelGaugeBox_;
+	delete modelPlayer_;
 }
 
 void GameScene::Initialize() {
@@ -24,6 +26,7 @@ void GameScene::Initialize() {
 
 	//Read
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
+	modelGaugeBox_ = Model::CreateFromOBJ("Gage", true);
 	model_ = Model::Create();
 	
 	//Instances
@@ -35,17 +38,21 @@ void GameScene::Initialize() {
 	Vector3 playerPosition(0, -30.0f, 100.0f);
 	Vector3 enemyPosition(30.0f, -20.0f, 20.0f);
 	Vector3 railPosition(0, 0, 0.0f);
-	player_->Initialize(modelPlayer_, model_, playerPosition, viewProjection_, "Player");
-	enemy_->Initialize(modelPlayer_, model_, enemyPosition, viewProjection_, "Enemy1");
+	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
+	enemy_->Initialize(modelPlayer_, enemyPosition, viewProjection_, "Enemy1");
 	followCamera_->Initialize();
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
+	enemy_->SetViewProjection(&followCamera_->GetViewProjection());
+	player_->InitializeGauge(model_, modelGaugeBox_);
+	enemy_->InitializeGauge(model_, modelGaugeBox_);
 	//Texture
 	
 }
 
 void GameScene::Update() 
 { 
+
 	enemy_->Update();
 	player_->Update();
 

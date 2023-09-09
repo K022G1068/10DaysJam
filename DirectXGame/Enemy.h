@@ -9,8 +9,9 @@ class Enemy : public Collider
 {
 public:
 	void Initialize(
-	    Model* model, Model* gaugeModel, Vector3& playerPosition, ViewProjection& viewProjection,
+	    Model* model, Vector3& playerPosition, ViewProjection& viewProjection,
 	    const char* name);
+	void InitializeGauge(Model* gaugeModel, Model* gaugeModelBox);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	void DrawPrimitive();
@@ -19,9 +20,13 @@ public:
 	void OnCollision() override;
 	void SetColliderPosition();
 	Vector3 GetWorldPosition() override;
+	void SetViewProjection(const ViewProjection* viewProjection) {
+		viewProjection_ = viewProjection;
+	};
 
 private:
 	WorldTransform worldTransform_;
+	const ViewProjection* viewProjection_ = nullptr;
 	Vector3 colliderPos_;
 	Vector3 rotationSpeed_;
 	Model* model_ = nullptr;

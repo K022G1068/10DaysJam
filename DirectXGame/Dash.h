@@ -4,16 +4,29 @@
 #include "Vector3.h"
 #include "MathUtility.h"
 
+struct Easing {
+	float time;
+	Vector3 startPos;
+	float change;
+	float duration;
+};
 class Dash {
 public:
 	void Initialize(Vector3 rotationSpeed);
-	void ActivateDash();
-	Vector3 easeOutQuint(Vector3 pos);
+	void ActivateDash() { dashing_ = true; };
+	void DisactivateDash(Easing& e);
+	bool GetDash() { return dashing_; };
+	bool GetCanDash() { return canDash_; };
+	Vector3 easeOutQuint(Easing e);
+	Vector3 EaseInQuad(Easing e);
 
 private:
-	bool canDash_;
+	bool canDash_ = true;
+	bool dashing_ = false;
 	Vector3 rotationSpeed_;
 	float rotationPercentage_;
+	Easing easing_;
+	
 
 
 };

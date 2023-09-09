@@ -67,6 +67,7 @@ private: // メンバ変数
 	Model* model_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 	Model* modelPlayer_ = nullptr;
+	Model* modelGaugeBox_ = nullptr;
 
 	//Texture
 	uint32_t textureHandle_ = 0;

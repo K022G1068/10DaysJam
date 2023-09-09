@@ -1,7 +1,7 @@
 #include "Enemy.h"
 
 void Enemy::Initialize(
-    Model* model, Model* gaugeModel, Vector3& playerPosition, ViewProjection& viewProjection, const char* name) {
+    Model* model, Vector3& playerPosition, ViewProjection& viewProjection, const char* name) {
 	assert(model);
 	// textureHandle_ = textureHandle;
 	
@@ -12,12 +12,6 @@ void Enemy::Initialize(
 	worldTransform_.scale_ = {1.5f, 1.5f, 1.5f};
 	model_ = model;
 
-	//Gauge
-	gauge_ = new Gauge();
-	Vector3 gaugePos_(0.0f, 15.0f, 0.0f);
-	gauge_->Initialize(gaugeModel, gaugePos_, viewProjection, radius_);
-	gauge_->SetParent(&worldTransform_);
-
 	//Collider
 	Vector3 colliderPos(0, 5.0f, 0.0f);
 	Collider::BaseInit(viewProjection, showCollider_, name_);
@@ -27,12 +21,27 @@ void Enemy::Initialize(
 }
 Enemy::~Enemy() { delete gauge_; }
 
+void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
+	// Gauge
+	gauge_ = new Gauge();
+	Vector3 gaugePos_(0.0f, 15.0f, 0.0f);
+	gauge_->Initialize(gaugeModel, gaugeModelBox, gaugePos_, viewProjection_, radius_);
+	//gauge_->SetParent(&worldTransform_);
+}
+
 void Enemy::Update() {
 	Movement();
+
+	//Gauge
+	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
+	gauge_->SetPosition(worldTransform_.translation_);
 	gauge_->Update();
-	worldTransform_.rotation_.y -= 0.3f;
+	//worldTransform_.rotation_.y -= 0.3f;
+
 	//Collider
 	Collider::OnUpdate();
+
+
 	worldTransform_.UpdateMatrix();
 }
 
@@ -61,6 +70,6 @@ void Enemy::Draw(ViewProjection& viewProjection) {
 }
 
 void Enemy::DrawPrimitive() { 
-	gauge_->DrawBox();
+	//gauge_->DrawBox();
 	Collider::DrawCollider();
 }

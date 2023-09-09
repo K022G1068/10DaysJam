@@ -11,8 +11,9 @@ class Player : public Collider
 {
 public:
 	void Initialize(
-	    Model* model, Model* gaugeModel, Vector3& playerPosition,
+	    Model* model, Vector3& playerPosition,
 	    ViewProjection& viewProjection, const char* name);
+	void InitializeGauge(Model* gaugeModel, Model* gaugeModelBox);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	void DrawPrimitive();
@@ -37,9 +38,9 @@ private:
 	float radius_ = 11.0f;
 	bool showCollider_ = true;
 	const char* name_;
-	Model* mode_;
 	Gauge* gauge_;
 	Dash* dash_;
+	Easing easing_;
 
 	//Gamepad
 	XINPUT_STATE joyState_;
