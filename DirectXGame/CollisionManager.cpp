@@ -19,6 +19,24 @@ void CollisionManager::CheckAllCollisions() {
 
 		for (; itrB != colliders_.end(); ++itrB) {
 			Collider* B = *itrB;
+
+			/*if (A->GetAttribute() == kCollisionAttributeGoal) {
+				if (SphereCollisionCheck(A, B)) {
+					A->GetCollidedCollider(B);
+					A->OnCollision();
+				}
+			}
+			if (B->GetAttribute() == kCollisionAttributeGoal) {
+				if (SphereCollisionCheck(A, B)) {
+					B->GetCollidedCollider(A);
+					B->OnCollision();
+				}
+			}*/
+			if (A->GetAttribute() != B->GetMaskAttribute() ||
+			    A->GetMaskAttribute() != B->GetAttribute()) {
+				return;
+			}
+			
 			if (SphereCollisionCheck(A, B)) {
 				A->OnCollision();
 				B->OnCollision();

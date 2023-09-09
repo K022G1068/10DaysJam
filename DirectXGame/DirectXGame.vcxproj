@@ -117,6 +117,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Gauge.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathUtility.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
@@ -124,6 +125,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerCamera.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="Shake.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="WorldTransform.cpp" />
@@ -154,11 +156,13 @@
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="CollisionConfig.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Dash.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Gauge.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="MathUtility.h" />
     <ClInclude Include="math\Matrix4x4.h" />
@@ -169,6 +173,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCamera.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="Shake.h" />
     <ClInclude Include="Stage.h" />
   </ItemGroup>
   <ItemGroup>

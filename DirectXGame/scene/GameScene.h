@@ -13,6 +13,7 @@
 #include "Collider.h"
 #include "CollisionManager.h"
 #include "FollowCamera.h"
+#include "Goal.h"
 
 /// <summary>
 /// ゲームシーン
@@ -62,12 +63,14 @@ private: // メンバ変数
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	FollowCamera* followCamera_ = nullptr;
+	Goal* goal_ = nullptr;
 
 	//Model
 	Model* model_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 	Model* modelPlayer_ = nullptr;
 	Model* modelGaugeBox_ = nullptr;
+	Model* modelGoal_ = nullptr;
 
 	//Texture
 	uint32_t textureHandle_ = 0;

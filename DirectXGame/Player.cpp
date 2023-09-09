@@ -29,6 +29,10 @@ void Player::Initialize(
 	easing_.startPos = {0,0,0};
 	easing_.duration = 20.0f;
 	easing_.change = 10;
+
+	//Attribute
+	SetAttribute(kCollisionAttributePlayer);
+	SetMaskAttribute(kCollisionAttributeEnemy);
 }
 
 void Player::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
@@ -114,7 +118,7 @@ void Player::Move() {
 			{
 				move *= dash_->EaseInQuad(easing_) * 5.0f;
 				totalDash += dash_->EaseInQuad(easing_);
-				if (Length(totalDash) >= 20.0f)
+				if (Length(totalDash) >= 30.0f)
 				{
 					dash_->DisactivateDash(easing_);
 				}

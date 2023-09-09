@@ -12,6 +12,7 @@ GameScene::~GameScene() {
 	delete followCamera_;
 	delete modelGaugeBox_;
 	delete modelPlayer_;
+	delete goal_;
 }
 
 void GameScene::Initialize() {
@@ -27,17 +28,20 @@ void GameScene::Initialize() {
 	//Read
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	modelGaugeBox_ = Model::CreateFromOBJ("Gage", true);
+	modelGoal_ = Model::CreateFromOBJ("Goal", true);
 	model_ = Model::Create();
 	
 	//Instances
 	player_ = new Player();
 	enemy_ = new Enemy();
 	followCamera_ = new FollowCamera();
+	goal_ = new Goal();
 
 	//Initialize
 	Vector3 playerPosition(0, -30.0f, 100.0f);
-	Vector3 enemyPosition(30.0f, -20.0f, 20.0f);
+	Vector3 enemyPosition(30.0f, -30.0f, 20.0f);
 	Vector3 railPosition(0, 0, 0.0f);
+	Vector3 goalPosition(0, -35.0f, 300.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
 	enemy_->Initialize(modelPlayer_, enemyPosition, viewProjection_, "Enemy1");
 	followCamera_->Initialize();
@@ -46,6 +50,8 @@ void GameScene::Initialize() {
 	enemy_->SetViewProjection(&followCamera_->GetViewProjection());
 	player_->InitializeGauge(model_, modelGaugeBox_);
 	enemy_->InitializeGauge(model_, modelGaugeBox_);
+
+	goal_->Initialize(modelGoal_, goalPosition, viewProjection_);
 	//Texture
 	
 }
@@ -55,6 +61,7 @@ void GameScene::Update()
 
 	enemy_->Update();
 	player_->Update();
+	goal_->Update();
 
 	//Camera update
 	//playerCamera_->Update();
@@ -69,6 +76,7 @@ void GameScene::Update()
 	viewProjection_.TransferMatrix();
 	//Collision
 	CollisionManager::GetInstance()->Register(player_);
+	CollisionManager::GetInstance()->Register(goal_);
 	CollisionManager::GetInstance()->Register(enemy_);
 	CollisionManager::GetInstance()->CheckAllCollisions();
 	CollisionManager::GetInstance()->ClearList();
@@ -102,8 +110,10 @@ void GameScene::Draw() {
 	
 	enemy_->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
+	goal_->Draw(viewProjection_);
 	enemy_->DrawPrimitive();
 	player_->DrawPrimitive();
+	goal_->DrawPrimitive();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

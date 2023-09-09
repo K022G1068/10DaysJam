@@ -7,7 +7,7 @@ void Dash::DisactivateDash(Easing& e) {
 	e.time = 0;
 	e.startPos = {0, 0, 0};
 	e.duration = 0.2f;
-	e.change = 20.0f;
+	e.change = 50.0f;
 }
 
 

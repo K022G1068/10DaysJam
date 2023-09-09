@@ -18,6 +18,9 @@ void Enemy::Initialize(
 	Collider::SetCollider(colliderPos, radius_);
 	Collider::SetColliderParent(&worldTransform_);
 
+	//Attribute
+	SetAttribute(kCollisionAttributeEnemy);
+	SetMaskAttribute(kCollisionAttributePlayer);
 }
 Enemy::~Enemy() { delete gauge_; }
 

@@ -7,10 +7,12 @@
 #include <vector>
 #include <string>
 #include "WorldTransform.h"
+#include "CollisionConfig.h"
 
 struct ColliderSphere {
 	Vector3 sphereCenter;
 	float radius;	
+	
 };
 
 class Collider {
@@ -22,6 +24,9 @@ private:
 	Vector4 color_ = WHITE_;
 	const char* name_ = " ";
 	WorldTransform worldTransform_;
+	uint32_t collisionAttribute_ = 0xffffffff;
+	uint32_t collisionMask_ = 0xffffffff;
+	Collider* collidedObject_;
 
 public:
 	void BaseInit(ViewProjection& viewProjection, bool& show, const char* name);
@@ -35,6 +40,18 @@ public:
 	/// On collision callback
 	/// </summary>
 	virtual void OnCollision();
+	/// <summary>
+	/// 
+	/// </summary>
+	virtual void OnCollisionEnter();
+	/// <summary>
+	/// Get the collider
+	/// </summary>
+	/// <param name="collider"></param>
+	void GetCollidedCollider(Collider* collider) { collidedObject_ = collider; };
+	/// <summary>
+	/// 
+	/// </summary>
 	void OnColliderCollision();
 	/// <summary>
 	/// Get the world position
@@ -47,6 +64,10 @@ public:
 	/// <param name="center"></param>
 	/// <param name="radius"></param>
 	void SetCollider(Vector3& center, float radius);
+	/// <summary>
+	/// Set the Parent of the collider
+	/// </summary>
+	/// <param name="parent"></param>
 	void SetColliderParent(const WorldTransform* parent);
 	/// <summary>
 	/// Check the collision of 2 sphere
@@ -62,7 +83,38 @@ public:
 	/// <param name="viewProjectionMatrix"></param>
 	/// <param name="viewportMatrix"></param>
 	virtual void DrawCollider();
+	/// <summary>
+	/// Getter to show collider
+	/// </summary>
+	/// <returns></returns>
 	bool GetShowCollider() { return showCollider_; };
+	/// <summary>
+	/// Setter to Set the collider
+	/// </summary>
+	/// <param name="set"></param>
 	void SetShowCollider(bool set) { showCollider_ = set; };
+	/// <summary>
+	/// Set the collider color into red
+	/// </summary>
 	void TurnRED() { color_ = RED_; };
+	/// <summary>
+	/// Get attribute of the mask
+	/// </summary>
+	/// <returns></returns>
+	uint32_t GetAttribute() { return collisionAttribute_; };
+	/// <summary>
+	/// Set the attribute
+	/// </summary>
+	/// <param name="attribute"></param>
+	void SetAttribute(uint32_t attribute) { collisionAttribute_ = attribute; };
+	/// <summary>
+	/// Get the mask attribute
+	/// </summary>
+	/// <returns></returns>
+	uint32_t GetMaskAttribute() { return collisionMask_; };
+	/// <summary>
+	/// Set the mask attribute
+	/// </summary>
+	/// <param name="attribute"></param>
+	void SetMaskAttribute(uint32_t attribute) { collisionMask_ = attribute; };
 };

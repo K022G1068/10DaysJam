@@ -19,6 +19,8 @@ void Collider::OnUpdate() {
 
 void Collider::OnCollision() {}
 
+void Collider::OnCollisionEnter() {}
+
 void Collider::OnColliderCollision() { color_ = RED_; }
 
 Vector3 Collider::GetWorldPosition() {
