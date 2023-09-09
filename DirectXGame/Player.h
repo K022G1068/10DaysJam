@@ -3,10 +3,11 @@
 #include "Collider.h"
 #include "Input.h"
 #include "Model.h"
+#include "Stage.h"
 class Player : public Collider {
 public:
 	void Initialize(
-	    Model* model, Vector3& playerPosition, ViewProjection& viewProjection, const char* name);
+	    Stage*stage,Model* model, Vector3& playerPosition, ViewProjection& viewProjection, const char* name);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	void SetParent(const WorldTransform* parent);
@@ -26,4 +27,5 @@ private:
 	float radius_ = 1.0f;
 	bool showCollider_ = false;
 	const char* name_;
+	Stage* stage_;
 };

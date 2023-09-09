@@ -1,7 +1,8 @@
 #include "Player.h"
 
 void Player::Initialize(
-    Model* model, Vector3& playerPosition, ViewProjection& viewProjection, const char* name) {
+    Stage* stage, Model* model, Vector3& playerPosition, ViewProjection& viewProjection,
+    const char* name) {
 	assert(model);
 	// textureHandle_ = textureHandle;
 	name_ = name;
@@ -10,6 +11,7 @@ void Player::Initialize(
 	worldTransform_.translation_ = playerPosition;
 	model_ = model;
 	input_ = Input::GetInstance();
+	stage_ = stage;
 }
 
 Player::~Player() {}
@@ -19,6 +21,7 @@ void Player::Update() {
 	Move();
 	SetColliderPosition();
 	SetCollider(colliderPos_, radius_);
+	worldTransform_.translation_.y=stage_->GetGrandPosY(worldTransform_.translation_);
 	worldTransform_.UpdateMatrix();
 }
 
@@ -52,17 +55,13 @@ void Player::Move() {
 		move.x += kCharacterSpeed;
 	}
 
-	if (input_->PushKey(DIK_SPACE)) {
-		// move.y += kCharacterSpeed;
-	} else if (input_->PushKey(DIK_LSHIFT)) {
-		move.y -= kCharacterSpeed;
+	if (input_->PushKey(DIK_S)) {
+		move.z -= kCharacterSpeed;
+	} else if (input_->PushKey(DIK_W)) {
+		move.z += kCharacterSpeed;
 	}
 
-	if (input_->PushKey(DIK_S)) {
-		move.y -= kCharacterSpeed;
-	} else if (input_->PushKey(DIK_W)) {
-		move.y += kCharacterSpeed;
-	}
+
 
 	const float kRotSpeed = 0.02f;
 	if (input_->PushKey(DIK_Q)) {
