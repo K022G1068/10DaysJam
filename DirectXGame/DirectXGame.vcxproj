@@ -116,6 +116,7 @@
     <ClCompile Include="Dash.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Gauge.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="main.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Dash.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FollowCamera.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Gauge.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="input\Input.h" />
