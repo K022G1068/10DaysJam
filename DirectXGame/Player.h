@@ -41,7 +41,7 @@ private:
 	Gauge* gauge_;
 	Dash* dash_;
 	Easing easing_;
-
+	const float kCharacterSpeed = 0.5f;
 	//Gamepad
 	XINPUT_STATE joyState_;
 	XINPUT_STATE prevjoyState_;

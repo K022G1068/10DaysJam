@@ -1,4 +1,6 @@
 #include "Enemy.h"
+#include "Goal.h"
+#include "Spot.h"
 
 void Enemy::Initialize(
     Model* model, Vector3& playerPosition, ViewProjection& viewProjection, const char* name) {
@@ -21,6 +23,10 @@ void Enemy::Initialize(
 	//Attribute
 	SetAttribute(kCollisionAttributeEnemy);
 	SetMaskAttribute(kCollisionAttributePlayer);
+
+	//State
+	state_ = new EnemyStateApproachGoal();
+
 }
 Enemy::~Enemy() { delete gauge_; }
 
@@ -34,21 +40,28 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 
 void Enemy::Update() {
 	Movement();
-
 	//Gauge
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
 	gauge_->SetPosition(worldTransform_.translation_);
 	gauge_->Update();
 	//worldTransform_.rotation_.y -= 0.3f;
 
+	//State update
+	state_->Update(this);
+
 	//Collider
 	Collider::OnUpdate();
 
+	worldTransform_.translation_ += velocity_;
 
 	worldTransform_.UpdateMatrix();
 }
 
-void Enemy::Movement() {}
+void Enemy::Movement() { 
+	ImGui::Begin("Enemy movement");
+	ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
+	ImGui::End();
+}
 
 void Enemy::OnCollision() { TurnRED(); }
 
@@ -67,6 +80,20 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
+void Enemy::ChangeState(BaseEnemyState* enemyState) { 
+	state_ = enemyState;
+}
+
+void Enemy::ApproachGoal() {
+	
+}
+
+void Enemy::Stop() {}
+
+void Enemy::ApproachSpot() {}
+
+void Enemy::ApproachEnemy() {}
+
 void Enemy::Draw(ViewProjection& viewProjection) {
 	gauge_->Draw(viewProjection);
 	model_->Draw(worldTransform_, viewProjection);
@@ -77,3 +104,35 @@ void Enemy::DrawPrimitive() {
 	Collider::DrawCollider();
 }
 
+void EnemyStateApproachGoal::Update(Enemy* e) {
+	goalPos_ = e->GetGoal();
+	toGoal_ = e->GetWorldPosition() - goalPos_;
+	float lenght = Length(toGoal_);
+	if (lenght >= 0.1f) {
+		toGoal_.x /= lenght;
+		toGoal_.y /= lenght;
+		toGoal_.z /= lenght;
+
+		velocity_ = {toGoal_.x * -0.5f, toGoal_.y * -0.5f, toGoal_.z * -0.5f};
+
+		velocity_ = TransformNormal(velocity_, e->GetWorldTransform().matWorld_);
+		e->SetVelocity(velocity_);
+	}
+	else
+	{
+		e->ChangeState(new EnemyStateStop);
+	}
+
+	ImGui::Text("%f %f %f", velocity_);
+}
+
+void EnemyStateStop::Update(Enemy* e) { 
+	Vector3 velocity = {0, 0, 0};
+	e->SetVelocity(velocity);
+}
+
+void EnemyStateApproachEnemy::Update(Enemy* e) { e->Movement(); }
+
+void EnemyStateApproachSpot::Update(Enemy* e) { e->Movement(); }
+
+void BaseEnemyState::GetDistance() { }

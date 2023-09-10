@@ -14,6 +14,7 @@
 #include "CollisionManager.h"
 #include "FollowCamera.h"
 #include "Goal.h"
+#include "Spot.h"
 
 /// <summary>
 /// ゲームシーン
@@ -64,6 +65,7 @@ private: // メンバ変数
 	Enemy* enemy_ = nullptr;
 	FollowCamera* followCamera_ = nullptr;
 	Goal* goal_ = nullptr;
+	Spot* spot_ = nullptr;
 
 	//Model
 	Model* model_ = nullptr;

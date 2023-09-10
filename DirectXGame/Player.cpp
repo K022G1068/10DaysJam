@@ -93,7 +93,7 @@ void Player::Move() {
 			Vector3 move = {0, 0, 0};
 			Vector3 totalDash = {0, 0, 0};
 			
-			const float kCharacterSpeed = 0.5f;
+			
 			if (easing_.time <= easing_.duration) {
 				easing_.time += 0.01f;
 			}

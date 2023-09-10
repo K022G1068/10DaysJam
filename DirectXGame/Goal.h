@@ -25,6 +25,5 @@ private:
 	const char* name_ = "Goal";
 
 	//List to keep track of the enemy that has enter the goal
-	Collider* object_;
 	std::list<Collider*> goalieList_;
 };

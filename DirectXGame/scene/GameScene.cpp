@@ -13,6 +13,7 @@ GameScene::~GameScene() {
 	delete modelGaugeBox_;
 	delete modelPlayer_;
 	delete goal_;
+	delete spot_;
 }
 
 void GameScene::Initialize() {
@@ -50,36 +51,39 @@ void GameScene::Initialize() {
 	enemy_->SetViewProjection(&followCamera_->GetViewProjection());
 	player_->InitializeGauge(model_, modelGaugeBox_);
 	enemy_->InitializeGauge(model_, modelGaugeBox_);
-
+	
 	goal_->Initialize(modelGoal_, goalPosition, viewProjection_);
+	enemy_->SetGoal(goalPosition);
+	enemy_->SetSpot(spot_);
 	//Texture
 	
 }
 
-void GameScene::Update() 
-{ 
-
+void GameScene::Update() {
 	enemy_->Update();
 	player_->Update();
 	goal_->Update();
 
-	//Camera update
-	//playerCamera_->Update();
-	//viewProjection_.matView = playerCamera_->GetViewProjection().matView;
-	//viewProjection_.matProjection = playerCamera_->GetViewProjection().matProjection;
-	//viewProjection_.TransferMatrix();
+	// Camera update
+	// playerCamera_->Update();
+	// viewProjection_.matView = playerCamera_->GetViewProjection().matView;
+	// viewProjection_.matProjection = playerCamera_->GetViewProjection().matProjection;
+	// viewProjection_.TransferMatrix();
 
-	//Follow camera
+	// Follow camera
 	followCamera_->Update();
 	viewProjection_.matView = followCamera_->GetViewProjection().matView;
 	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 	viewProjection_.TransferMatrix();
-	//Collision
+
+	// Collision
 	CollisionManager::GetInstance()->Register(player_);
 	CollisionManager::GetInstance()->Register(goal_);
 	CollisionManager::GetInstance()->Register(enemy_);
 	CollisionManager::GetInstance()->CheckAllCollisions();
 	CollisionManager::GetInstance()->ClearList();
+
+	
 }
 
 

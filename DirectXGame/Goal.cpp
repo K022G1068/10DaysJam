@@ -14,13 +14,14 @@ void Goal::Initialize(Model* model, Vector3& goalPosition, ViewProjection& viewP
 	Collider::SetColliderParent(&worldTransform_);
 
 	//Attribute
-	SetAttribute(kCollisionAttributeEnemy);
-	SetMaskAttribute(kCollisionAttributePlayer);
+	SetAttribute(kCollisionAttributeGoal);
+	SetMaskAttribute(kCollisionAttributeAny);
 }
 
 void Goal::Update() {
 	ImGui::Begin("Goal ImGui");
-	ImGui::Text("Goal Count ", goalieList_.size());
+	ImGui::Text("Goal Count %d", goalieList_.size());
+	ImGui::Text("Koma Count %d", komaCount_);
 	ImGui::End();
 
 	Collider::OnUpdate();
@@ -37,19 +38,31 @@ void Goal::DrawPrimitive() {
 
 void Goal::OnCollision() {
 	TurnRED();
-	//auto it = std::find(goalieList_.begin(), goalieList_.end(), object_);
-	//if (it != goalieList_.end()) {
-	//	// Element found in the list
-	//	return;
-	//} else {
-	//	// Element not found in the list
-	//	goalieList_.push_back(object_);
-	//}
 	
+	Collider* collidedObject = GetCollidedCollider();
+
+	auto it = std::find(goalieList_.begin(), goalieList_.end(), collidedObject);
+	if (it != goalieList_.end()) {
+		// Element found in the list
+		ImGui::Text("Collided Object is in the list ");
+		return;
+	} else {
+		// Element not found in the list
+		komaCount_++;
+		goalieList_.push_back(collidedObject);
+		ImGui::Text("Added collided object ");
+	}
 }
 
 void Goal::SetColliderPosition() {}
 
-Vector3 Goal::GetWorldPosition() { return Vector3(); }
+Vector3 Goal::GetWorldPosition() { 
+	Vector3 worldPos;
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
+}
 
 Goal::~Goal() {}

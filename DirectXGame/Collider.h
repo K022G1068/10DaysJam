@@ -26,7 +26,7 @@ private:
 	WorldTransform worldTransform_;
 	uint32_t collisionAttribute_ = 0xffffffff;
 	uint32_t collisionMask_ = 0xffffffff;
-	Collider* collidedObject_;
+	Collider* collidedObject_ = nullptr;
 
 public:
 	void BaseInit(ViewProjection& viewProjection, bool& show, const char* name);
@@ -48,7 +48,8 @@ public:
 	/// Get the collider
 	/// </summary>
 	/// <param name="collider"></param>
-	void GetCollidedCollider(Collider* collider) { collidedObject_ = collider; };
+	void SetCollidedCollider(Collider* collider) { collidedObject_ = collider; };
+	Collider* GetCollidedCollider() { return collidedObject_; };
 	/// <summary>
 	/// 
 	/// </summary>
