@@ -26,7 +26,7 @@ private:
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
-	float radius_ = 1.0f;
+	float radius_ = 5.0f;
 	bool showCollider_ = false;
 	const char* name_;
 	Stage* stage_;

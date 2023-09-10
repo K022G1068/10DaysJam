@@ -19,9 +19,10 @@ public:
 	~Stage();
 
 	float grav_ = 1.f;
+
 private:
 	float theta_;
 	WorldTransform worldTransform_;
 	Model* model_ = nullptr;
-	float rad_ = 10.f;
+	float rad_ = 35.f;
 };
