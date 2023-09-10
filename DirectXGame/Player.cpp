@@ -28,6 +28,12 @@ void Player::Initialize(
 	easing_.startPos = {0,0,0};
 	easing_.duration = 20.0f;
 	easing_.change = 10;
+	//Easing2
+	// Easing
+	easing2_.time = 0;
+	easing2_.startPos = {0, 0, 0};
+	easing2_.duration = 20.0f;
+	easing2_.change = 10;
 
 	//Attribute
 	SetAttribute(kCollisionAttributePlayer);
@@ -55,12 +61,11 @@ void Player::Update() {
 	gauge_->Update();
 
 
-
 	Collider::OnUpdate();
-
+	FlyingToGoal();
 	//ImGui
 	ImGui::DragFloat3("Rotation", &rotationSpeed_.x, 0.001f);
-	worldTransform_.translation_ += velocity_;
+	
 	worldTransform_.UpdateMatrix();
 }
 
@@ -74,6 +79,24 @@ Vector3 Player::GetWorldPosition() {
 	return worldPos;
 }
 
+void Player::FlyingToGoal() { 
+
+	if (isFlying_) {
+		//How far is the object going to fly
+		float limit = collisionPower_ * 50.0f + 50.0f;
+
+		ImGui::Text("Limit %f", limit);
+		totalCollisionDash += velocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+		ImGui::Text("Totaldash %f", Length(totalCollisionDash));
+		worldTransform_.translation_ += velocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+		if (Length(totalCollisionDash) >= limit) {
+			dash_->DisactivateDash(easing2_);
+			totalCollisionDash = {0.0f,0.0f,0.0f};
+			isFlying_ = false;
+		}
+	}
+}
+
 void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
 
 void Player::OnCollision() { 
@@ -82,6 +105,7 @@ void Player::OnCollision() {
 	Vector3 posBeforeCollision = worldTransform_.translation_;
 	if (rotationSpeed_.y <= ObjectRotationSpeed.y)
 	{
+		isFlying_ = true;
 		Vector3 posAfterCollision = worldTransform_.translation_;
 		collisionPower_ = (ObjectRotationSpeed.y - rotationSpeed_.y) * 20.0f;
 		toGoal_ = worldTransform_.translation_ - goalPos_;
@@ -91,7 +115,8 @@ void Player::OnCollision() {
 			toGoal_.y /= lenght;
 			toGoal_.z /= lenght;
 
-			velocity_ = toGoal_ * -collisionPower_;
+			velocity_ = toGoal_;
+			
 		}
 	}
 }
