@@ -20,18 +20,22 @@ void CollisionManager::CheckAllCollisions() {
 		for (; itrB != colliders_.end(); ++itrB) {
 			Collider* B = *itrB;
 
-			if (A->GetAttribute() == kCollisionAttributeGoal) {
+			if (A->GetAttribute() == kCollisionAttributeGoal ||
+			    A->GetAttribute() == kCollisionAttributeSpot) {
 				if (SphereCollisionCheck(A, B)) {
 					A->SetCollidedCollider(B);
 					A->OnCollision();
 				}
-			}
-			else if (B->GetAttribute() == kCollisionAttributeGoal) {
+			} else if (
+			    B->GetAttribute() == kCollisionAttributeGoal ||
+			    B->GetAttribute() == kCollisionAttributeSpot) {
 				if (SphereCollisionCheck(A, B)) {
 					B->SetCollidedCollider(A);
 					B->OnCollision();
 				}
 			}
+
+
 			
 			if (SphereCollisionCheck(A, B)) {
 				A->OnCollision();

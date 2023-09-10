@@ -40,18 +40,23 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 
 void Enemy::Update() {
 	Movement();
+
+	// State update
+	state_->Update(this);
+
 	//Gauge
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
 	gauge_->SetPosition(worldTransform_.translation_);
+	gauge_->GetRotation(rotationSpeed_);
 	gauge_->Update();
-	//worldTransform_.rotation_.y -= 0.3f;
 
-	//State update
-	state_->Update(this);
+	worldTransform_.rotation_ += rotationSpeed_;
+	
 
 	//Collider
 	Collider::OnUpdate();
 
+	
 	worldTransform_.translation_ += velocity_;
 
 	worldTransform_.UpdateMatrix();
@@ -106,7 +111,7 @@ void Enemy::DrawPrimitive() {
 
 void EnemyStateApproachGoal::Update(Enemy* e) {
 	goalPos_ = e->GetGoal();
-	toGoal_ = e->GetWorldPosition() - goalPos_;
+	toGoal_ = e->GetWorldTransform().translation_ - goalPos_;
 	float lenght = Length(toGoal_);
 	if (lenght >= 0.1f) {
 		toGoal_.x /= lenght;
@@ -115,7 +120,7 @@ void EnemyStateApproachGoal::Update(Enemy* e) {
 
 		velocity_ = {toGoal_.x * -0.5f, toGoal_.y * -0.5f, toGoal_.z * -0.5f};
 
-		velocity_ = TransformNormal(velocity_, e->GetWorldTransform().matWorld_);
+		//velocity_ = TransformNormal(velocity_, e->GetWorldTransform().matWorld_);
 		e->SetVelocity(velocity_);
 	}
 	else

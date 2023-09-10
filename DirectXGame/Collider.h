@@ -1,4 +1,6 @@
 #pragma once
+#define MAX_ROTATION 0.3f
+#define MIN_ROTATION 0.06f
 #include "ImGuiManager.h"
 #include "MathUtility.h"
 #include "PrimitiveDrawer.h"
@@ -27,6 +29,9 @@ private:
 	uint32_t collisionAttribute_ = 0xffffffff;
 	uint32_t collisionMask_ = 0xffffffff;
 	Collider* collidedObject_ = nullptr;
+	
+protected:
+	Vector3 rotationSpeed_;
 
 public:
 	void BaseInit(ViewProjection& viewProjection, bool& show, const char* name);
@@ -49,6 +54,7 @@ public:
 	/// </summary>
 	/// <param name="collider"></param>
 	void SetCollidedCollider(Collider* collider) { collidedObject_ = collider; };
+
 	Collider* GetCollidedCollider() { return collidedObject_; };
 	/// <summary>
 	/// 
@@ -118,4 +124,6 @@ public:
 	/// </summary>
 	/// <param name="attribute"></param>
 	void SetMaskAttribute(uint32_t attribute) { collisionMask_ = attribute; };
+	Vector3 GetRotationSpeed() { return rotationSpeed_; };
+	void SetRotationSpeed(Vector3 speed) { rotationSpeed_ = speed; };
 };

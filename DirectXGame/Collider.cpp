@@ -14,6 +14,15 @@ void Collider::OnUpdate() {
 	ImGui::Checkbox(name_, &showCollider_);
 	SetShowCollider(showCollider_);
 
+	if (rotationSpeed_.y >= MAX_ROTATION)
+	{
+		rotationSpeed_.y = MAX_ROTATION;
+	}
+	if (rotationSpeed_.y <= MIN_ROTATION) 
+	{
+		rotationSpeed_.y = MIN_ROTATION;
+	}
+
 	worldTransform_.UpdateMatrix();
 }
 

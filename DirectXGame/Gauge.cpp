@@ -22,11 +22,11 @@ void Gauge::Initialize(
 void Gauge::Update() { 
 	
 	scale_.x = (rotation_.y / MAX_ROTATION) * MAX_BAR;
-	if (rotation_.x <= MIN_ROTATION)
+	if (rotation_.y <= MIN_ROTATION)
 	{
-		rotation_.x = MIN_ROTATION;
+		scale_.x = MIN_ROTATION;
 	}
-	if (rotation_.x >= MAX_ROTATION)
+	if (rotation_.y >= MAX_ROTATION)
 	{
 		scale_.x = MAX_BAR;
 	}

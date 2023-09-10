@@ -30,6 +30,7 @@ void GameScene::Initialize() {
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	modelGaugeBox_ = Model::CreateFromOBJ("Gage", true);
 	modelGoal_ = Model::CreateFromOBJ("Goal", true);
+	modelSpot_ = Model::CreateFromOBJ("Speedupspot", true);
 	model_ = Model::Create();
 	
 	//Instances
@@ -37,12 +38,14 @@ void GameScene::Initialize() {
 	enemy_ = new Enemy();
 	followCamera_ = new FollowCamera();
 	goal_ = new Goal();
+	spot_ = new Spot();
 
 	//Initialize
 	Vector3 playerPosition(0, -30.0f, 100.0f);
 	Vector3 enemyPosition(30.0f, -30.0f, 20.0f);
 	Vector3 railPosition(0, 0, 0.0f);
 	Vector3 goalPosition(0, -35.0f, 300.0f);
+	Vector3 spotPosition(50.0f, -35.0f, 300.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
 	enemy_->Initialize(modelPlayer_, enemyPosition, viewProjection_, "Enemy1");
 	followCamera_->Initialize();
@@ -51,10 +54,12 @@ void GameScene::Initialize() {
 	enemy_->SetViewProjection(&followCamera_->GetViewProjection());
 	player_->InitializeGauge(model_, modelGaugeBox_);
 	enemy_->InitializeGauge(model_, modelGaugeBox_);
-	
+	spot_->Initialize(modelSpot_, spotPosition, viewProjection_);
 	goal_->Initialize(modelGoal_, goalPosition, viewProjection_);
 	enemy_->SetGoal(goalPosition);
 	enemy_->SetSpot(spot_);
+
+	
 	//Texture
 	
 }
@@ -63,6 +68,7 @@ void GameScene::Update() {
 	enemy_->Update();
 	player_->Update();
 	goal_->Update();
+	spot_->Update();
 
 	// Camera update
 	// playerCamera_->Update();
@@ -80,6 +86,7 @@ void GameScene::Update() {
 	CollisionManager::GetInstance()->Register(player_);
 	CollisionManager::GetInstance()->Register(goal_);
 	CollisionManager::GetInstance()->Register(enemy_);
+	CollisionManager::GetInstance()->Register(spot_);
 	CollisionManager::GetInstance()->CheckAllCollisions();
 	CollisionManager::GetInstance()->ClearList();
 
@@ -115,9 +122,11 @@ void GameScene::Draw() {
 	enemy_->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
 	goal_->Draw(viewProjection_);
+	spot_->Draw(viewProjection_);
 	enemy_->DrawPrimitive();
 	player_->DrawPrimitive();
 	goal_->DrawPrimitive();
+	spot_->DrawPrimitive();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

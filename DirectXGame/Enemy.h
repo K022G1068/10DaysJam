@@ -90,7 +90,6 @@ private:
 	WorldTransform worldTransform_;
 	const ViewProjection* viewProjection_ = nullptr;
 	Vector3 colliderPos_;
-	Vector3 rotationSpeed_;
 	Model* model_ = nullptr;
 	Gauge* gauge_ = nullptr;
 	Model* gaugeModel_ = nullptr;

@@ -31,7 +31,6 @@ private:
 	WorldTransform worldTransform_;
 	const ViewProjection* viewProjection_ = nullptr;
 	Vector3 colliderPos_;
-	Vector3 rotationSpeed_;
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;

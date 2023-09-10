@@ -17,6 +17,7 @@ public:
 	void DisactivateDash(Easing& e);
 	bool GetDash() { return dashing_; };
 	bool GetCanDash() { return canDash_; };
+	void SetCanDash(bool candash) { canDash_ = candash; };
 	Vector3 easeOutQuint(Easing e);
 	Vector3 EaseInQuad(Easing e);
 

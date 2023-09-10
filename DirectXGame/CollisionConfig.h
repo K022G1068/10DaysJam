@@ -12,3 +12,6 @@ const uint32_t kCollisionAttributeGoal = 0b1 << 2;
 
 //Any
 const uint32_t kCollisionAttributeAny = 0b1 << 3;
+
+//Spot tag
+const uint32_t kCollisionAttributeSpot = 0b1 << 4;
