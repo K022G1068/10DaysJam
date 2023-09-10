@@ -58,7 +58,7 @@ void GameScene::Initialize() {
 	goal_->Initialize(modelGoal_, goalPosition, viewProjection_);
 	enemy_->SetGoal(goalPosition);
 	enemy_->SetSpot(spot_);
-
+	player_->SetGoal(goalPosition);
 	
 	//Texture
 	

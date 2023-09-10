@@ -1,5 +1,4 @@
 #include "Player.h"
-//#include "PlayerCamera.h"
 
 void Player::Initialize(
     Model* model, Vector3& playerPosition, ViewProjection& viewProjection,
@@ -61,7 +60,7 @@ void Player::Update() {
 
 	//ImGui
 	ImGui::DragFloat3("Rotation", &rotationSpeed_.x, 0.001f);
-
+	worldTransform_.translation_ += velocity_;
 	worldTransform_.UpdateMatrix();
 }
 
@@ -77,7 +76,25 @@ Vector3 Player::GetWorldPosition() {
 
 void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
 
-void Player::OnCollision() { ImGui::Text("HOOOOTTTTTTT"); }
+void Player::OnCollision() { 
+	Collider* collidedObject = GetCollidedCollider();
+	Vector3 ObjectRotationSpeed = collidedObject->GetRotationSpeed();
+	Vector3 posBeforeCollision = worldTransform_.translation_;
+	if (rotationSpeed_.y <= ObjectRotationSpeed.y)
+	{
+		Vector3 posAfterCollision = worldTransform_.translation_;
+		collisionPower_ = (ObjectRotationSpeed.y - rotationSpeed_.y) * 20.0f;
+		toGoal_ = worldTransform_.translation_ - goalPos_;
+		float lenght = Length(toGoal_);
+		if (lenght >= collisionPower_) {
+			toGoal_.x /= lenght;
+			toGoal_.y /= lenght;
+			toGoal_.z /= lenght;
+
+			velocity_ = toGoal_ * -collisionPower_;
+		}
+	}
+}
 
 void Player::SetColliderPosition() {
 	colliderPos_.x = worldTransform_.translation_.x;

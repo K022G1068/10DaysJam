@@ -34,10 +34,10 @@ void CollisionManager::CheckAllCollisions() {
 					B->OnCollision();
 				}
 			}
-
-
 			
 			if (SphereCollisionCheck(A, B)) {
+				A->SetCollidedCollider(B);
+				B->SetCollidedCollider(A);
 				A->OnCollision();
 				B->OnCollision();
 			}

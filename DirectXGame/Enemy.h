@@ -105,4 +105,6 @@ private:
 	Vector3 goalPos_ = {0, 0, 0};
 	std::list<Vector3*> spotPos_;
 	bool isGoal = false;
+	float collisionPower_ = 0.0f;
+	Vector3 toGoal_ = {0, 0, 0};
 };

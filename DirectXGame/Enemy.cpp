@@ -25,7 +25,7 @@ void Enemy::Initialize(
 	SetMaskAttribute(kCollisionAttributePlayer);
 
 	//State
-	state_ = new EnemyStateApproachGoal();
+	state_ = new EnemyStateApproachEnemy();
 
 }
 Enemy::~Enemy() { delete gauge_; }
@@ -65,10 +65,27 @@ void Enemy::Update() {
 void Enemy::Movement() { 
 	ImGui::Begin("Enemy movement");
 	ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
+	ImGui::DragFloat3("RotationSpeed", &rotationSpeed_.x, 0.01f);
 	ImGui::End();
 }
 
-void Enemy::OnCollision() { TurnRED(); }
+void Enemy::OnCollision() { 
+	TurnRED();
+	Collider* collidedObject = GetCollidedCollider();
+	Vector3 ObjectRotationSpeed = collidedObject->GetRotationSpeed();
+	if (rotationSpeed_.y <= ObjectRotationSpeed.y) {
+		collisionPower_ = (ObjectRotationSpeed.y - rotationSpeed_.y) * 20.0f;
+		toGoal_ = worldTransform_.translation_ - goalPos_;
+		float lenght = Length(toGoal_);
+		if (lenght >= 0.1f) {
+			toGoal_.x /= lenght;
+			toGoal_.y /= lenght;
+			toGoal_.z /= lenght;
+
+			velocity_ = toGoal_ * -collisionPower_;
+		}
+	}
+}
 
 void Enemy::SetColliderPosition() {
 	colliderPos_.x = worldTransform_.translation_.x;
