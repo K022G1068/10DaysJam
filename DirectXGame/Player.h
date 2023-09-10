@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "Model.h"
 #include "Stage.h"
+
 class Player : public Collider {
 public:
 	void Initialize(
