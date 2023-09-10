@@ -64,6 +64,7 @@ void Player::Update() {
 	Collider::OnUpdate();
 	FlyingToGoal();
 	//ImGui
+	ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
 	ImGui::DragFloat3("Rotation", &rotationSpeed_.x, 0.001f);
 	
 	worldTransform_.UpdateMatrix();

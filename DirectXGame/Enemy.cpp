@@ -65,7 +65,7 @@ void Enemy::Update() {
 void Enemy::Movement() { 
 	ImGui::Begin("Enemy movement");
 	ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
-	ImGui::DragFloat3("RotationSpeed", &rotationSpeed_.x, 0.01f);
+	ImGui::DragFloat3("RotationSpeed", &rotationSpeed_.x, 0.001f);
 	ImGui::End();
 }
 
