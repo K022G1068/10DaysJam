@@ -18,13 +18,16 @@ Player::~Player() {}
 
 void Player::Update() {
 	OnUpdate();
-	Move();
 	SetColliderPosition();
 	SetCollider(colliderPos_, radius_);
-	if (stage_->GetMode(worldTransform_.translation_)==onGrand)
+	if (stage_->GetMode(worldTransform_.translation_) == onGrand) {
 		worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_);
-	if (stage_->GetMode(worldTransform_.translation_) == underGrand)
-		worldTransform_.translation_.y -= 1;
+		Move();
+	}
+	if (stage_->GetMode(worldTransform_.translation_) == underGrand) {
+		moveSpd_.y += stage_->grav_;
+		worldTransform_.translation_.y -= moveSpd_.y;
+	}
 	if (stage_->GetMode(worldTransform_.translation_) == Goal)
 		worldTransform_.translation_.y += 1;
 	worldTransform_.UpdateMatrix();

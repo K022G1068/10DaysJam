@@ -22,6 +22,7 @@ private:
 	WorldTransform worldTransform_;
 	Vector3 colliderPos_;
 	Vector3 rotationSpeed_;
+	Vector3 moveSpd_ = {.0f, .0f, .0f};
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;

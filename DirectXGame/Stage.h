@@ -18,6 +18,7 @@ public:
 	ObjMode GetMode(Vector3 objPos);
 	~Stage();
 
+	float grav_ = 1.f;
 private:
 	float theta_;
 	WorldTransform worldTransform_;
