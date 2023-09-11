@@ -60,11 +60,11 @@ void GameScene::Initialize() {
 	Vector3 playerPosition(0, -30.0f, 100.0f);
 	Vector3 enemiesPosition[6] = {
 	    {30.0f,  -30.0f, 20.0f},
-        {60.0f,  -30.0f, 20.0f},
+        {90.0f,  -30.0f, 20.0f},
         {0.0f,   -30.0f, 20.0f},
 	    {-30.0f, -30.0f, 20.0f},
         {-60.0f, -30.0f, 20.0f},
-        {90.0f,  -30.0f, 20.0f}
+        {60.0f,  -30.0f, 20.0f}
     };
 	
 	const char* enemiesName[6] = {
@@ -72,7 +72,7 @@ void GameScene::Initialize() {
 	};
 
 	Vector3 railPosition(0, 0, 0.0f);
-	Vector3 goalPosition(0, -35.0f, 300.0f);
+	Vector3 goalPosition(0, -30.0f, 300.0f);
 	Vector3 spotPosition(50.0f, -30.0f, 250.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
 	
@@ -87,9 +87,9 @@ void GameScene::Initialize() {
 	//enemy_->SetSpot(spotPosition);
 	//enemy_->InitializeGauge(model_, modelGaugeBox_);
 	player_->SetGoal(goalPosition);
-	
+	objects_.push_back(player_);
 	//Initialize enemy
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < MAX_ENEMY; i++) {
 		Enemy* obj = new Enemy();
 		obj->Initialize(modelEnemies_[i], enemiesPosition[i], viewProjection_, enemiesName[i]);
 		obj->SetViewProjection(&followCamera_->GetViewProjection());
@@ -99,10 +99,11 @@ void GameScene::Initialize() {
 		obj->InitializeGauge(model_, modelGaugeBox_);
 		obj->GetRandomRotation(i);
 		enemies_.push_back(obj);
+		objects_.push_back(obj);
 	}
 	//enemies_.push_back(player_)
 	for (Enemy* enemy : enemies_) {
-		enemy->SetEnemies(enemies_);
+		enemy->SetObjects(objects_);
 		enemy->SetPlayer(player_);
 	}
 	for (Enemy* enemy : enemies_) {

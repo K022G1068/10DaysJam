@@ -1,5 +1,5 @@
 #pragma once
-
+#define MAX_ENEMY 3
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -64,6 +64,7 @@ private: // メンバ変数
 	//Instances
 	Player* player_ = nullptr;
 	std::list<Enemy*> enemies_;
+	std::list<Collider*> objects_;
 	//Enemy* enemy_ = nullptr;
 	FollowCamera* followCamera_ = nullptr;
 	Goal* goal_ = nullptr;

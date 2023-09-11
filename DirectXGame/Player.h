@@ -22,11 +22,12 @@ public:
 	void OnCollision() override;
 	void SetColliderPosition();
 	Vector3 GetWorldPosition() override;
-	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+	const WorldTransform& GetWorldTransform() override { return worldTransform_; };
 	//void SetPlayerCamera(PlayerCamera* camera) { playerCamera_ = camera; };
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection; };
 	void SetGoal(Vector3 goal) { goalPos_ = goal; };
 	void FlyingToGoal();
+	const char* GetName() override { return name_;}
 
 private:
 	WorldTransform worldTransform_;

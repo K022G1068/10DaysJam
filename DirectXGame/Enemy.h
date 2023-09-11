@@ -28,14 +28,15 @@ public:
 	virtual void Update(Enemy* e) = 0;
 	void GetSpotDistance(Enemy* e);
 	void GetEnemyDistance(Enemy* e);
+	void SetTimer();
 	void Move(Vector3 velocity, Enemy* e);
 	virtual ~BaseEnemyState() = default;
 
 protected:
 	Vector3 goalPos_;
 	std::list<Vector3> spotPos_;
-	std::list<Enemy*> enemies_;
-	std::list<Enemy*> enemiesLowRotation_;
+	std::list<Collider*> objects_;
+	std::list<Collider*> objectLowRotation_;
 	Vector3 toGoal_ = {0, 0, 0};
 	Vector3 toSpot_ = {0, 0, 0};
 	Vector3 toEnemy_ = {0, 0, 0};
@@ -46,6 +47,7 @@ protected:
 	Vector3 playerRotationSpeed_ = {0,0,0};
 	int stopTime_ = 0;
 	int countTime_ = 0;
+	const char* nearestEnemyName_ = "";
 };
 
 class EnemyStateApproachGoal : public BaseEnemyState {
@@ -97,12 +99,12 @@ public:
 	//Getter
 	Vector3 GetGoal() { return goalPos_; };
 	std::list<Vector3> GetSpot() { return spotPos_; };
-	std::list<Enemy* > GetEnemies() { return enemies_; };
-	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+	//std::list<Enemy* > GetEnemies() { return enemies_; };
+	const WorldTransform& GetWorldTransform() override { return worldTransform_; };
 	Vector3 GetWorldPosition() override;
 	void SetRandomNumber(int number);
 	int GetRandomNumber() { return random_number; };
-	const char* GetName() { return name_; };
+	const char* GetName() override { return name_; };
 	void GetEnemyDistance() { state_->GetEnemyDistance(this); };
 	Player* GetPlayer() { return player_; };
 	void GetRandomRotation(int number);
@@ -114,7 +116,7 @@ public:
 	void SetColliderPosition();
 	void SetGoal(Vector3 goal) { goalPos_ = goal; };
 	void SetSpot(Vector3 spot) { spotPos_.push_back(spot); };
-	void SetEnemies(std::list<Enemy*> enemy) { enemies_ = enemy; };
+	//void SetEnemies(std::list<Enemy*> enemy) { enemies_ = enemy; };
 	void SetViewProjection(const ViewProjection* viewProjection) {
 		viewProjection_ = viewProjection;
 	};
@@ -156,6 +158,7 @@ private:
 	int percentageSpot_ = 50;
 	int random_number;
 
-	//enemy list
-	std::list<Enemy*> enemies_;
+	//Object list
+	//std::list<Enemy*> enemies_;
+	//std::list<Collider*> objects_;
 };

@@ -10,6 +10,7 @@
 #include <string>
 #include "WorldTransform.h"
 #include "CollisionConfig.h"
+#include <list>
 
 struct ColliderSphere {
 	Vector3 sphereCenter;
@@ -24,13 +25,14 @@ private:
 	Vector4 WHITE_ = {1.0f, 1.0f, 1.0f, 1.0f};
 	Vector4 RED_ = {1.0f, 0.0f, 0.0f, 1.0f};
 	Vector4 color_ = WHITE_;
-	const char* name_ = " ";
+	const char* name_ = "";
 	WorldTransform worldTransform_;
 	uint32_t collisionAttribute_ = 0xffffffff;
 	uint32_t collisionMask_ = 0xffffffff;
 	Collider* collidedObject_ = nullptr;
 	bool isGoal_ = false;
-	
+	std::list<Collider*> objects_;
+
 protected:
 	Vector3 rotationSpeed_;
 
@@ -129,4 +131,8 @@ public:
 	void SetRotationSpeed(Vector3 speed) { rotationSpeed_ = speed; };
 	void SetIsGoal(bool isGoal) { isGoal_ = isGoal; };
 	bool GetIsGoal() { return isGoal_; };
+	void SetObjects(std::list<Collider*> object) { objects_ = object; };
+	std::list<Collider *> GetObjects() { return objects_; };
+	virtual const WorldTransform& GetWorldTransform() = 0;
+	virtual const char* GetName() = 0;
 };

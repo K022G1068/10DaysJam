@@ -13,7 +13,8 @@ public:
 	void OnCollision() override;
 	void SetColliderPosition();
 	Vector3 GetWorldPosition() override;
-	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+	const WorldTransform& GetWorldTransform() override { return worldTransform_; };
+	const char* GetName() override { return name_; };
 	~Goal();
 
 private:

@@ -60,22 +60,24 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 	else if (random_number > percentageDash_)
 	{
 		state_ = new EnemyStateApproachEnemy();
+		state_->SetTimer();
 		state_->GetSpotDistance(this);
 	}
 	else
 	{
-		state_ = new EnemyStateApproachSpot();
+		state_ = new EnemyStateApproachEnemy();
+		state_->SetTimer();
 		state_->GetSpotDistance(this);
 	}
 }
 
 void Enemy::Update() {
 	//Reduce rotation;
-	rotationSpeed_.y -= 0.001f;
+	//rotationSpeed_.y -= 0.0001f;
 
 	// State update
-	state_->Update(this);
 	state_->GetEnemyDistance(this);
+	state_->Update(this);
 	//Gauge
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
 	gauge_->SetPosition(worldTransform_.translation_);
@@ -84,8 +86,9 @@ void Enemy::Update() {
 
 	worldTransform_.rotation_ += rotationSpeed_;
 	
-	ImGui::Text("Random Number %s: %d", name_, random_number);
-	ImGui::Text("EnemyCount %s: %d", name_, enemies_.size());
+	//ImGui::Text("Random Number %s: %d", name_, random_number);
+	//ImGui::Text("EnemyCount %s: %d", name_, enemies_.size());
+	//ImGui::Text("EnemyCount %s: %d", name_, stopTime_);
 	
 
 	//Collider
@@ -126,8 +129,7 @@ void Enemy::OnCollision() {
 			toGoal_.z /= lenght;
 
 			velocity_ = toGoal_;
-			std::srand(static_cast<unsigned>(std::time(nullptr)) + 1000);
-			stopTime_ = std::rand() % 121 + 60;
+			state_->SetTimer();
 		}
 	}
 }
@@ -159,10 +161,15 @@ void Enemy::FlyingToGoal() {
 			velocity_ = {0, 0, 0};
 
 			//Stop the object
-			ChangeState(new EnemyStateStop());
+			ChangeState(new EnemyStateStop);
 			isFlying_ = false;
 		}
 	}
+}
+
+void BaseEnemyState::SetTimer() {
+	std::srand(static_cast<unsigned>(std::time(nullptr)) + 1000);
+	stopTime_ = std::rand() % 121 + 60;
 }
 
 Vector3 Enemy::GetWorldPosition() {
@@ -183,6 +190,7 @@ void Enemy::ChangeState(BaseEnemyState* enemyState) {
 	//Find the nearest enemy and spot
 	enemyState->GetSpotDistance(this);
 	enemyState->GetEnemyDistance(this);
+	enemyState->SetTimer();
 	state_ = enemyState;
 }
 
@@ -239,14 +247,27 @@ void EnemyStateStop::Update(Enemy* e) {
 }
 
 void EnemyStateApproachEnemy::Update(Enemy* e) {
-	ImGui::Text("NearestEnemy %s: %f %f %f",e->GetName(), nearestEnemyPos_.x, nearestEnemyPos_.y, nearestEnemyPos_.z);
+	ImGui::Text( "%s Position: %f %f %f", e->GetName(), e->GetWorldTransform().translation_.x, e->GetWorldTransform().translation_.y, e->GetWorldTransform().translation_.z);
+	ImGui::Text("%s NearestEnemy Position: %f %f %f",e->GetName(), nearestEnemyPos_.x, nearestEnemyPos_.y, nearestEnemyPos_.z);
+	ImGui::Text("%s NearestEnemy name: %s",e->GetName(), nearestEnemyName_);
 	toEnemy_ = e->GetWorldTransform().translation_ - nearestEnemyPos_;
-	Move(toEnemy_, e);
+	//Move(toEnemy_, e);
 }
 
 void EnemyStateApproachSpot::Update(Enemy* e) { 
 	toSpot_ = e->GetWorldTransform().translation_ - nearestSpotPos_;
 	Move(toSpot_, e);
+	ImGui::Text("Spot and %s  %f", e->GetName(), Length(toSpot_));
+	ImGui::Text("Stop time %s  %d", e->GetName(), stopTime_);
+	if (Length(toSpot_) <= 0.5f)
+	{
+		stopTime_--;
+		if (stopTime_ <= 0)
+		{
+			stopTime_ = 0;
+			e->ChangeState(new EnemyStateApproachEnemy);
+		}
+	}
 }
 
 void BaseEnemyState::GetSpotDistance(Enemy* e) {
@@ -264,45 +285,36 @@ void BaseEnemyState::GetSpotDistance(Enemy* e) {
 			nearestSpotPos_ = A;		
 		}
 	}
-	spotPos_.clear();
 }
 
 void BaseEnemyState::GetEnemyDistance(Enemy* e) {
 	float length = 10000.0f;
 	float rotationSpeed = e->GetRotationSpeed().y;
-	enemies_ = e->GetEnemies();
+	objects_ = e->GetObjects();
 
-	std::list<Enemy*>::iterator itrA = enemies_.begin();
-	for (; itrA != enemies_.end(); ++itrA) {
-		Enemy* A = *itrA;
-		if (A->GetRotationSpeed().y < rotationSpeed)
+	std::list<Collider *>::iterator itrA = objects_.begin();
+	for (; itrA != objects_.end(); ++itrA) {
+		Collider* A = *itrA;
+		if (A->GetRotationSpeed().y < rotationSpeed && A->GetRotationSpeed().y != rotationSpeed)
 		{
-			enemiesLowRotation_.push_back(A);
+			objectLowRotation_.push_back(A);
 		}
 	}
 
-	playerPos_ = e->GetPlayer()->GetWorldTransform().translation_;
-	float playerLength = Length(e->GetWorldTransform().translation_ - playerPos_);
 	// ImGui::Text("Nearest pos %f %f %f", nearestPos_);
-	std::list<Enemy*>::iterator itrB = enemiesLowRotation_.begin();
-	for (; itrB != enemiesLowRotation_.end(); ++itrB) {
-		Enemy* A = *itrB;
-		Vector3 difference = e->GetWorldTransform().translation_ - A->GetWorldTransform().translation_;
+	std::list<Collider *>::iterator itrB = objectLowRotation_.begin();
+	for (; itrB != objectLowRotation_.end(); ++itrB) {
+		Collider* B = *itrB;
+		Vector3 difference = e->GetWorldTransform().translation_ - B->GetWorldTransform().translation_;
 		float differenceLength = Length(difference);
 		if (differenceLength < length && differenceLength > 0.0f) {
 			length = Length(difference);
-			nearestEnemyPos_ = A->GetWorldTransform().translation_;
-			if (playerLength < length && rotationSpeed > e->GetPlayer()->GetRotationSpeed().y)
-			{
-				length = playerLength;
-				nearestEnemyPos_ = playerPos_;
-
-			
-			}
+			nearestEnemyPos_ = B->GetWorldTransform().translation_;
+			nearestEnemyName_ = B->GetName();
 		}
 	}
-	 enemies_.clear();
-	 enemiesLowRotation_.clear();
+	 objects_.clear();
+	 objectLowRotation_.clear();
 }
 
 void BaseEnemyState::Move(Vector3 velocity, Enemy* e) {
@@ -313,7 +325,7 @@ void BaseEnemyState::Move(Vector3 velocity, Enemy* e) {
 		velocity.z /= lenght;
 
 		velocity_ = {velocity.x * -0.5f, velocity.y * -0.5f, velocity.z * -0.5f};
-
+		velocity_.y = 0.0f;
 		// velocity_ = TransformNormal(velocity_, e->GetWorldTransform().matWorld_);
 		e->SetVelocity(velocity_);
 	} else {

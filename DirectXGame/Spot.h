@@ -11,6 +11,7 @@ public:
 	void OnCollision() override;
 	Vector3 GetWorldPosition() override;
 	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+	const char* GetName() override { return name_; };
 	~Spot();
 
 private:
