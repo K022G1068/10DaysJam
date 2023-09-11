@@ -29,7 +29,6 @@ void Player::Initialize(
 	easing_.duration = 20.0f;
 	easing_.change = 10;
 	//Easing2
-	// Easing
 	easing2_.time = 0;
 	easing2_.startPos = {0, 0, 0};
 	easing2_.duration = 20.0f;
@@ -81,7 +80,6 @@ Vector3 Player::GetWorldPosition() {
 }
 
 void Player::FlyingToGoal() { 
-
 	if (isFlying_) {
 		//How far is the object going to fly
 		float limit = collisionPower_ * 50.0f + 50.0f;
@@ -93,6 +91,7 @@ void Player::FlyingToGoal() {
 		if (Length(totalCollisionDash) >= limit) {
 			dash_->DisactivateDash(easing2_);
 			totalCollisionDash = {0.0f,0.0f,0.0f};
+			velocity_ = {0, 0, 0};
 			isFlying_ = false;
 		}
 	}

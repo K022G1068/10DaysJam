@@ -34,6 +34,18 @@ void CollisionManager::CheckAllCollisions() {
 					B->OnCollision();
 				}
 			}
+
+			if (A->GetAttribute() == kCollisionAttributeGoal) {
+				if (SphereCollisionCheck(A, B)) {
+					B->SetIsGoal(true);
+					A->OnCollision();
+				}
+			} else if (B->GetAttribute() == kCollisionAttributeGoal) {
+				if (SphereCollisionCheck(A, B)) {
+					A->SetIsGoal(true);
+					B->OnCollision();
+				}
+			}
 			
 			if (SphereCollisionCheck(A, B)) {
 				A->SetCollidedCollider(B);

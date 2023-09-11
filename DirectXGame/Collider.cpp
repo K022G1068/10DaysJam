@@ -59,7 +59,7 @@ void Collider::DrawCollider() {
 
 	if (showCollider_) {
 		float pi = 3.141592f;
-		const uint32_t kSubdivision = 12;
+		const uint32_t kSubdivision = 6;
 		const float kLonEvery = pi * 2.0f / float(kSubdivision);
 		const float kLatEvery = pi / float(kSubdivision);
 

@@ -15,6 +15,7 @@
 #include "FollowCamera.h"
 #include "Goal.h"
 #include "Spot.h"
+#include<vector>
 
 /// <summary>
 /// ゲームシーン
@@ -62,7 +63,8 @@ private: // メンバ変数
 
 	//Instances
 	Player* player_ = nullptr;
-	Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemies_;
+	//Enemy* enemy_ = nullptr;
 	FollowCamera* followCamera_ = nullptr;
 	Goal* goal_ = nullptr;
 	Spot* spot_ = nullptr;
@@ -74,6 +76,13 @@ private: // メンバ変数
 	Model* modelGaugeBox_ = nullptr;
 	Model* modelGoal_ = nullptr;
 	Model* modelSpot_ = nullptr;
+	std::vector<Model*> modelEnemies_;
+	Model* modelEnemy1_ = nullptr;
+	Model* modelEnemy2_ = nullptr;
+	Model* modelEnemy3_ = nullptr;
+	Model* modelEnemy4_ = nullptr;
+	Model* modelEnemy5_ = nullptr;
+	Model* modelEnemy6_ = nullptr;
 
 	//Texture
 	uint32_t textureHandle_ = 0;

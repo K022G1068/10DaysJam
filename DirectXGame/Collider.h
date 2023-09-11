@@ -29,6 +29,7 @@ private:
 	uint32_t collisionAttribute_ = 0xffffffff;
 	uint32_t collisionMask_ = 0xffffffff;
 	Collider* collidedObject_ = nullptr;
+	bool isGoal_ = false;
 	
 protected:
 	Vector3 rotationSpeed_;
@@ -126,4 +127,6 @@ public:
 	void SetMaskAttribute(uint32_t attribute) { collisionMask_ = attribute; };
 	Vector3 GetRotationSpeed() { return rotationSpeed_; };
 	void SetRotationSpeed(Vector3 speed) { rotationSpeed_ = speed; };
+	void SetIsGoal(bool isGoal) { isGoal_ = isGoal; };
+	bool GetIsGoal() { return isGoal_; };
 };
