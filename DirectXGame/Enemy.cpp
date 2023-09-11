@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "Goal.h"
 #include "Spot.h"
+#include "Player.h"
 
 void Enemy::Initialize(
     Model* model, Vector3& enemyPosition, ViewProjection& viewProjection, const char* name) {
@@ -38,6 +39,7 @@ void Enemy::Initialize(
 	easing2_.startPos = {0, 0, 0};
 	easing2_.duration = 20.0f;
 	easing2_.change = 10;
+
 }
 Enemy::~Enemy() { delete gauge_; }
 
@@ -50,32 +52,30 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 
 	//State initialize
 	// Random
-	std::srand(static_cast<unsigned>(std::time(nullptr)));
-	random_number = std::rand() % 101;
 	
 	if (random_number == 50)
 	{
-		std::srand(static_cast<unsigned>(std::time(nullptr)));
-		random_number = std::rand() % 101;
+		SetRandomNumber(1000);
 	}
 	else if (random_number > percentageDash_)
 	{
-		state_ = new EnemyStateApproachGoal();
-		state_->GetDistance(this);
+		state_ = new EnemyStateApproachEnemy();
+		state_->GetSpotDistance(this);
 	}
 	else
 	{
 		state_ = new EnemyStateApproachSpot();
-		state_->GetDistance(this);
+		state_->GetSpotDistance(this);
 	}
 }
 
 void Enemy::Update() {
-	Movement();
+	//Reduce rotation;
+	rotationSpeed_.y -= 0.001f;
 
 	// State update
 	state_->Update(this);
-
+	state_->GetEnemyDistance(this);
 	//Gauge
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
 	gauge_->SetPosition(worldTransform_.translation_);
@@ -85,6 +85,8 @@ void Enemy::Update() {
 	worldTransform_.rotation_ += rotationSpeed_;
 	
 	ImGui::Text("Random Number %s: %d", name_, random_number);
+	ImGui::Text("EnemyCount %s: %d", name_, enemies_.size());
+	
 
 	//Collider
 	Collider::OnUpdate();
@@ -124,6 +126,8 @@ void Enemy::OnCollision() {
 			toGoal_.z /= lenght;
 
 			velocity_ = toGoal_;
+			std::srand(static_cast<unsigned>(std::time(nullptr)) + 1000);
+			stopTime_ = std::rand() % 121 + 60;
 		}
 	}
 }
@@ -132,6 +136,11 @@ void Enemy::SetColliderPosition() {
 	colliderPos_.x = worldTransform_.translation_.x;
 	colliderPos_.y = worldTransform_.translation_.y + radius_;
 	colliderPos_.z = worldTransform_.translation_.z;
+}
+
+void Enemy::GetRandomRotation(int number) {
+	std::srand(static_cast<unsigned>(std::time(nullptr)) + number);
+	rotationSpeed_.y = (std::rand() % 11 + 10) /100.0f;
 }
 
 void Enemy::FlyingToGoal() {
@@ -148,6 +157,9 @@ void Enemy::FlyingToGoal() {
 			dash_->DisactivateDash(easing2_);
 			totalCollisionDash = {0.0f, 0.0f, 0.0f};
 			velocity_ = {0, 0, 0};
+
+			//Stop the object
+			ChangeState(new EnemyStateStop());
 			isFlying_ = false;
 		}
 	}
@@ -162,10 +174,15 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
+void Enemy::SetRandomNumber(int number) { 
+	std::srand(static_cast<unsigned>(std::time(nullptr)) + number);
+	random_number = std::rand() % 101;
+}
+
 void Enemy::ChangeState(BaseEnemyState* enemyState) {
 	//Find the nearest enemy and spot
-	enemyState->GetDistance(this);
-
+	enemyState->GetSpotDistance(this);
+	enemyState->GetEnemyDistance(this);
 	state_ = enemyState;
 }
 
@@ -200,20 +217,42 @@ void EnemyStateApproachGoal::Update(Enemy* e) {
 void EnemyStateStop::Update(Enemy* e) { 
 	Vector3 velocity = {0, 0, 0};
 	e->SetVelocity(velocity);
+	GetEnemyDistance(e);
+	GetSpotDistance(e);
+	stopTime_ = e->GetStopTime();
+	countTime_++;
+	if (countTime_ >= stopTime_)
+	{
+		stopTime_ = 0;
+		e->SetRandomNumber(1000);
+		if (e->GetRandomNumber() > e->GetPercetageDash())
+		{
+			e->ChangeState(new EnemyStateApproachEnemy);
+			GetSpotDistance(e);
+			GetEnemyDistance(e);
+		} else {
+			e->ChangeState(new EnemyStateApproachSpot);
+			GetSpotDistance(e);
+			GetEnemyDistance(e);
+		}
+	}
 }
 
-void EnemyStateApproachEnemy::Update(Enemy* e) { e->Movement(); }
+void EnemyStateApproachEnemy::Update(Enemy* e) {
+	ImGui::Text("NearestEnemy %s: %f %f %f",e->GetName(), nearestEnemyPos_.x, nearestEnemyPos_.y, nearestEnemyPos_.z);
+	toEnemy_ = e->GetWorldTransform().translation_ - nearestEnemyPos_;
+	Move(toEnemy_, e);
+}
 
 void EnemyStateApproachSpot::Update(Enemy* e) { 
-	ImGui::Text("Nearest pos %f %f %f", nearestPos_.x, nearestPos_.y, nearestPos_.z);
-	toSpot_ = e->GetWorldTransform().translation_ - nearestPos_;
-	ImGui::Text("ToSpot %f %f %f", toSpot_.x, toSpot_.y, toSpot_.z);
+	toSpot_ = e->GetWorldTransform().translation_ - nearestSpotPos_;
 	Move(toSpot_, e);
 }
 
-void BaseEnemyState::GetDistance(Enemy* e) {
+void BaseEnemyState::GetSpotDistance(Enemy* e) {
 	float length = 10000.0f;
 	spotPos_ = e->GetSpot();
+	
 	// ImGui::Text("Nearest pos %f %f %f", nearestPos_);
 	std::list<Vector3>::iterator itrA = spotPos_.begin();
 	for (; itrA != spotPos_.end(); ++itrA) {
@@ -222,9 +261,48 @@ void BaseEnemyState::GetDistance(Enemy* e) {
 		float differenceLength = Length(difference);
 		if (differenceLength < length) {
 			length = Length(difference);
-			nearestPos_ = A;
+			nearestSpotPos_ = A;		
 		}
 	}
+	spotPos_.clear();
+}
+
+void BaseEnemyState::GetEnemyDistance(Enemy* e) {
+	float length = 10000.0f;
+	float rotationSpeed = e->GetRotationSpeed().y;
+	enemies_ = e->GetEnemies();
+
+	std::list<Enemy*>::iterator itrA = enemies_.begin();
+	for (; itrA != enemies_.end(); ++itrA) {
+		Enemy* A = *itrA;
+		if (A->GetRotationSpeed().y < rotationSpeed)
+		{
+			enemiesLowRotation_.push_back(A);
+		}
+	}
+
+	playerPos_ = e->GetPlayer()->GetWorldTransform().translation_;
+	float playerLength = Length(e->GetWorldTransform().translation_ - playerPos_);
+	// ImGui::Text("Nearest pos %f %f %f", nearestPos_);
+	std::list<Enemy*>::iterator itrB = enemiesLowRotation_.begin();
+	for (; itrB != enemiesLowRotation_.end(); ++itrB) {
+		Enemy* A = *itrB;
+		Vector3 difference = e->GetWorldTransform().translation_ - A->GetWorldTransform().translation_;
+		float differenceLength = Length(difference);
+		if (differenceLength < length && differenceLength > 0.0f) {
+			length = Length(difference);
+			nearestEnemyPos_ = A->GetWorldTransform().translation_;
+			if (playerLength < length && rotationSpeed > e->GetPlayer()->GetRotationSpeed().y)
+			{
+				length = playerLength;
+				nearestEnemyPos_ = playerPos_;
+
+			
+			}
+		}
+	}
+	 enemies_.clear();
+	 enemiesLowRotation_.clear();
 }
 
 void BaseEnemyState::Move(Vector3 velocity, Enemy* e) {

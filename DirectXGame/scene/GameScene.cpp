@@ -95,8 +95,18 @@ void GameScene::Initialize() {
 		obj->SetViewProjection(&followCamera_->GetViewProjection());
 		obj->SetGoal(goalPosition);
 		obj->SetSpot(spotPosition);
+		obj->SetRandomNumber(i * 1000);
 		obj->InitializeGauge(model_, modelGaugeBox_);
+		obj->GetRandomRotation(i);
 		enemies_.push_back(obj);
+	}
+	//enemies_.push_back(player_)
+	for (Enemy* enemy : enemies_) {
+		enemy->SetEnemies(enemies_);
+		enemy->SetPlayer(player_);
+	}
+	for (Enemy* enemy : enemies_) {
+		enemy->GetEnemyDistance();
 	}
 	//Texture
 	
@@ -112,6 +122,7 @@ void GameScene::Update() {
 	for (Enemy* enemy : enemies_) {
 		if (enemy) {
 			enemy->Update();
+			enemy->SetPlayer(player_);
 		}
 	}
 
