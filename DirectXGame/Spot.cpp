@@ -38,6 +38,28 @@ void Spot::IncreaseRotationSpeed(Collider* collider) {
 	rotationspeed.x = 0.0f;
 	rotationspeed.z = 0.0f;
 	collider->SetRotationSpeed(rotationspeed);
+	Vector3 direction = {0, 0, 0};
+	if (rotationspeed.y >= MAX_ROTATION)
+	{
+		ImGui::Text("Spot countime %d", countTime_);
+		countTime_++;
+		SetRandomDirection();
+		if (countTime_ >= MAX_STAY_TIME)
+		{
+			countTime_ = 0;
+			Matrix4x4 rotMat = MakeRotationMatrixY(degree_);
+			direction = TransformNormal(worldTransform_.translation_, rotMat);
+			direction = Normalize(direction) * 5.0f;
+			direction.y = 0.0f;
+			collider->SetSpotVelocity(direction);
+		}
+		//collider->SetVelocity({0,0,0});
+	}
+}
+
+void Spot::SetRandomDirection() {
+	std::srand(static_cast<unsigned>(std::time(nullptr)) + 1000);
+	degree_ = (std::rand() % 629) / 100.0f;
 }
 
 void Spot::OnCollision() { 

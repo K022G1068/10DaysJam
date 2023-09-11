@@ -123,7 +123,6 @@ void GameScene::Update() {
 	for (Enemy* enemy : enemies_) {
 		if (enemy) {
 			enemy->Update();
-			enemy->SetPlayer(player_);
 		}
 	}
 

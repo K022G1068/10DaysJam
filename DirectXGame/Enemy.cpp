@@ -90,6 +90,8 @@ void Enemy::Update() {
 	//ImGui::Text("Random Number %s: %d", name_, random_number);
 	//ImGui::Text("EnemyCount %s: %d", name_, enemies_.size());
 	
+
+	ImGui::Text("GoalPos %s: %f %f %f", name_, goalPos_.x, goalPos_.y, goalPos_.z);
 	ImGui::Text("Stop Time %s: %d", name_, state_->GetTimer());
 	ImGui::Text("Count Time %s: %d", name_, state_->GetCountTimer());
 	
@@ -120,17 +122,17 @@ void Enemy::OnCollision() {
 	Collider* collidedObject = GetCollidedCollider();
 	Vector3 ObjectRotationSpeed = collidedObject->GetRotationSpeed();
 	if (rotationSpeed_.y < ObjectRotationSpeed.y) {
+		collisionVelocity_ = {0, 0, 0};
 		collisionPower_ = (ObjectRotationSpeed.y - rotationSpeed_.y) * 20.0f;
 		toGoal_ = worldTransform_.translation_ - goalPos_;
 		float lenght = Length(toGoal_);
-		if (lenght >= collisionPower_) {
-			toGoal_.x /= lenght;
-			toGoal_.y /= lenght;
-			toGoal_.z /= lenght;
+		toGoal_.x /= lenght;
+		toGoal_.y /= lenght;
+		toGoal_.z /= lenght;
 
-			velocity_ = toGoal_;
-			isFlying_ = true;
-		}
+		collisionVelocity_ = toGoal_;
+		isFlying_ = true;
+	
 	}
 }
 
@@ -151,14 +153,13 @@ void Enemy::FlyingToGoal() {
 		float limit = collisionPower_ * 50.0f + 50.0f;
 
 		ImGui::Text("Enemy Limit %f", limit);
-		totalCollisionDash += velocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+		totalCollisionDash += collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
 		ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
-		worldTransform_.translation_ +=
-		    velocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+		worldTransform_.translation_ += collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
 		if (Length(totalCollisionDash) >= limit) {
 			dash_->DisactivateDash(easing2_);
 			totalCollisionDash = {0.0f, 0.0f, 0.0f};
-			velocity_ = {0, 0, 0};
+			collisionVelocity_ = {0, 0, 0};
 
 			//Stop the object
 			//state_->SetTimer();

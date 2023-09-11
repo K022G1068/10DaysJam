@@ -32,9 +32,12 @@ private:
 	Collider* collidedObject_ = nullptr;
 	bool isGoal_ = false;
 	std::list<Collider*> objects_;
+	
 
 protected:
 	Vector3 rotationSpeed_;
+	Vector3 spotVelocity_ = {0, 0, 0};
+	float countSpotFlyingTimer_ = 0;
 
 public:
 	void BaseInit(ViewProjection& viewProjection, bool& show, const char* name);
@@ -135,4 +138,6 @@ public:
 	std::list<Collider *> GetObjects() { return objects_; };
 	virtual const WorldTransform& GetWorldTransform() = 0;
 	virtual const char* GetName() = 0;
+	virtual void SetVelocity(Vector3 velocity) = 0;
+	void SetSpotVelocity(Vector3 velo) { spotVelocity_ = velo; };
 };

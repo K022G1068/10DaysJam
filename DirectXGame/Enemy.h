@@ -122,9 +122,9 @@ public:
 	void SetViewProjection(const ViewProjection* viewProjection) {
 		viewProjection_ = viewProjection;
 	};
-	void SetVelocity(Vector3 velocity) { velocity_ = velocity; };
 	void FlyingToGoal();
 	void SetPlayer(Player* player) { player_ = player; };
+	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
 
 private:
 	WorldTransform worldTransform_;
@@ -151,6 +151,7 @@ private:
 	float collisionPower_ = 0.0f;
 	Vector3 toGoal_ = {0, 0, 0};
 	int stopTime_ = 0;
+	Vector3 collisionVelocity_ = {0, 0, 0};
 
 	Easing easing_;
 	Easing easing2_;

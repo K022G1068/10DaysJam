@@ -27,7 +27,8 @@ public:
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection; };
 	void SetGoal(Vector3 goal) { goalPos_ = goal; };
 	void FlyingToGoal();
-	const char* GetName() override { return name_;}
+	const char* GetName() override { return name_; };
+	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
 
 private:
 	WorldTransform worldTransform_;
@@ -47,6 +48,7 @@ private:
 	Vector3 goalPos_ = {0, 0, 0};
 	Vector3 toGoal_ = {0, 0, 0};
 	Vector3 velocity_ = {0, 0, 0};
+	Vector3 collisionVelocity_ = {0, 0, 0};
 	Vector3 totalCollisionDash = {0, 0, 0};
 	float collisionPower_ = 0.0f;
 	const float kCharacterSpeed = 0.5f;

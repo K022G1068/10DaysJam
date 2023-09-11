@@ -53,12 +53,32 @@ Player::~Player() {}
 void Player::Update() {
 	Move();
 	worldTransform_.rotation_ += rotationSpeed_;
+	worldTransform_.translation_ += velocity_;
+	worldTransform_.translation_ += spotVelocity_;
 
+	if (Length(spotVelocity_) >= 0)
+	{
+		countSpotFlyingTimer_++;
+		if (countSpotFlyingTimer_ >= 60)
+		{
+			spotVelocity_ = {0, 0, 0};
+			countSpotFlyingTimer_ = 0;
+		}
+	}
+	
+	
 	//Gauge
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
 	gauge_->SetPosition(worldTransform_.translation_);
 	gauge_->GetRotation(rotationSpeed_);
 	gauge_->Update();
+
+	//Dash
+	if (rotationSpeed_.y < 0.3f * MAX_ROTATION) {
+		dash_->SetCanDash(false);
+	} else {
+		dash_->SetCanDash(true);
+	}
 
 
 	Collider::OnUpdate();
@@ -86,13 +106,13 @@ void Player::FlyingToGoal() {
 		float limit = collisionPower_ * 50.0f + 50.0f;
 
 		ImGui::Text("Limit %f", limit);
-		totalCollisionDash += velocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+		totalCollisionDash += collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
 		ImGui::Text("Totaldash %f", Length(totalCollisionDash));
-		worldTransform_.translation_ += velocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+		worldTransform_.translation_ += collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
 		if (Length(totalCollisionDash) >= limit) {
 			dash_->DisactivateDash(easing2_);
 			totalCollisionDash = {0.0f,0.0f,0.0f};
-			velocity_ = {0, 0, 0};
+			collisionVelocity_ = {0, 0, 0};
 			isFlying_ = false;
 		}
 	}
@@ -103,11 +123,9 @@ void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ =
 void Player::OnCollision() { 
 	Collider* collidedObject = GetCollidedCollider();
 	Vector3 ObjectRotationSpeed = collidedObject->GetRotationSpeed();
-	Vector3 posBeforeCollision = worldTransform_.translation_;
 	if (rotationSpeed_.y <= ObjectRotationSpeed.y)
 	{
 		isFlying_ = true;
-		Vector3 posAfterCollision = worldTransform_.translation_;
 		collisionPower_ = (ObjectRotationSpeed.y - rotationSpeed_.y) * 20.0f;
 		toGoal_ = worldTransform_.translation_ - goalPos_;
 		float lenght = Length(toGoal_);
@@ -116,7 +134,7 @@ void Player::OnCollision() {
 			toGoal_.y /= lenght;
 			toGoal_.z /= lenght;
 
-			velocity_ = toGoal_;
+			collisionVelocity_ = toGoal_;
 			
 		}
 	}
@@ -155,6 +173,8 @@ void Player::Move() {
 			if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && dash_->GetCanDash()) {
 				ImGui::Text("DASSSHHHH" );
 				dash_->ActivateDash();
+				float reduceAmount = 0.3f * MAX_ROTATION;
+				rotationSpeed_.y -= reduceAmount;
 			} 
 			
 			if (dash_->GetDash() == true)
@@ -169,6 +189,8 @@ void Player::Move() {
 			} else {
 				dash_->DisactivateDash(easing_);
 			}
+
+			
 
 
 			ImGui::Text("TotalDash", Length(totalDash));
