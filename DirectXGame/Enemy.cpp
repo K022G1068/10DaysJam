@@ -59,13 +59,14 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 	}
 	else if (random_number > percentageDash_)
 	{
-		state_ = new EnemyStateApproachEnemy();
+		state_ = new EnemyStateStop();
 		state_->SetTimer();
 		state_->GetSpotDistance(this);
+		state_->GetEnemyDistance(this);
 	}
 	else
 	{
-		state_ = new EnemyStateApproachEnemy();
+		state_ = new EnemyStateStop();
 		state_->SetTimer();
 		state_->GetSpotDistance(this);
 	}
@@ -76,7 +77,7 @@ void Enemy::Update() {
 	//rotationSpeed_.y -= 0.0001f;
 
 	// State update
-	state_->GetEnemyDistance(this);
+	
 	state_->Update(this);
 	//Gauge
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
@@ -88,7 +89,9 @@ void Enemy::Update() {
 	
 	//ImGui::Text("Random Number %s: %d", name_, random_number);
 	//ImGui::Text("EnemyCount %s: %d", name_, enemies_.size());
-	//ImGui::Text("EnemyCount %s: %d", name_, stopTime_);
+	
+	ImGui::Text("Stop Time %s: %d", name_, state_->GetTimer());
+	ImGui::Text("Count Time %s: %d", name_, state_->GetCountTimer());
 	
 
 	//Collider
@@ -116,10 +119,7 @@ void Enemy::OnCollision() {
 	TurnRED();
 	Collider* collidedObject = GetCollidedCollider();
 	Vector3 ObjectRotationSpeed = collidedObject->GetRotationSpeed();
-	Vector3 posBeforeCollision = worldTransform_.translation_;
 	if (rotationSpeed_.y < ObjectRotationSpeed.y) {
-		isFlying_ = true;
-		Vector3 posAfterCollision = worldTransform_.translation_;
 		collisionPower_ = (ObjectRotationSpeed.y - rotationSpeed_.y) * 20.0f;
 		toGoal_ = worldTransform_.translation_ - goalPos_;
 		float lenght = Length(toGoal_);
@@ -129,7 +129,7 @@ void Enemy::OnCollision() {
 			toGoal_.z /= lenght;
 
 			velocity_ = toGoal_;
-			state_->SetTimer();
+			isFlying_ = true;
 		}
 	}
 }
@@ -161,7 +161,8 @@ void Enemy::FlyingToGoal() {
 			velocity_ = {0, 0, 0};
 
 			//Stop the object
-			ChangeState(new EnemyStateStop);
+			//state_->SetTimer();
+			this->ChangeState(new EnemyStateStop);
 			isFlying_ = false;
 		}
 	}
@@ -223,25 +224,24 @@ void EnemyStateApproachGoal::Update(Enemy* e) {
 }
 
 void EnemyStateStop::Update(Enemy* e) { 
+	ImGui::Text("Stop state");
 	Vector3 velocity = {0, 0, 0};
 	e->SetVelocity(velocity);
-	GetEnemyDistance(e);
-	GetSpotDistance(e);
-	stopTime_ = e->GetStopTime();
-	countTime_++;
-	if (countTime_ >= stopTime_)
+	stopTime_--;
+	if (stopTime_ <=0 )
 	{
 		stopTime_ = 0;
+		countTime_ = 0;
 		e->SetRandomNumber(1000);
 		if (e->GetRandomNumber() > e->GetPercetageDash())
 		{
+			GetSpotDistance(e);
+			GetEnemyDistance(e);
 			e->ChangeState(new EnemyStateApproachEnemy);
-			GetSpotDistance(e);
-			GetEnemyDistance(e);
 		} else {
-			e->ChangeState(new EnemyStateApproachSpot);
 			GetSpotDistance(e);
 			GetEnemyDistance(e);
+			e->ChangeState(new EnemyStateApproachSpot);
 		}
 	}
 }
@@ -251,14 +251,14 @@ void EnemyStateApproachEnemy::Update(Enemy* e) {
 	ImGui::Text("%s NearestEnemy Position: %f %f %f",e->GetName(), nearestEnemyPos_.x, nearestEnemyPos_.y, nearestEnemyPos_.z);
 	ImGui::Text("%s NearestEnemy name: %s",e->GetName(), nearestEnemyName_);
 	toEnemy_ = e->GetWorldTransform().translation_ - nearestEnemyPos_;
-	//Move(toEnemy_, e);
+	Move(toEnemy_, e);
 }
 
 void EnemyStateApproachSpot::Update(Enemy* e) { 
 	toSpot_ = e->GetWorldTransform().translation_ - nearestSpotPos_;
 	Move(toSpot_, e);
 	ImGui::Text("Spot and %s  %f", e->GetName(), Length(toSpot_));
-	ImGui::Text("Stop time %s  %d", e->GetName(), stopTime_);
+	//ImGui::Text("Stop time %s  %d", e->GetName(), stopTime_);
 	if (Length(toSpot_) <= 0.5f)
 	{
 		stopTime_--;

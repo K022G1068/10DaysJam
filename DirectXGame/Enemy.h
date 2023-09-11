@@ -29,6 +29,8 @@ public:
 	void GetSpotDistance(Enemy* e);
 	void GetEnemyDistance(Enemy* e);
 	void SetTimer();
+	int GetTimer() { return stopTime_; };
+	int GetCountTimer() { return countTime_; };
 	void Move(Vector3 velocity, Enemy* e);
 	virtual ~BaseEnemyState() = default;
 
@@ -45,7 +47,7 @@ protected:
 	Vector3 nearestEnemyPos_ = {0, 0, 0};
 	Vector3 playerPos_ = {0, 0, 0};
 	Vector3 playerRotationSpeed_ = {0,0,0};
-	int stopTime_ = 0;
+	int stopTime_ = 300;
 	int countTime_ = 0;
 	const char* nearestEnemyName_ = "";
 };

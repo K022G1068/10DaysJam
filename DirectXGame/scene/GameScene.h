@@ -1,5 +1,5 @@
 #pragma once
-#define MAX_ENEMY 3
+#define MAX_ENEMY 1
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "Input.h"
