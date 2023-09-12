@@ -27,6 +27,6 @@ private:
 	int num_; // 扇の個数
 	WorldTransform worldTransform_[4];
 	Model* model_ = nullptr;
-	float rad_ = 734.1f;
+	float rad_ = 740.f;
 	Vector3 correction = {.0f, .0f, 300.0f};
 };
