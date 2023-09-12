@@ -53,7 +53,7 @@ Player::~Player() {}
 void Player::Update() {
 
 	if (stage_->GetMode(worldTransform_.translation_) != underGrand) {
-		worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_);
+		worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_)-30;
 		Move();
 	}
 	if (stage_->GetMode(worldTransform_.translation_) == underGrand) {

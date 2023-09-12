@@ -28,4 +28,5 @@ private:
 	WorldTransform worldTransform_[4];
 	Model* model_ = nullptr;
 	float rad_ = 734.1f;
+	Vector3 correction = {.0f, .0f, 300.0f};
 };

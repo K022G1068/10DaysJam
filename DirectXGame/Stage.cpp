@@ -15,16 +15,20 @@ void Stage::Initialize(int num, Vector3 Pos) {
 }
 
 void Stage::Update() {
-	ImGui::Begin("stageDraw");
+	//ImGui::Begin("stageDraw");
 	for (int i = 0; i < 4; i++) {
 		//ImGui::Text("model%d", i);
 		//ImGui::DragFloat("rot", &worldTransform_[i].rotation_.y, .01f);
 		worldTransform_[i].UpdateMatrix();
 	}
-	ImGui::End();
+	//ImGui::End();
 }
 
 float Stage::GetGrandPosY(Vector3 objPos) {
+	ImGui::Begin("stage");
+	ImGui::DragFloat3("correction", &correction.x, .01f);
+	objPos -= correction;
+	ImGui::End();
 	return (float)sqrtf(powf(objPos.x, 2.0f) + powf(objPos.z, 2.0f)) * .26794919243112f;
 }
 
@@ -34,9 +38,12 @@ void Stage::Draw(ViewProjection& viewProjection) {
 	}
 }
 
-ObjMode Stage::GetMode(Vector3 objPos) {
-	float scl = (float)sqrtf(powf(objPos.x, 2.0f) + powf(objPos.z, 2.0f));
+ObjMode Stage::GetMode(Vector3 objPos) {	
 	ImGui::Begin("stage");
+	ImGui::DragFloat3("correction", &correction.x, .01f);
+	ImGui::Text("PlayerPosB %f %f %f", objPos.x, objPos.y, objPos.z);
+	objPos -=correction;
+	float scl = (float)sqrtf(powf(objPos.x, 2.0f) + powf(objPos.z, 2.0f));
 	ImGui::DragFloat("rad", &rad_, .01f);
 	ImGui::Text("PlayerPos %f %f %f", objPos.x, objPos.y, objPos.z);
 	ImGui::Text("playerVctr2/scl, %f, %f scl %f", objPos.x / scl, objPos.z / scl, scl);
