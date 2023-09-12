@@ -115,3 +115,6 @@ Vector3 Stage::Sliding(Vector3 objPos) {
 		return {.0f, .0f, .0f};
 	return {objPos.x / scl, objPos.y / scl, objPos.z / scl};
 }
+
+Vector3 Stage::GetSpotRot(Vector3 objPos) { 
+	return objPos; }

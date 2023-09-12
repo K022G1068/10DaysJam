@@ -19,17 +19,16 @@ void Spot::Initialize(Model* model, Vector3& spotPosition, ViewProjection& viewP
 }
 
 void Spot::Update() {
+	worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_) - 30;
 	Collider::OnUpdate();
 	worldTransform_.UpdateMatrix();
 }
 
-void Spot::Draw(ViewProjection& viewProjection) { 
-	modelSpot_->Draw(worldTransform_ ,viewProjection); 
+void Spot::Draw(ViewProjection& viewProjection) {
+	modelSpot_->Draw(worldTransform_, viewProjection);
 }
 
-void Spot::DrawPrimitive() { 
-	Collider::DrawCollider();
-}
+void Spot::DrawPrimitive() { Collider::DrawCollider(); }
 
 void Spot::IncreaseRotationSpeed(Collider* collider) {
 	Vector3 rotationspeed = collider->GetRotationSpeed();
@@ -39,14 +38,12 @@ void Spot::IncreaseRotationSpeed(Collider* collider) {
 	rotationspeed.z = 0.0f;
 	collider->SetRotationSpeed(rotationspeed);
 	Vector3 direction = {0, 0, 0};
-	if (rotationspeed.y >= MAX_ROTATION)
-	{
+	if (rotationspeed.y >= MAX_ROTATION) {
 		ImGui::Text("Spot countime %d", countTime_);
 		ImGui::Text("Collided object %s", collider->GetName());
 		countTime_++;
 		SetRandomDirection();
-		if (countTime_ >= MAX_STAY_TIME)
-		{
+		if (countTime_ >= MAX_STAY_TIME) {
 			countTime_ = 0;
 			Matrix4x4 rotMat = MakeRotationMatrixY(degree_);
 			direction = TransformNormal(worldTransform_.translation_, rotMat);
@@ -54,7 +51,7 @@ void Spot::IncreaseRotationSpeed(Collider* collider) {
 			direction.y = 0.0f;
 			collider->SetSpotVelocity(direction);
 		}
-		//collider->SetVelocity({0,0,0});
+		// collider->SetVelocity({0,0,0});
 	}
 }
 
@@ -63,7 +60,7 @@ void Spot::SetRandomDirection() {
 	degree_ = (std::rand() % 629) / 100.0f;
 }
 
-void Spot::OnCollision() { 
+void Spot::OnCollision() {
 	TurnRED();
 	Collider* collidedObject = GetCollidedCollider();
 	IncreaseRotationSpeed(collidedObject);

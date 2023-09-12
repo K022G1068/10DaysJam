@@ -5,6 +5,7 @@
 #include "Collider.h"
 #include <cstdlib>
 #include <ctime>
+#include "Stage.h"
 class Spot : public Collider {
 public:
 	void Initialize(Model* model, Vector3& spotPosition, ViewProjection& viewProjection);
@@ -20,6 +21,7 @@ public:
 	~Spot();
 	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
 	void SetPositionLerp(Vector3 pos) override;
+	void SetStage(Stage* stage) { stage_ = stage; }
 
 private:
 	WorldTransform worldTransform_;
@@ -30,4 +32,5 @@ private:
 	const char* name_ = "Spot";
 	int countTime_ = 0;
 	Vector3 velocity_;
+	Stage* stage_;
 };

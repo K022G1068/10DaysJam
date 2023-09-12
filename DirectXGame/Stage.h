@@ -23,6 +23,7 @@ public:
 	Vector3 Respown();
 	float grav_ = 0.125f;
 	Vector3 Sliding(Vector3 objPos);
+	Vector3 GetSpotRot(Vector3 objPos);
 
 private:
 	int num_; // 扇の個数
