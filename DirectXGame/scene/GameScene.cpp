@@ -16,6 +16,7 @@ GameScene::~GameScene() {
 	delete spot2_;
 	delete spot3_;
 	delete skydome_;
+	delete stage_;
 
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
@@ -62,6 +63,7 @@ void GameScene::Initialize() {
 	spot2_ = new Spot();
 	spot3_ = new Spot();
 	skydome_ = new Skydome();
+	stage_ = new Stage();
 
 	//Initialize
 	Vector3 playerPosition(0, -30.0f, 100.0f);
@@ -80,6 +82,7 @@ void GameScene::Initialize() {
 
 	Vector3 railPosition(0, 0, 0.0f);
 	Vector3 goalPosition(0, -30.0f, 300.0f);
+	Vector3 stagePosition(0, -30.0f, 300.0f);
 	Vector3 spotPosition1(200.0f, -30.0f, 250.0f);
 	Vector3 spotPosition2(-200.0f, -30.0f, 250.0f);
 	Vector3 spotPosition3(0.0f, -30.0f, -250.0f);
@@ -94,6 +97,7 @@ void GameScene::Initialize() {
 	spot2_->Initialize(modelSpot_, spotPosition2, viewProjection_);
 	spot3_->Initialize(modelSpot_, spotPosition3, viewProjection_);
 	goal_->Initialize(modelGoal_, goalPosition, viewProjection_);
+	stage_->Initialize(1, stagePosition);
 	//enemy_->SetGoal(goalPosition);
 	//enemy_->SetSpot(spotPosition);
 	//enemy_->InitializeGauge(model_, modelGaugeBox_);
@@ -135,7 +139,7 @@ void GameScene::Update() {
 	spot2_->Update();
 	spot3_->Update();
 	skydome_->Update();
-
+	stage_->Update();
 	//Enemy update
 	for (Enemy* enemy : enemies_) {
 		if (enemy) {
@@ -215,7 +219,7 @@ void GameScene::Draw() {
 	spot1_->Draw(viewProjection_);
 	spot2_->Draw(viewProjection_);
 	spot3_->Draw(viewProjection_);
-
+	stage_->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
 
 	for (Enemy* enemy : enemies_) {

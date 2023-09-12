@@ -16,7 +16,8 @@
 #include "Goal.h"
 #include "Spot.h"
 #include "Skydome.h"
-#include<vector>
+#include <vector>
+#include "Stage.h"
 
 /// <summary>
 /// ゲームシーン
@@ -73,6 +74,7 @@ private: // メンバ変数
 	Spot* spot2_ = nullptr;
 	Spot* spot3_ = nullptr;
 	Skydome* skydome_ = nullptr;
+	Stage* stage_ = nullptr;
 
 	//Model
 	Model* model_ = nullptr;
