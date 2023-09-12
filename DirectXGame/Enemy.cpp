@@ -111,6 +111,14 @@ void Enemy::Update() {
 		worldTransform_.translation_ += velocity_;
 		worldTransform_.translation_ += spotVelocity_;
 
+		if (Length(spotVelocity_) >= 0) {
+			countSpotFlyingTimer_++;
+			if (countSpotFlyingTimer_ >= 60) {
+				spotVelocity_ = {0, 0, 0};
+				countSpotFlyingTimer_ = 0;
+			}
+		}
+
 		worldTransform_.UpdateMatrix();
 	}
 	else
@@ -265,6 +273,7 @@ void EnemyStateApproachEnemy::Update(Enemy* e) {
 	ImGui::Text("%s NearestEnemy Position: %f %f %f",e->GetName(), nearestEnemyPos_.x, nearestEnemyPos_.y, nearestEnemyPos_.z);
 	ImGui::Text("%s NearestEnemy name: %s",e->GetName(), nearestEnemyName_);
 	toEnemy_ = e->GetWorldTransform().translation_ - nearestEnemyPos_;
+	ImGui::Text("%s ToEnemy: %f %f %f",e->GetName(), toEnemy_.x, toEnemy_.y, toEnemy_.z);
 	Move(toEnemy_, e);
 
 	//If there is no collision

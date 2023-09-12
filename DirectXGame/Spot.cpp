@@ -49,7 +49,7 @@ void Spot::IncreaseRotationSpeed(Collider* collider) {
 			countTime_ = 0;
 			Matrix4x4 rotMat = MakeRotationMatrixY(degree_);
 			direction = TransformNormal(worldTransform_.translation_, rotMat);
-			direction = Normalize(direction) * 5.0f;
+			direction = Normalize(direction);
 			direction.y = 0.0f;
 			collider->SetSpotVelocity(direction);
 		}
