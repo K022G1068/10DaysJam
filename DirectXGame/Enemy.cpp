@@ -27,7 +27,7 @@ void Enemy::OnCollision() { TurnRED(); }
 
 void Enemy::SetColliderPosition() {
 	colliderPos_.x = worldTransform_.translation_.x;
-	colliderPos_.y = worldTransform_.translation_.y + 1.0f;
+	colliderPos_.y = worldTransform_.translation_.y + 5.0f;
 	colliderPos_.z = worldTransform_.translation_.z;
 }
 

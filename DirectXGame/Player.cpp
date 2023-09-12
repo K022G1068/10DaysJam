@@ -18,10 +18,25 @@ Player::~Player() {}
 
 void Player::Update() {
 	OnUpdate();
-	Move();
 	SetColliderPosition();
 	SetCollider(colliderPos_, radius_);
-	worldTransform_.translation_.y=stage_->GetGrandPosY(worldTransform_.translation_);
+	if (stage_->GetMode(worldTransform_.translation_) != underGrand) {
+		worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_);
+		Move();
+	}
+	if (stage_->GetMode(worldTransform_.translation_) == underGrand) {
+		moveSpd_.y += stage_->grav_;
+		worldTransform_.translation_.y -= moveSpd_.y;
+	}
+	if (worldTransform_.translation_.y < -10)
+		worldTransform_.translation_ = {.0f, .0f, .0f};
+	ImGui::Begin("playerPos");
+	ImGui::Text("");
+	ImGui::Text(
+	    "x %f, y %f, z %f", worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z);
+	ImGui::End();
+
 	worldTransform_.UpdateMatrix();
 }
 
@@ -40,7 +55,7 @@ void Player::OnCollision() { ImGui::Text("HIOTTTTTTT"); }
 
 void Player::SetColliderPosition() {
 	colliderPos_.x = worldTransform_.translation_.x;
-	colliderPos_.y = worldTransform_.translation_.y + 1.0f;
+	colliderPos_.y = worldTransform_.translation_.y + 5.0f;
 	colliderPos_.z = worldTransform_.translation_.z;
 }
 
@@ -60,8 +75,6 @@ void Player::Move() {
 	} else if (input_->PushKey(DIK_W)) {
 		move.z += kCharacterSpeed;
 	}
-
-
 
 	const float kRotSpeed = 0.02f;
 	if (input_->PushKey(DIK_Q)) {

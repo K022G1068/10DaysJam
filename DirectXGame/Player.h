@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "Model.h"
 #include "Stage.h"
+
 class Player : public Collider {
 public:
 	void Initialize(
@@ -21,10 +22,11 @@ private:
 	WorldTransform worldTransform_;
 	Vector3 colliderPos_;
 	Vector3 rotationSpeed_;
+	Vector3 moveSpd_ = {.0f, .0f, .0f};
 	Model* model_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
-	float radius_ = 1.0f;
+	float radius_ = 5.0f;
 	bool showCollider_ = false;
 	const char* name_;
 	Stage* stage_;

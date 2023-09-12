@@ -36,7 +36,7 @@ void GameScene::Initialize() {
 	Vector3 enemyPosition(2.0f, .0f, .0f);
 	player_->Initialize(stage_, modelPlayer_, playerPosition, viewProjection_, "Player");
 	enemy_->Initialize(modelPlayer_, enemyPosition, viewProjection_, "Enemy1");
-	stage_->Initialize();
+	stage_->Initialize(3);
 	cam_->Initialize(input_);
 }
 

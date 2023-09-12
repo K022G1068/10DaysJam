@@ -1,25 +1,67 @@
 #include "Stage.h"
-#include <math.h>
 #include "ImGuiManager.h"
+#include <math.h>
 
-void Stage::Initialize() {
+void Stage::Initialize(int num) {
+	num_ = num;
 	model_ = Model::CreateFromOBJ("Stage", true);
-	theta_ = .25;
-	worldTransform_.Initialize();
-	worldTransform_.translation_.y = .0f;
+	for (int i = 0; i < 4; i++) {
+		worldTransform_[i].Initialize();
+		worldTransform_[i].rotation_.y += 1.57f * i;
+		worldTransform_[i].UpdateMatrix();
+	}
 }
 
-void Stage::Update() { worldTransform_.UpdateMatrix(); }
+void Stage::Update() {
+	ImGui::Begin("stageDraw");
+	for (int i = 0; i < 4; i++) {
+		ImGui::Text("model%d", i);
+		ImGui::DragFloat("rot", &worldTransform_[i].rotation_.y, .01f);
+		worldTransform_[i].UpdateMatrix();
+	}
+	ImGui::End();
+}
 
 float Stage::GetGrandPosY(Vector3 objPos) {
-	ImGui::Begin("stageY");
-	ImGui::Text("PlayerPos %f %f %f", objPos.x, objPos.y, objPos.z);
-	ImGui::Text(
-	    "y %f", (float)sqrtf(powf(objPos.x, 2.0f) + powf(objPos.y, 2.0f)) * .26794919243112f);
-	ImGui::End();
 	return (float)sqrtf(powf(objPos.x, 2.0f) + powf(objPos.z, 2.0f)) * .26794919243112f;
 }
 
-void Stage::Draw(ViewProjection& viewProjection) { model_->Draw(worldTransform_, viewProjection); }
+void Stage::Draw(ViewProjection& viewProjection) {
+	for (int i = 0; i < num_; i++) {
+		model_->Draw(worldTransform_[i], viewProjection);
+	}
+}
+
+ObjMode Stage::GetMode(Vector3 objPos) {
+	float scl = (float)sqrtf(powf(objPos.x, 2.0f) + powf(objPos.z, 2.0f));
+	ImGui::Begin("stage");
+	ImGui::DragFloat("rad", &rad_, .01f);
+	ImGui::Text("PlayerPos %f %f %f", objPos.x, objPos.y, objPos.z);
+	ImGui::Text("playerVctr2/scl, %f, %f scl %f", objPos.x / scl, objPos.z / scl, scl);
+	ImGui::Text("y %f", scl * .26794919243112f);
+	ImGui::End();
+	if (scl > rad_)
+		return underGrand;
+	switch (num_) {
+	case 1:
+		if ((objPos.x / scl <= -sqrtf(2.f) / 2 && objPos.z / scl >= -sqrtf(2.f) / 2) ||
+		    (objPos.x / scl >= sqrtf(2.f) / 2 && objPos.z / scl >= -sqrtf(2.f) / 2))
+			return underGrand;
+		break;
+	case 2:
+		if ((objPos.x / scl >= -sqrtf(2.f) / 2 && objPos.z / scl >= sqrtf(2.f) / 2) ||
+		    (objPos.x / scl >= sqrtf(2.f) / 2 && objPos.z / scl >= -sqrtf(2.f) / 2))
+			return underGrand;
+		break;
+	case 3:
+		if ((objPos.x / scl >= sqrtf(2.f) / 2 && objPos.z / scl <= sqrtf(2.f) / 2) ||
+		    (objPos.x / scl >= sqrtf(2.f) / 2 && objPos.z / scl >= -sqrtf(2.f) / 2))
+			return underGrand;
+		break;
+	}	
+	if (scl < 3)
+		return Goal;
+	return onGrand;
+}
 
 Stage::~Stage() {}
