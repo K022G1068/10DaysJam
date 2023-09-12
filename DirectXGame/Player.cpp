@@ -59,8 +59,8 @@ void Player::Update() {
 	if (stage_->GetMode(worldTransform_.translation_) == underGrand) {
 		acceleration_.y += stage_->grav_;
 		worldTransform_.translation_.y -= acceleration_.y;
-	}*/
-	Move();
+	}
+	//Move();
 	worldTransform_.rotation_ += rotationSpeed_;
 	worldTransform_.translation_ += velocity_;
 	worldTransform_.translation_ += spotVelocity_;
@@ -76,7 +76,8 @@ void Player::Update() {
 			countSpotFlyingTimer_ = 0;
 		}
 	}
-	
+	if (worldTransform_.translation_.y <= -30)
+		worldTransform_.translation_ = stage_->Respown();
 	
 	//Gauge
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
@@ -212,6 +213,7 @@ void Player::Move() {
 		ImGui::Text("No controller detected");
 	}
 	
+	worldTransform_.translation_ += stage_->Sliding(worldTransform_.translation_);
 	
 }
 

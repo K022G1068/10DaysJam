@@ -221,7 +221,7 @@ void GameScene::Draw() {
 	spot1_->Draw(viewProjection_);
 	spot2_->Draw(viewProjection_);
 	spot3_->Draw(viewProjection_);
-	//stage_->Draw(viewProjection_);
+	stage_->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
 
 	for (Enemy* enemy : enemies_) {

@@ -20,13 +20,14 @@ public:
 	void Draw(ViewProjection& viewProjection);
 	ObjMode GetMode(Vector3 objPos);
 	~Stage();
-
-	float grav_ = 1.f;
+	Vector3 Respown();
+	float grav_ = 0.125f;
+	Vector3 Sliding(Vector3 objPos);
 
 private:
 	int num_; // 扇の個数
 	WorldTransform worldTransform_[4];
 	Model* model_ = nullptr;
-	float rad_ = 740.f;
+	float rad_ = 444.f;
 	Vector3 correction = {.0f, .0f, 300.0f};
 };
