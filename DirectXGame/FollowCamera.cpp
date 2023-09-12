@@ -25,17 +25,26 @@ void FollowCamera::Update() {
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		rotation = {
-			0.1f,
+		    (float)joyState.Gamepad.sThumbRY / SHRT_MAX,
 		    (float)joyState.Gamepad.sThumbRX / SHRT_MAX , 0.1f
 		};
 
 		
 		rotation = Normalize(rotation) * kCharacterRotationSpeed;
-		rotation.x = 0.0f;
 		rotation.z = 0.0f;
 	} else {
 		ImGui::Text("No controller detected");
 	}
 	viewProjection_.rotation_ += rotation;
+	
+	if (viewProjection_.rotation_.x >= 0.2f)
+	{
+		viewProjection_.rotation_.x = 0.2f;
+	}
+	if (viewProjection_.rotation_.x <= -0.2f) {
+		viewProjection_.rotation_.x = -0.2f;
+	}
+
+
 	viewProjection_.UpdateMatrix();
 }

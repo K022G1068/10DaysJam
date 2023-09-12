@@ -19,6 +19,7 @@ public:
 	const char* GetName() override { return name_; };
 	~Spot();
 	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
+	void SetPositionLerp(Vector3 pos) override;
 
 private:
 	WorldTransform worldTransform_;

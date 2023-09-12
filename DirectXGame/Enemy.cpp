@@ -2,14 +2,14 @@
 #include "Goal.h"
 #include "Spot.h"
 #include "Player.h"
-
+#include "GameManager.h"
 void Enemy::Initialize(
     Model* model, Vector3& enemyPosition, ViewProjection& viewProjection, const char* name) {
 	assert(model);
 	// textureHandle_ = textureHandle;
 	
 	name_ = name;
-	
+	goalNumber_ = gameManager_->GetGoalNumber();
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = enemyPosition;
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
@@ -59,13 +59,13 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 	}
 	else if (random_number > percentageDash_)
 	{
-		state_ = new EnemyStateNothing();
+		state_ = new EnemyStateStop();
 		state_->SetTimer();
 		state_->GetSpotDistance(this);
 	}
 	else
 	{
-		state_ = new EnemyStateNothing();
+		state_ = new EnemyStateStop();
 		state_->SetTimer();
 		state_->GetSpotDistance(this);
 	}
@@ -74,16 +74,29 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 void Enemy::Update() {
 	//Reduce rotation;
 	rotationSpeed_.y -= 0.0001f;
-
-	// State update
+	state_->SetDash(dash_);
 	
-	state_->Update(this);
+	// State update
+	if (goal_->GetGoalieList().size() == goalNumber_ - 1)
+	{
+		ChangeState(new EnemyStateApproachGoal);
+	}
+	
 	//Gauge
 	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
 	gauge_->SetPosition(worldTransform_.translation_);
 	gauge_->GetRotation(rotationSpeed_);
 	gauge_->Update();
 
+	//Dash
+	// Dash
+	if (rotationSpeed_.y < 0.3f * MAX_ROTATION) {
+		dash_->SetCanDash(false);
+	} else {
+		dash_->SetCanDash(true);
+	}
+
+	state_->Update(this);
 	worldTransform_.rotation_ += rotationSpeed_;
 	
 	/*if (stage_->GetMode(worldTransform_.translation_) != underGrand) {
@@ -95,7 +108,7 @@ void Enemy::Update() {
 	}*/
 
 	//ImGui::Text("Random Number %s: %d", name_, random_number);
-	ImGui::Text("EnemyCount %s: %d", name_, GetObjects().size());
+	//ImGui::Text("EnemyCount %s: %d", name_, GetObjects().size());
 	
 	
 
@@ -112,15 +125,15 @@ void Enemy::Update() {
 	ImGui::Text(
 	    "%s NearestSpot: %f %f %f", e->GetName(), state_.get nearestSpotPos_.x, nearestSpotPos_.y,
 	    nearestSpotPos_.z);*/
-	ImGui::Text("Nearenemy bool %d",nearEnemy_);
-	ImGui::Text("Nearenemy name %s: %s", name_, nearestEnemyName_);
+	//ImGui::Text("Nearenemy bool %d",nearEnemy_);
+	//ImGui::Text("Nearenemy name %s: %s", name_, nearestEnemyName_);
 
-
+	ImGui::Text("%s can dash: %d", name_, dash_->GetCanDash());
 	//Collider
 	if (!GetIsGoal())
 	{
 		Collider::OnUpdate();
-
+		currentGoalCount = (int)goal_->GetGoalieList().size();
 		FlyingToGoal();
 
 		if (GetIsGoal()) {
@@ -128,6 +141,7 @@ void Enemy::Update() {
 		}
 		worldTransform_.translation_ += velocity_;
 		worldTransform_.translation_ += spotVelocity_;
+		worldTransform_.translation_ += dashVelocity_;
 
 		if (Length(spotVelocity_) > 0) {
 			countSpotFlyingTimer_++;
@@ -137,15 +151,35 @@ void Enemy::Update() {
 				ChangeState(new EnemyStateStop);
 			}
 		}
-
-		worldTransform_.UpdateMatrix();
+		
+		
 	}
 	else
 	{
 		velocity_ = {0,0,0};
 		collisionVelocity_ = {0, 0, 0};
+		worldTransform_.translation_ = Lerp(
+		    worldTransform_.translation_,
+		    {goalPos_.x, goalPos_.y, goalPos_.z + GOAL_DEEPEST - (currentGoalCount * 10.0f)},
+		    0.01f);
+		worldTransform_.rotation_.x = GetRandomRotationDegree();
+		worldTransform_.rotation_.z = GetRandomRotationDegree();
+
+		if (worldTransform_.rotation_.x >= 0.4f)
+		{
+			worldTransform_.rotation_.x = 0.4f;
+		}
+		if (worldTransform_.rotation_.x <= -0.4f) {
+			worldTransform_.rotation_.x = -0.4f;
+		}
+		if (worldTransform_.rotation_.z >= 0.4f) {
+			worldTransform_.rotation_.z = 0.4f;
+		}
+		if (worldTransform_.rotation_.z <= -0.4f) {
+			worldTransform_.rotation_.z = -0.4f;
+		}
 	}
-	
+	worldTransform_.UpdateMatrix();
 }
 
 void Enemy::Movement() { 
@@ -180,9 +214,14 @@ void Enemy::SetColliderPosition() {
 	colliderPos_.z = worldTransform_.translation_.z;
 }
 
-void Enemy::GetRandomRotation(int number) {
+void Enemy::SetRandomRotationSpeed(int number) {
 	std::srand(static_cast<unsigned>(std::time(nullptr)) + number);
-	rotationSpeed_.y = (std::rand() % 11 + 10) /100.0f;
+	rotationSpeed_.y = (std::rand() % 21 + 10) /100.0f;
+}
+
+float Enemy::GetRandomRotationDegree() {
+	std::srand(static_cast<unsigned>(std::time(nullptr)) + 1000);
+	return (std::rand() % 629) / 100.0f;
 }
 
 void Enemy::FlyingToGoal() {
@@ -204,6 +243,38 @@ void Enemy::FlyingToGoal() {
 			this->ChangeState(new EnemyStateStop);
 			isFlying_ = false;
 		}
+	}
+}
+
+void Enemy::SetPositionLerp(Vector3 pos) {
+	/*ImGui::Begin("SetposLerp");
+	ImGui::Text(
+	    "Pos %f %f %f", worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z);
+	ImGui::Text("Destination %f %f %f", pos.x,pos.y, pos.z);*/
+	worldTransform_.translation_ = Lerp(worldTransform_.translation_, pos, 0.5f);
+}
+
+void Enemy::DoDash(Vector3 direction) {
+	if (easing_.time <= easing_.duration) {
+		easing_.time += 0.01f;
+	}
+
+	if (dash_->GetDash() == true) {
+		ImGui::Text("%s is dashing", name_);
+		direction *= dash_->EaseInQuad(easing_) * -5.0f;
+		totalDash += dash_->EaseInQuad(easing_) * -5.0f;
+		direction.y = 0.0f;
+		worldTransform_.translation_ += direction;
+		if (Length(totalDash) >= 150.0f) {
+			dash_->DisactivateDash(easing_);
+			totalDash = {0, 0, 0};
+			ChangeState(new EnemyStateStop);
+		}
+		
+	} else {
+		dash_->DisactivateDash(easing_);
+		totalDash = {0, 0, 0};
 	}
 }
 
@@ -274,6 +345,13 @@ void EnemyStateStop::Update(Enemy* e) {
 				e->ChangeState(new EnemyStateApproachEnemy);
 				GetSpotDistance(e);
 				GetEnemyDistance(e);
+				if (dash_->GetCanDash()) {
+					dash_->ActivateDash();
+					float reduceAmount = 0.3f * MAX_ROTATION;
+					Vector3 rotationSpeed = e->GetRotationSpeed();
+					rotationSpeed.y -= reduceAmount;
+					e->SetRotationSpeed(rotationSpeed);
+				}
 			} else {
 				e->ChangeState(new EnemyStateApproachSpot);
 				GetSpotDistance(e);
@@ -288,28 +366,38 @@ void EnemyStateApproachEnemy::Update(Enemy* e) {
 	if (e->GetNearEnemyBool())
 	{
 		ImGui::Text("Approach enemy state");
-		ImGui::Text(
+		/*ImGui::Text(
 		    "%s Position: %f %f %f", e->GetName(), e->GetWorldTransform().translation_.x,
 		    e->GetWorldTransform().translation_.y, e->GetWorldTransform().translation_.z);
 		ImGui::Text(
 		    "%s NearestEnemy Position: %f %f %f", e->GetName(), e->GetNearestEnemyPosition().x,
 		    e->GetNearestEnemyPosition().y, e->GetNearestEnemyPosition().z);
-		ImGui::Text("%s NearestEnemy name: %s", e->GetName(), e->GetNearestEnemyName());
+		ImGui::Text("%s NearestEnemy name: %s", e->GetName(), e->GetNearestEnemyName());*/
 		toEnemy_ = e->GetWorldTransform().translation_ - e->GetNearestEnemyPosition();
-		ImGui::Text("%s ToEnemy: %f %f %f", e->GetName(), toEnemy_.x, toEnemy_.y, toEnemy_.z);
-		ImGui::Text("%s ToEnemyLength: %f", e->GetName(), Length(toEnemy_));
-		Move(toEnemy_, e);
+		//ImGui::Text("%s ToEnemy: %f %f %f", e->GetName(), toEnemy_.x, toEnemy_.y, toEnemy_.z);
+		//ImGui::Text("%s ToEnemyLength: %f", e->GetName(), Length(toEnemy_));
+		if (dash_->GetCanDash())
+		{
+			Vector3 toEnemyNormal = Normalize(toEnemy_);
+			e->DoDash(toEnemyNormal);
+		}
+		else
+		{
+			Move(toEnemy_, e);
+		}
+	
 
 		// If there is no collision
 		if (Length(toEnemy_) <= 0.5f) {
 			GetSpotDistance(e);
 			GetEnemyDistance(e);
-			e->ChangeState(new EnemyStateApproachSpot);
+			e->ChangeState(new EnemyStateStop);
 		}
 	} else {
 		GetSpotDistance(e);
 		GetEnemyDistance(e);
 		e->ChangeState(new EnemyStateApproachSpot);
+
 	}
 	
 }
@@ -332,6 +420,13 @@ void EnemyStateApproachSpot::Update(Enemy* e) {
 			GetEnemyDistance(e);
 			if (e->GetNearEnemyBool()) {
 				e->ChangeState(new EnemyStateApproachEnemy);
+				if (dash_->GetCanDash()) {
+					dash_->ActivateDash();
+					float reduceAmount = 0.3f * MAX_ROTATION;
+					Vector3 rotationSpeed = e->GetRotationSpeed();
+					rotationSpeed.y -= reduceAmount;
+					e->SetRotationSpeed(rotationSpeed);
+				}
 				stopTime_ = 0;
 			}
 			else
@@ -412,6 +507,50 @@ void BaseEnemyState::Move(Vector3 velocity, Enemy* e) {
 	} else {
 		e->ChangeState(new EnemyStateStop);
 	}
+}
+
+void BaseEnemyState::DashMove(Vector3 velocity, Enemy* e) {
+	float lenght = Length(velocity);
+	Vector3 totalDash = {0, 0, 0};
+	Vector3 move = {0, 0, 0};
+	if (lenght >= 0.1f) {
+		velocity.x /= lenght;
+		velocity.y /= lenght;
+		velocity.z /= lenght;
+
+		// velocity_ = TransformNormal(velocity_, e->GetWorldTransform().matWorld_);
+		
+		if (dash_->GetDash() == true) {
+			move *= dash_->EaseInQuad(easing_) * 5.0f;
+			totalDash += dash_->EaseInQuad(easing_);
+			e->SetDashVelocity(move);
+			if (Length(totalDash) >= 30.0f) {
+				e->SetDashVelocity({0,0,0});
+				dash_->DisactivateDash(easing_);
+			}
+			move.y = 0.0f;
+		} else {
+			e->SetDashVelocity({0, 0, 0});
+			dash_->DisactivateDash(easing_);
+		}
+
+	} else {
+		e->ChangeState(new EnemyStateStop);
+	}
+}
+
+void BaseEnemyState::EasingInitialize() {
+
+	// Easing
+	easing_.time = 0;
+	easing_.startPos = {0, 0, 0};
+	easing_.duration = 20.0f;
+	easing_.change = 10;
+	// Easing2
+	easing2_.time = 0;
+	easing2_.startPos = {0, 0, 0};
+	easing2_.duration = 20.0f;
+	easing2_.change = 10;
 }
 
 void EnemyStateNothing::Update(Enemy* e) {

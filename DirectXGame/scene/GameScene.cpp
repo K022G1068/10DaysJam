@@ -17,6 +17,7 @@ GameScene::~GameScene() {
 	delete spot3_;
 	delete skydome_;
 	delete stage_;
+	delete gameManager_;
 
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
@@ -64,6 +65,7 @@ void GameScene::Initialize() {
 	spot3_ = new Spot();
 	skydome_ = new Skydome();
 	stage_ = new Stage();
+	gameManager_ = new GameManager();
 
 	//Initialize
 	Vector3 playerPosition(0, -30.0f, 100.0f);
@@ -104,19 +106,24 @@ void GameScene::Initialize() {
 	player_->SetGoal(goalPosition);
 	player_->SetStage(stage_);
 	objects_.push_back(player_);
+	gameManager_->Initialize();
+	gameManager_->GetGoal(goal_);
 	//Initialize enemy
 	for (int i = 0; i < MAX_ENEMY; i++) {
 		Enemy* obj = new Enemy();
+		obj->SetGameManager(gameManager_);
 		obj->Initialize(modelEnemies_[i], enemiesPosition[i], viewProjection_, enemiesName[i]);
 		obj->SetViewProjection(&followCamera_->GetViewProjection());
-		obj->SetGoal(goalPosition);
+		obj->SetGoalPos(goalPosition);
 		obj->SetSpot(spotPosition1);
 		obj->SetSpot(spotPosition2);
 		obj->SetSpot(spotPosition3);
+		obj->SetGoal(goal_);
 		obj->SetRandomNumber(i * 1000);
 		obj->InitializeGauge(model_, modelGaugeBox_);
 		obj->SetStage(stage_);
-		obj->GetRandomRotation(i);
+	
+		obj->SetRandomRotationSpeed(i);
 		enemies_.push_back(obj);
 		objects_.push_back(obj);
 	}
@@ -131,6 +138,7 @@ void GameScene::Initialize() {
 	}
 	//Texture
 	skydome_->Initialize(modelSkydome_);
+
 }
 
 void GameScene::Update() {
@@ -142,6 +150,7 @@ void GameScene::Update() {
 	spot3_->Update();
 	skydome_->Update();
 	stage_->Update();
+	gameManager_->Update();
 	//Enemy update
 	for (Enemy* enemy : enemies_) {
 		if (enemy) {

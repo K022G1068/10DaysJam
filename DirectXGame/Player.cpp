@@ -34,7 +34,7 @@ void Player::Initialize(
 	easing2_.duration = 20.0f;
 	easing2_.change = 10;
 
-	SetRotationSpeed({0.0f, 0.06f, 0.0f});
+	SetRotationSpeed({0.0f, 0.3f, 0.0f});
 	//Attribute
 	SetAttribute(kCollisionAttributePlayer);
 	SetMaskAttribute(kCollisionAttributeEnemy);
@@ -129,6 +129,11 @@ void Player::FlyingToGoal() {
 	}
 }
 
+void Player::SetPositionLerp(Vector3 pos) { 
+	
+	worldTransform_.translation_ = Lerp(worldTransform_.translation_, pos, 0.2f); 
+}
+
 void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
 
 void Player::OnCollision() { 
@@ -191,8 +196,8 @@ void Player::Move() {
 			if (dash_->GetDash() == true)
 			{
 				move *= dash_->EaseInQuad(easing_) * 5.0f;
-				totalDash += dash_->EaseInQuad(easing_);
-				if (Length(totalDash) >= 30.0f)
+				totalDash += dash_->EaseInQuad(easing_) * 5.0f;
+				if (Length(totalDash) >= 150.0f)
 				{
 					dash_->DisactivateDash(easing_);
 				}
@@ -206,6 +211,7 @@ void Player::Move() {
 
 			ImGui::Text("TotalDash", Length(totalDash));
 			worldTransform_.translation_ += move;
+			worldTransform_.UpdateMatrix();
 		}
 		
 	} else {

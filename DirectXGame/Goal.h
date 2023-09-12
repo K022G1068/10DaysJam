@@ -16,6 +16,8 @@ public:
 	const WorldTransform& GetWorldTransform() override { return worldTransform_; };
 	const char* GetName() override { return name_; };
 	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
+	std::vector<Collider*> GetGoalieList() { return goalieList_; };
+	void SetPositionLerp(Vector3 pos) override;
 	~Goal();
 
 private:
@@ -27,5 +29,5 @@ private:
 	const char* name_ = "Goal";
 	Vector3 velocity_;
 	//List to keep track of the enemy that has enter the goal
-	std::list<Collider*> goalieList_;
+	std::vector<Collider*> goalieList_;
 };

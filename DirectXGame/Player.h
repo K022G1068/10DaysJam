@@ -31,6 +31,7 @@ public:
 	const char* GetName() override { return name_; };
 	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
 	void SetStage(Stage* stage) { stage_ = stage; };
+	void SetPositionLerp(Vector3 pos) override;
 
 private:
 	WorldTransform worldTransform_;

@@ -1,5 +1,5 @@
 #pragma once
-#define MAX_ENEMY 4
+#define MAX_ENEMY 1
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -18,6 +18,7 @@
 #include "Skydome.h"
 #include <vector>
 #include "Stage.h"
+#include "GameManager.h"
 
 /// <summary>
 /// ゲームシーン
@@ -75,6 +76,7 @@ private: // メンバ変数
 	Spot* spot3_ = nullptr;
 	Skydome* skydome_ = nullptr;
 	Stage* stage_ = nullptr;
+	GameManager* gameManager_ = nullptr;
 
 	//Model
 	Model* model_ = nullptr;

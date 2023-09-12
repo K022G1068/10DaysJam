@@ -79,3 +79,7 @@ Vector3 Spot::GetWorldPosition() {
 }
 
 Spot::~Spot() {}
+
+void Spot::SetPositionLerp(Vector3 pos) {
+	worldTransform_.translation_ = Lerp(worldTransform_.translation_, pos, 0.2f);
+}

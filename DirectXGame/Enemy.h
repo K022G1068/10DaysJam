@@ -1,6 +1,7 @@
 #pragma once
 #define STOP_MIN 60.0f
 #define STOP_MAX 180.0f
+#define GOAL_DEEPEST 70.0f
 
 #include "Base.h"
 #include "Input.h"
@@ -13,6 +14,7 @@
 #include <ctime>
 #include "Stage.h"
 
+class GameManager;
 enum class Phase {
 	ApproachGoal,
 	Stop,
@@ -33,7 +35,10 @@ public:
 	int GetTimer() { return stopTime_; };
 	int GetCountTimer() { return countTime_; };
 	void Move(Vector3 velocity, Enemy* e);
+	void DashMove(Vector3 velocity, Enemy* e);
+	void SetDash(Dash* dash) { dash_ = dash; };
 	virtual ~BaseEnemyState() = default;
+	void EasingInitialize();
 	//bool GetNearEnemyBool() { return nearEnemy_; };
 
 protected:
@@ -50,7 +55,9 @@ protected:
 	Vector3 playerRotationSpeed_ = {0,0,0};
 	int stopTime_ = 300;
 	int countTime_ = 0;
-	
+	Dash* dash_ = nullptr;
+	Easing easing_;
+	Easing easing2_;
 	
 };
 
@@ -112,28 +119,32 @@ public:
 	void GetEnemyDistance() { state_->GetEnemyDistance(this); };
 	void GetSpotDistance() { state_->GetSpotDistance(this); };
 	Player* GetPlayer() { return player_; };
-	void GetRandomRotation(int number);
+	float GetRandomRotationDegree();
 	int GetStopTime() { return stopTime_; }; 
 	int GetPercetageDash() { return percentageDash_; };
 	bool GetNearEnemyBool() { return nearEnemy_; };
 	const char* GetNearestEnemyName() { return nearestEnemyName_; };
 	Vector3 GetNearestEnemyPosition() { return nearestEnemyPos_; };
+	Dash* GetDash() { return dash_; };
 
 	//Setter
 	void SetColliderPosition();
-	void SetGoal(Vector3 goal) { goalPos_ = goal; };
+	void SetGoalPos(Vector3 goal) { goalPos_ = goal; };
 	void SetSpot(Vector3 spot) { spotPos_.push_back(spot); };
-	//void SetEnemies(std::list<Enemy*> enemy) { enemies_ = enemy; };
-	void SetViewProjection(const ViewProjection* viewProjection) {
-		viewProjection_ = viewProjection;
-	};
+	void SetViewProjection(const ViewProjection* viewProjection) {viewProjection_ = viewProjection;};
 	void FlyingToGoal();
 	void SetPlayer(Player* player) { player_ = player; };
 	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
 	void SetNearEnemyBool(bool nearenemy) { nearEnemy_ = nearenemy; };
 	void SetNearestEnemyName(const char* name) { nearestEnemyName_ = name; };
 	void SetNearestEnemyPosition(Vector3 pos) { nearestEnemyPos_ = pos; };
+	void SetDashVelocity(Vector3 pos) { dashVelocity_ = pos; };
 	void SetStage(Stage* stage) { stage_ = stage; };
+	void SetGameManager(GameManager* manager) { gameManager_ = manager; };
+	void SetGoal(Goal* goal) { goal_ = goal; };
+	void SetPositionLerp(Vector3 pos) override;
+	void SetRandomRotationSpeed(int number);
+	void DoDash(Vector3 direction);
 
 private:
 	WorldTransform worldTransform_;
@@ -162,20 +173,24 @@ private:
 	int stopTime_ = 0;
 	Vector3 collisionVelocity_ = {0, 0, 0};
 	bool nearEnemy_ = false;
-
+	Vector3 dashVelocity_ = {0, 0, 0};
 	Easing easing_;
 	Easing easing2_;
 	Stage* stage_ = nullptr;
+	GameManager* gameManager_ = nullptr;
+	int goalNumber_;
 	Vector3 acceleration_ = {0, 0, 0};
+	Goal* goal_ = nullptr;
 
 	const char* nearestEnemyName_ = "";
 	Vector3 nearestEnemyPos_ = {0, 0, 0};
-
+	Vector3 totalDash = {0, 0, 0};
+			
 	//Enemy state percetage
 	int percentageDash_ = 50;
 	int percentageSpot_ = 50;
 	int random_number;
-
+	int currentGoalCount = 0;
 	//Object list
 	//std::list<Enemy*> enemies_;
 	//std::list<Collider*> objects_;

@@ -1,4 +1,5 @@
 #pragma once
+#define ROTATION_LIMITY 0.2F
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Input.h"

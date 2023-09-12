@@ -140,5 +140,6 @@ public:
 	virtual const char* GetName() = 0;
 	virtual void SetVelocity(Vector3 velocity) = 0;
 	void SetSpotVelocity(Vector3 velo) { spotVelocity_ = velo; };
+	virtual void SetPositionLerp(Vector3 pos) = 0;
 	virtual ~Collider();
 };

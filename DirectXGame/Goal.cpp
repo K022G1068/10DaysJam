@@ -50,6 +50,7 @@ void Goal::OnCollision() {
 		// Element not found in the list
 		komaCount_++;
 		goalieList_.push_back(collidedObject);
+		collidedObject->SetPositionLerp({0, -30.0f, 250.0f});
 		ImGui::Text("Added collided object ");
 	}
 }
@@ -63,6 +64,10 @@ Vector3 Goal::GetWorldPosition() {
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
 
 	return worldPos;
+}
+
+void Goal::SetPositionLerp(Vector3 pos) {
+	worldTransform_.translation_ = Lerp(worldTransform_.translation_, pos, 0.2f);
 }
 
 Goal::~Goal() {}
