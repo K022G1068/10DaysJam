@@ -126,6 +126,16 @@ void GameScene::Update() {
 		}
 	}
 
+	//Remove enemy if goal
+	{
+		objects_.remove_if([](Collider* object) {
+			if (object->GetIsGoal()) {
+				return true;
+			}
+			return false;
+		});
+	}
+
 	// Follow camera
 	followCamera_->Update();
 	viewProjection_.matView = followCamera_->GetViewProjection().matView;

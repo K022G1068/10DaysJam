@@ -100,3 +100,5 @@ void Collider::DrawCollider() {
 	}
 }
 
+Collider::~Collider() {}
+

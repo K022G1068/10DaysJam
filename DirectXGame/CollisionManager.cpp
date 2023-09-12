@@ -47,11 +47,14 @@ void CollisionManager::CheckAllCollisions() {
 				}
 			}
 			
-			if (SphereCollisionCheck(A, B)) {
-				A->SetCollidedCollider(B);
-				B->SetCollidedCollider(A);
-				A->OnCollision();
-				B->OnCollision();
+			if (!A->GetIsGoal() && !B->GetIsGoal())
+			{
+				if (SphereCollisionCheck(A, B)) {
+					A->SetCollidedCollider(B);
+					B->SetCollidedCollider(A);
+					A->OnCollision();
+					B->OnCollision();
+				}
 			}
 		}
 	}

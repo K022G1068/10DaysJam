@@ -107,6 +107,7 @@ void Enemy::Update() {
 			ChangeState(new EnemyStateStop);
 		}
 		worldTransform_.translation_ += velocity_;
+		worldTransform_.translation_ += velocity_;
 
 		worldTransform_.UpdateMatrix();
 	}
@@ -275,8 +276,8 @@ void EnemyStateApproachSpot::Update(Enemy* e) {
 		stopTime_--;
 		if (stopTime_ <= 0)
 		{
-			stopTime_ = 0;
 			e->ChangeState(new EnemyStateApproachEnemy);
+			stopTime_ = 0;
 		}
 	}
 }
