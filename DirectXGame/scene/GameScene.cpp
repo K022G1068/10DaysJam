@@ -12,7 +12,10 @@ GameScene::~GameScene() {
 	delete modelGaugeBox_;
 	delete modelPlayer_;
 	delete goal_;
-	delete spot_;
+	delete spot1_;
+	delete spot2_;
+	delete spot3_;
+
 
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
@@ -54,7 +57,9 @@ void GameScene::Initialize() {
 	//enemy_ = new Enemy();
 	followCamera_ = new FollowCamera();
 	goal_ = new Goal();
-	spot_ = new Spot();
+	spot1_ = new Spot();
+	spot2_ = new Spot();
+	spot3_ = new Spot();
 
 	//Initialize
 	Vector3 playerPosition(0, -30.0f, 100.0f);
@@ -73,7 +78,9 @@ void GameScene::Initialize() {
 
 	Vector3 railPosition(0, 0, 0.0f);
 	Vector3 goalPosition(0, -30.0f, 300.0f);
-	Vector3 spotPosition(50.0f, -30.0f, 250.0f);
+	Vector3 spotPosition1(50.0f, -30.0f, 250.0f);
+	Vector3 spotPosition2(-50.0f, -30.0f, 250.0f);
+	Vector3 spotPosition3(0.0f, -30.0f, 0.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
 	
 	followCamera_->Initialize();
@@ -81,7 +88,9 @@ void GameScene::Initialize() {
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
 	//enemy_->SetViewProjection(&followCamera_->GetViewProjection());
 	player_->InitializeGauge(model_, modelGaugeBox_);
-	spot_->Initialize(modelSpot_, spotPosition, viewProjection_);
+	spot1_->Initialize(modelSpot_, spotPosition1, viewProjection_);
+	spot2_->Initialize(modelSpot_, spotPosition2, viewProjection_);
+	spot3_->Initialize(modelSpot_, spotPosition3, viewProjection_);
 	goal_->Initialize(modelGoal_, goalPosition, viewProjection_);
 	//enemy_->SetGoal(goalPosition);
 	//enemy_->SetSpot(spotPosition);
@@ -94,7 +103,9 @@ void GameScene::Initialize() {
 		obj->Initialize(modelEnemies_[i], enemiesPosition[i], viewProjection_, enemiesName[i]);
 		obj->SetViewProjection(&followCamera_->GetViewProjection());
 		obj->SetGoal(goalPosition);
-		obj->SetSpot(spotPosition);
+		obj->SetSpot(spotPosition1);
+		obj->SetSpot(spotPosition2);
+		obj->SetSpot(spotPosition3);
 		obj->SetRandomNumber(i * 1000);
 		obj->InitializeGauge(model_, modelGaugeBox_);
 		obj->GetRandomRotation(i);
@@ -117,7 +128,9 @@ void GameScene::Update() {
 	//enemy_->Update();
 	player_->Update();
 	goal_->Update();
-	spot_->Update();
+	spot1_->Update();
+	spot2_->Update();
+	spot3_->Update();
 
 	//Enemy update
 	for (Enemy* enemy : enemies_) {
@@ -149,7 +162,9 @@ void GameScene::Update() {
 		CollisionManager::GetInstance()->Register(enemy);
 	}
 	
-	CollisionManager::GetInstance()->Register(spot_);
+	CollisionManager::GetInstance()->Register(spot1_);
+	CollisionManager::GetInstance()->Register(spot2_);
+	CollisionManager::GetInstance()->Register(spot3_);
 	CollisionManager::GetInstance()->CheckAllCollisions();
 	CollisionManager::GetInstance()->ClearList();
 
@@ -185,7 +200,9 @@ void GameScene::Draw() {
 	}
 	player_->Draw(viewProjection_);
 	goal_->Draw(viewProjection_);
-	spot_->Draw(viewProjection_);
+	spot1_->Draw(viewProjection_);
+	spot2_->Draw(viewProjection_);
+	spot3_->Draw(viewProjection_);
 
 	for (Enemy* enemy : enemies_) {
 		enemy->DrawPrimitive();
@@ -193,7 +210,9 @@ void GameScene::Draw() {
 	
 	player_->DrawPrimitive();
 	goal_->DrawPrimitive();
-	spot_->DrawPrimitive();
+	spot1_->DrawPrimitive();
+	spot2_->DrawPrimitive();
+	spot3_->DrawPrimitive();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

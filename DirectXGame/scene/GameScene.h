@@ -1,5 +1,5 @@
 #pragma once
-#define MAX_ENEMY 2
+#define MAX_ENEMY 3
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -68,7 +68,9 @@ private: // メンバ変数
 	//Enemy* enemy_ = nullptr;
 	FollowCamera* followCamera_ = nullptr;
 	Goal* goal_ = nullptr;
-	Spot* spot_ = nullptr;
+	Spot* spot1_ = nullptr;
+	Spot* spot2_ = nullptr;
+	Spot* spot3_ = nullptr;
 
 	//Model
 	Model* model_ = nullptr;
