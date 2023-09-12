@@ -20,7 +20,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow();
+	win->CreateGameWindow(/*L"a",1,1980,1080*/);
+	//win->SetFullscreen(1);
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
@@ -30,6 +31,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ImGuiの初期化
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 	imguiManager->Initialize(win, dxCommon);
+	//win->SetFullscreen(1);
 
 	// 入力の初期化
 	input = Input::GetInstance();
