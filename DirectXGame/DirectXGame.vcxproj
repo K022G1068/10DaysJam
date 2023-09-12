@@ -127,6 +127,7 @@
     <ClCompile Include="PlayerCamera.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="Shake.cpp" />
+    <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="Spot.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Vector3.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="PlayerCamera.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="Shake.h" />
+    <ClInclude Include="Skydome.h" />
     <ClInclude Include="Spot.h" />
     <ClInclude Include="Stage.h" />
   </ItemGroup>

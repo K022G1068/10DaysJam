@@ -74,7 +74,7 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 
 void Enemy::Update() {
 	//Reduce rotation;
-	//rotationSpeed_.y -= 0.0001f;
+	rotationSpeed_.y -= 0.0001f;
 
 	// State update
 	
@@ -94,6 +94,8 @@ void Enemy::Update() {
 	ImGui::Text("GoalPos %s: %f %f %f", name_, goalPos_.x, goalPos_.y, goalPos_.z);
 	ImGui::Text("Stop Time %s: %d", name_, state_->GetTimer());
 	ImGui::Text("Count Time %s: %d", name_, state_->GetCountTimer());
+	ImGui::Text("isGoal %s: %d", name_, GetIsGoal());
+
 	
 
 	//Collider
@@ -107,7 +109,7 @@ void Enemy::Update() {
 			ChangeState(new EnemyStateStop);
 		}
 		worldTransform_.translation_ += velocity_;
-		worldTransform_.translation_ += velocity_;
+		worldTransform_.translation_ += spotVelocity_;
 
 		worldTransform_.UpdateMatrix();
 	}

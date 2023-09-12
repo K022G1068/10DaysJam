@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 
 void Player::Initialize(
     Model* model, Vector3& playerPosition, ViewProjection& viewProjection,
@@ -55,6 +55,8 @@ void Player::Update() {
 	worldTransform_.rotation_ += rotationSpeed_;
 	worldTransform_.translation_ += velocity_;
 	worldTransform_.translation_ += spotVelocity_;
+	//プレイヤーの回転速度を徐々に遅くする
+	rotationSpeed_.y -= 0.0001f;
 
 	if (Length(spotVelocity_) >= 0)
 	{

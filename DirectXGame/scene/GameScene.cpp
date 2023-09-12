@@ -15,7 +15,7 @@ GameScene::~GameScene() {
 	delete spot1_;
 	delete spot2_;
 	delete spot3_;
-
+	delete skydome_;
 
 	for (Enemy* enemy : enemies_) {
 		delete enemy;
@@ -44,6 +44,7 @@ void GameScene::Initialize() {
 	modelEnemy4_ = Model::CreateFromOBJ("Enemy4", true);
 	modelEnemy5_ = Model::CreateFromOBJ("Enemy5", true);
 	modelEnemy6_ = Model::CreateFromOBJ("Enemy6", true);
+	modelSkydome_ = Model::CreateFromOBJ("Skydome", true);
 	modelEnemies_.push_back(modelEnemy1_);
 	modelEnemies_.push_back(modelEnemy2_);
 	modelEnemies_.push_back(modelEnemy3_);
@@ -60,6 +61,7 @@ void GameScene::Initialize() {
 	spot1_ = new Spot();
 	spot2_ = new Spot();
 	spot3_ = new Spot();
+	skydome_ = new Skydome();
 
 	//Initialize
 	Vector3 playerPosition(0, -30.0f, 100.0f);
@@ -121,7 +123,7 @@ void GameScene::Initialize() {
 		enemy->GetEnemyDistance();
 	}
 	//Texture
-	
+	skydome_->Initialize(modelSkydome_);
 }
 
 void GameScene::Update() {
@@ -131,6 +133,7 @@ void GameScene::Update() {
 	spot1_->Update();
 	spot2_->Update();
 	spot3_->Update();
+	skydome_->Update();
 
 	//Enemy update
 	for (Enemy* enemy : enemies_) {
@@ -203,6 +206,8 @@ void GameScene::Draw() {
 	spot1_->Draw(viewProjection_);
 	spot2_->Draw(viewProjection_);
 	spot3_->Draw(viewProjection_);
+
+	skydome_->Draw(viewProjection_);
 
 	for (Enemy* enemy : enemies_) {
 		enemy->DrawPrimitive();

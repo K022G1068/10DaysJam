@@ -1,5 +1,5 @@
 #pragma once
-#define MAX_ENEMY 3
+#define MAX_ENEMY 2
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -15,6 +15,7 @@
 #include "FollowCamera.h"
 #include "Goal.h"
 #include "Spot.h"
+#include "Skydome.h"
 #include<vector>
 
 /// <summary>
@@ -56,7 +57,7 @@ private: // メンバ変数
 	Sprite* sprite_ = nullptr;
 	Sprite* titleScene_ = nullptr;
 	
-	//Skydome* skydome_ = nullptr;
+	
 	WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 	bool isDebugCameraActive_ = false;
@@ -71,6 +72,7 @@ private: // メンバ変数
 	Spot* spot1_ = nullptr;
 	Spot* spot2_ = nullptr;
 	Spot* spot3_ = nullptr;
+	Skydome* skydome_ = nullptr;
 
 	//Model
 	Model* model_ = nullptr;

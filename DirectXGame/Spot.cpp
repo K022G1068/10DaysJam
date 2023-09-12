@@ -34,7 +34,7 @@ void Spot::DrawPrimitive() {
 void Spot::IncreaseRotationSpeed(Collider* collider) {
 	Vector3 rotationspeed = collider->GetRotationSpeed();
 	ImGui::Text("Collider %f %f %f", rotationspeed);
-	rotationspeed += 0.0001f;
+	rotationspeed += 0.001f;
 	rotationspeed.x = 0.0f;
 	rotationspeed.z = 0.0f;
 	collider->SetRotationSpeed(rotationspeed);
