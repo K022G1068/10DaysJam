@@ -144,12 +144,20 @@ void GameScene::Update() {
 
 	//Remove enemy if goal
 	{
-		objects_.remove_if([](Collider* object) {
+		if (objects_.remove_if([](Collider* object) {
 			if (object->GetIsGoal()) {
 				return true;
 			}
 			return false;
-		});
+			}))
+		{
+			for (Enemy* enemy : enemies_) {
+				if (enemy) {
+
+					enemy->SetObjects(objects_);
+				}
+			}
+		}
 	}
 
 	// Follow camera
