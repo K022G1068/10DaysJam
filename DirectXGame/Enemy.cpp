@@ -62,7 +62,6 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 		state_ = new EnemyStateStop();
 		state_->SetTimer();
 		state_->GetSpotDistance(this);
-		state_->GetEnemyDistance(this);
 	}
 	else
 	{
@@ -88,15 +87,24 @@ void Enemy::Update() {
 	worldTransform_.rotation_ += rotationSpeed_;
 	
 	//ImGui::Text("Random Number %s: %d", name_, random_number);
-	//ImGui::Text("EnemyCount %s: %d", name_, enemies_.size());
+	ImGui::Text("EnemyCount %s: %d", name_, GetObjects().size());
 	
 
-	ImGui::Text("GoalPos %s: %f %f %f", name_, goalPos_.x, goalPos_.y, goalPos_.z);
+	/*ImGui::Text("GoalPos %s: %f %f %f", name_, goalPos_.x, goalPos_.y, goalPos_.z);
 	ImGui::Text("Stop Time %s: %d", name_, state_->GetTimer());
 	ImGui::Text("Count Time %s: %d", name_, state_->GetCountTimer());
 	ImGui::Text("isGoal %s: %d", name_, GetIsGoal());
+	ImGui::Text("SpotVelocity: %f %f %f", spotVelocity_.x, spotVelocity_.y, spotVelocity_.z);
+	ImGui::Text("NearEnemy: %d", state_->GetNearEnemyBool());*/
 
-	
+	/*ImGui::Text(
+	    "%s NearestEnemy Position: %f %f %f", e->GetName(), nearestEnemyPos_.x, nearestEnemyPos_.y,
+	    nearestEnemyPos_.z);
+	ImGui::Text(
+	    "%s NearestSpot: %f %f %f", e->GetName(), state_.get nearestSpotPos_.x, nearestSpotPos_.y,
+	    nearestSpotPos_.z);*/
+	ImGui::Text("Nearenemy bool %d",nearEnemy_);
+
 
 	//Collider
 	if (!GetIsGoal())
@@ -111,11 +119,12 @@ void Enemy::Update() {
 		worldTransform_.translation_ += velocity_;
 		worldTransform_.translation_ += spotVelocity_;
 
-		if (Length(spotVelocity_) >= 0) {
+		if (Length(spotVelocity_) > 0) {
 			countSpotFlyingTimer_++;
 			if (countSpotFlyingTimer_ >= 60) {
 				spotVelocity_ = {0, 0, 0};
 				countSpotFlyingTimer_ = 0;
+				ChangeState(new EnemyStateStop);
 			}
 		}
 
@@ -209,8 +218,6 @@ void Enemy::SetRandomNumber(int number) {
 
 void Enemy::ChangeState(BaseEnemyState* enemyState) {
 	//Find the nearest enemy and spot
-	enemyState->GetSpotDistance(this);
-	enemyState->GetEnemyDistance(this);
 	enemyState->SetTimer();
 	state_ = enemyState;
 }
@@ -252,16 +259,15 @@ void EnemyStateStop::Update(Enemy* e) {
 		stopTime_--;
 		if (stopTime_ <= 0) {
 			stopTime_ = 0;
-			countTime_ = 0;
 			e->SetRandomNumber(1000);
 			if (e->GetRandomNumber() > e->GetPercetageDash()) {
-				GetSpotDistance(e);
-				GetEnemyDistance(e);
 				e->ChangeState(new EnemyStateApproachEnemy);
-			} else {
 				GetSpotDistance(e);
 				GetEnemyDistance(e);
+			} else {
 				e->ChangeState(new EnemyStateApproachSpot);
+				GetSpotDistance(e);
+				GetEnemyDistance(e);
 			}
 		}
 	}
@@ -269,21 +275,41 @@ void EnemyStateStop::Update(Enemy* e) {
 }
 
 void EnemyStateApproachEnemy::Update(Enemy* e) {
-	ImGui::Text( "%s Position: %f %f %f", e->GetName(), e->GetWorldTransform().translation_.x, e->GetWorldTransform().translation_.y, e->GetWorldTransform().translation_.z);
-	ImGui::Text("%s NearestEnemy Position: %f %f %f",e->GetName(), nearestEnemyPos_.x, nearestEnemyPos_.y, nearestEnemyPos_.z);
-	ImGui::Text("%s NearestEnemy name: %s",e->GetName(), nearestEnemyName_);
-	toEnemy_ = e->GetWorldTransform().translation_ - nearestEnemyPos_;
-	ImGui::Text("%s ToEnemy: %f %f %f",e->GetName(), toEnemy_.x, toEnemy_.y, toEnemy_.z);
-	Move(toEnemy_, e);
-
-	//If there is no collision
-	if (Length(toEnemy_) <= 0.1f)
+	if (e->GetNearEnemyBool())
 	{
-		e->ChangeState(new EnemyStateStop);
+		ImGui::Text("Approach enemy state");
+		ImGui::Text(
+		    "%s Position: %f %f %f", e->GetName(), e->GetWorldTransform().translation_.x,
+		    e->GetWorldTransform().translation_.y, e->GetWorldTransform().translation_.z);
+		ImGui::Text(
+		    "%s NearestEnemy Position: %f %f %f", e->GetName(), e->GetNearestEnemyPosition().x,
+		    e->GetNearestEnemyPosition().y, e->GetNearestEnemyPosition().z);
+		ImGui::Text("%s NearestEnemy name: %s", e->GetName(), e->GetNearestEnemyName());
+		toEnemy_ = e->GetWorldTransform().translation_ - e->GetNearestEnemyPosition();
+		ImGui::Text("%s ToEnemy: %f %f %f", e->GetName(), toEnemy_.x, toEnemy_.y, toEnemy_.z);
+		ImGui::Text("%s ToEnemyLength: %f", e->GetName(), Length(toEnemy_));
+		Move(toEnemy_, e);
+
+		// If there is no collision
+		if (Length(toEnemy_) <= 0.5f) {
+			GetSpotDistance(e);
+			GetEnemyDistance(e);
+			e->ChangeState(new EnemyStateApproachSpot);
+		}
+	} else {
+		GetSpotDistance(e);
+		GetEnemyDistance(e);
+		e->ChangeState(new EnemyStateApproachSpot);
 	}
+	
 }
 
 void EnemyStateApproachSpot::Update(Enemy* e) { 
+	GetSpotDistance(e);
+	ImGui::Text("%s To Spot state", e->GetName());
+	ImGui::Text(
+	    "%s NearestSpot: %f %f %f", e->GetName(), nearestSpotPos_.x, nearestSpotPos_.y,
+	    nearestSpotPos_.z);
 	toSpot_ = e->GetWorldTransform().translation_ - nearestSpotPos_;
 	Move(toSpot_, e);
 	ImGui::Text("Spot and %s  %f", e->GetName(), Length(toSpot_));
@@ -291,10 +317,18 @@ void EnemyStateApproachSpot::Update(Enemy* e) {
 	if (Length(toSpot_) <= 0.5f)
 	{
 		stopTime_--;
-		if (stopTime_ <= 0)
-		{
-			e->ChangeState(new EnemyStateApproachEnemy);
-			stopTime_ = 0;
+		if (stopTime_ <= 0) {
+			GetSpotDistance(e);
+			GetEnemyDistance(e);
+			if (e->GetNearEnemyBool()) {
+				e->ChangeState(new EnemyStateApproachEnemy);
+				stopTime_ = 0;
+			}
+			else
+			{
+				SetTimer();
+			}
+			
 		}
 	}
 }
@@ -320,14 +354,21 @@ void BaseEnemyState::GetEnemyDistance(Enemy* e) {
 	float length = 10000.0f;
 	float rotationSpeed = e->GetRotationSpeed().y;
 	objects_ = e->GetObjects();
-
 	std::list<Collider *>::iterator itrA = objects_.begin();
 	for (; itrA != objects_.end(); ++itrA) {
 		Collider* A = *itrA;
-		if (A->GetRotationSpeed().y < rotationSpeed && A->GetRotationSpeed().y != rotationSpeed)
+		if (std::strcmp(A->GetName(), e->GetName()) != 0)
 		{
-			objectLowRotation_.push_back(A);
+			if (A->GetRotationSpeed().y < rotationSpeed) {
+				objectLowRotation_.push_back(A);
+			}
 		}
+		
+	}
+
+	if (objectLowRotation_.size() <= 0)
+	{
+		e->SetNearEnemyBool(false);
 	}
 
 	// ImGui::Text("Nearest pos %f %f %f", nearestPos_);
@@ -336,10 +377,11 @@ void BaseEnemyState::GetEnemyDistance(Enemy* e) {
 		Collider* B = *itrB;
 		Vector3 difference = e->GetWorldTransform().translation_ - B->GetWorldTransform().translation_;
 		float differenceLength = Length(difference);
-		if (differenceLength < length && differenceLength > 0.0f) {
+		if (differenceLength < length) {
 			length = Length(difference);
-			nearestEnemyPos_ = B->GetWorldTransform().translation_;
-			nearestEnemyName_ = B->GetName();
+			e->SetNearEnemyBool(true);
+			e->SetNearestEnemyPosition(B->GetWorldTransform().translation_);
+			e->SetNearestEnemyName(B->GetName());
 		}
 	}
 	 objects_.clear();
@@ -362,4 +404,15 @@ void BaseEnemyState::Move(Vector3 velocity, Enemy* e) {
 	}
 }
 
-void EnemyStateNothing::Update(Enemy* e) { e->Movement(); }
+void EnemyStateNothing::Update(Enemy* e) {
+	GetEnemyDistance(e);
+	GetSpotDistance(e);
+	ImGui::Text(
+	    "%s NearestEnemy Position: %f %f %f", e->GetName(), e->GetNearestEnemyPosition().x,
+	    e->GetNearestEnemyPosition().y, e->GetNearestEnemyPosition().z);
+	ImGui::Text(
+	    "%s NearestSpot: %f %f %f", e->GetName(), nearestSpotPos_.x, nearestSpotPos_.y,
+	    nearestSpotPos_.z);
+	ImGui::Text("Nearenemy bool %d", e->GetNearEnemyBool());
+
+}

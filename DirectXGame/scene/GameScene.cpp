@@ -82,7 +82,7 @@ void GameScene::Initialize() {
 	Vector3 goalPosition(0, -30.0f, 300.0f);
 	Vector3 spotPosition1(50.0f, -30.0f, 250.0f);
 	Vector3 spotPosition2(-50.0f, -30.0f, 250.0f);
-	Vector3 spotPosition3(0.0f, -30.0f, 0.0f);
+	Vector3 spotPosition3(0.0f, -30.0f, 200.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
 	
 	followCamera_->Initialize();
@@ -121,6 +121,7 @@ void GameScene::Initialize() {
 	}
 	for (Enemy* enemy : enemies_) {
 		enemy->GetEnemyDistance();
+		enemy->GetSpotDistance();
 	}
 	//Texture
 	skydome_->Initialize(modelSkydome_);

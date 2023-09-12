@@ -42,6 +42,7 @@ void Spot::IncreaseRotationSpeed(Collider* collider) {
 	if (rotationspeed.y >= MAX_ROTATION)
 	{
 		ImGui::Text("Spot countime %d", countTime_);
+		ImGui::Text("Collided object %s", collider->GetName());
 		countTime_++;
 		SetRandomDirection();
 		if (countTime_ >= MAX_STAY_TIME)
@@ -49,7 +50,7 @@ void Spot::IncreaseRotationSpeed(Collider* collider) {
 			countTime_ = 0;
 			Matrix4x4 rotMat = MakeRotationMatrixY(degree_);
 			direction = TransformNormal(worldTransform_.translation_, rotMat);
-			direction = Normalize(direction);
+			direction = Normalize(direction) * 5.0f;
 			direction.y = 0.0f;
 			collider->SetSpotVelocity(direction);
 		}

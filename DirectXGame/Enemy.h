@@ -33,6 +33,7 @@ public:
 	int GetCountTimer() { return countTime_; };
 	void Move(Vector3 velocity, Enemy* e);
 	virtual ~BaseEnemyState() = default;
+	//bool GetNearEnemyBool() { return nearEnemy_; };
 
 protected:
 	Vector3 goalPos_;
@@ -44,12 +45,12 @@ protected:
 	Vector3 toEnemy_ = {0, 0, 0};
 	Vector3 velocity_ = {0, 0, 0};
 	Vector3 nearestSpotPos_ = {0, 0, 0};
-	Vector3 nearestEnemyPos_ = {0, 0, 0};
 	Vector3 playerPos_ = {0, 0, 0};
 	Vector3 playerRotationSpeed_ = {0,0,0};
 	int stopTime_ = 300;
 	int countTime_ = 0;
-	const char* nearestEnemyName_ = "";
+	
+	
 };
 
 class EnemyStateApproachGoal : public BaseEnemyState {
@@ -108,11 +109,14 @@ public:
 	int GetRandomNumber() { return random_number; };
 	const char* GetName() override { return name_; };
 	void GetEnemyDistance() { state_->GetEnemyDistance(this); };
+	void GetSpotDistance() { state_->GetSpotDistance(this); };
 	Player* GetPlayer() { return player_; };
 	void GetRandomRotation(int number);
 	int GetStopTime() { return stopTime_; }; 
 	int GetPercetageDash() { return percentageDash_; };
-
+	bool GetNearEnemyBool() { return nearEnemy_; };
+	const char* GetNearestEnemyName() { return nearestEnemyName_; };
+	Vector3 GetNearestEnemyPosition() { return nearestEnemyPos_; };
 
 	//Setter
 	void SetColliderPosition();
@@ -125,6 +129,9 @@ public:
 	void FlyingToGoal();
 	void SetPlayer(Player* player) { player_ = player; };
 	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
+	void SetNearEnemyBool(bool nearenemy) { nearEnemy_ = nearenemy; };
+	void SetNearestEnemyName(const char* name) { nearestEnemyName_ = name; };
+	void SetNearestEnemyPosition(Vector3 pos) { nearestEnemyPos_ = pos; };
 
 private:
 	WorldTransform worldTransform_;
@@ -152,9 +159,13 @@ private:
 	Vector3 toGoal_ = {0, 0, 0};
 	int stopTime_ = 0;
 	Vector3 collisionVelocity_ = {0, 0, 0};
+	bool nearEnemy_ = false;
 
 	Easing easing_;
 	Easing easing2_;
+
+	const char* nearestEnemyName_ = "";
+	Vector3 nearestEnemyPos_ = {0, 0, 0};
 
 	//Enemy state percetage
 	int percentageDash_ = 50;

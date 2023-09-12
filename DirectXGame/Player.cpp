@@ -34,7 +34,7 @@ void Player::Initialize(
 	easing2_.duration = 20.0f;
 	easing2_.change = 10;
 
-	SetRotationSpeed({0.0f, 0.3f, 0.0f});
+	SetRotationSpeed({0.0f, 0.06f, 0.0f});
 	//Attribute
 	SetAttribute(kCollisionAttributePlayer);
 	SetMaskAttribute(kCollisionAttributeEnemy);
