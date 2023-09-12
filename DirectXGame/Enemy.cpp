@@ -89,6 +89,7 @@ void Enemy::Update() {
 	//ImGui::Text("Random Number %s: %d", name_, random_number);
 	ImGui::Text("EnemyCount %s: %d", name_, GetObjects().size());
 	
+	
 
 	/*ImGui::Text("GoalPos %s: %f %f %f", name_, goalPos_.x, goalPos_.y, goalPos_.z);
 	ImGui::Text("Stop Time %s: %d", name_, state_->GetTimer());
@@ -104,6 +105,7 @@ void Enemy::Update() {
 	    "%s NearestSpot: %f %f %f", e->GetName(), state_.get nearestSpotPos_.x, nearestSpotPos_.y,
 	    nearestSpotPos_.z);*/
 	ImGui::Text("Nearenemy bool %d",nearEnemy_);
+	ImGui::Text("Nearenemy name %s: %s", name_, nearestEnemyName_);
 
 
 	//Collider
