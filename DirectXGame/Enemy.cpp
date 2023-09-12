@@ -344,8 +344,7 @@ void EnemyStateStop::Update(Enemy* e) {
 		if (stopTime_ <= 0) {
 			stopTime_ = 0;
 			e->SetRandomNumber(1000);
-			if (e->GetRandomNumber() > e->GetPercetageDash()) {
-				e->ChangeState(new EnemyStateApproachEnemy);
+			if (e->GetRandomNumber() < e->GetPercetageDash()) {
 				GetSpotDistance(e);
 				GetEnemyDistance(e);
 				if (dash_->GetCanDash()) {
