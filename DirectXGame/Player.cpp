@@ -43,7 +43,7 @@ void Player::Initialize(
 void Player::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 	// Gauge
 	gauge_ = new Gauge();
-	Vector3 gaugePos_(0.0f, 15.0f, 0.0f);
+	Vector3 gaugePos_(0.0f, 100.0f, 0.0f);
 	gauge_->Initialize(gaugeModel, gaugeModelBox,gaugePos_, viewProjection_, radius_);
 	
 }
@@ -52,14 +52,15 @@ Player::~Player() {}
 
 void Player::Update() {
 
-	if (stage_->GetMode(worldTransform_.translation_) != underGrand) {
+	/*if (stage_->GetMode(worldTransform_.translation_) != underGrand) {
 		worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_);
 		Move();
 	}
 	if (stage_->GetMode(worldTransform_.translation_) == underGrand) {
 		acceleration_.y += stage_->grav_;
 		worldTransform_.translation_.y -= acceleration_.y;
-	}
+	}*/
+	Move();
 	worldTransform_.rotation_ += rotationSpeed_;
 	worldTransform_.translation_ += velocity_;
 	worldTransform_.translation_ += spotVelocity_;

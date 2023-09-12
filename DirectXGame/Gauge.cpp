@@ -21,10 +21,10 @@ void Gauge::Initialize(
 
 void Gauge::Update() { 
 	
-	scale_.x = (rotation_.y / MAX_ROTATION) * MAX_BAR;
+	scale_.x = ((rotation_.y - MIN_ROTATION) / (MAX_ROTATION - MIN_ROTATION)) * MAX_BAR;
 	if (rotation_.y <= MIN_ROTATION)
 	{
-		scale_.x = MIN_ROTATION;
+		scale_.x = 0.0f;
 	}
 	if (rotation_.y >= MAX_ROTATION)
 	{
@@ -34,8 +34,8 @@ void Gauge::Update() {
 	worldTransform_.scale_ = scale_;
 	worldTransform_.rotation_.y = cameraRotation_ ;
 	worldTransform2_.rotation_.y = cameraRotation_;
-	worldTransform_.translation_.y += 1.315f * radius_;
-	worldTransform2_.translation_.y += 1.3f * radius_;
+	worldTransform_.translation_.y += 0.710f * radius_;
+	worldTransform2_.translation_.y += 0.7f * radius_;
 	worldTransform_.UpdateMatrix();
 	worldTransform2_.UpdateMatrix();
 }

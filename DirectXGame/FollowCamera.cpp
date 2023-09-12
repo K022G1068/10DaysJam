@@ -10,7 +10,7 @@ void FollowCamera::Update() {
 	const float kCharacterRotationSpeed = 0.05f;
 	if (target_)
 	{
-		Vector3 offset = {0.0f, 20.0f, -100.0f};
+		Vector3 offset = {0.0f, 10.0f, -55.0f};
 
 		Matrix4x4 rotationX = MakeRotationMatrixX(viewProjection_.rotation_.x);
 		Matrix4x4 rotationY = MakeRotationMatrixY(viewProjection_.rotation_.y);
