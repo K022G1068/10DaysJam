@@ -52,7 +52,7 @@ Player::~Player() {}
 
 void Player::Update() {
 
-	if (stage_->GetMode(worldTransform_.translation_) != underGrand) {
+	if (stage_->GetMode(worldTransform_.translation_) == onGrand) {
 		worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_)-30;
 		Move();
 	}
@@ -76,7 +76,8 @@ void Player::Update() {
 			countSpotFlyingTimer_ = 0;
 		}
 	}
-	if (worldTransform_.translation_.y <= -30)
+	if (stage_->GetMode(worldTransform_.translation_) ==
+	    underGrand&&worldTransform_.translation_.y <= -60)
 		worldTransform_.translation_ = stage_->Respown();
 	
 	//Gauge

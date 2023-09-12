@@ -81,8 +81,9 @@ Vector3 Stage::Respown() {
 	while (1) {
 		srand((int)clock());
 		objPos = {
-		    (float)((rand() % 10000 - 5000) / 10), (float)((rand() % 10000 - 5000) / 10),
-		    (float)((rand() % 10000 - 5000) / 10)};
+		    (float)((rand() % (int)rad_ - rad_ / 2)),
+		    (float)((rand() % (int)rad_ - rad_ / 2)),
+		    (float)((rand() % (int)rad_ - rad_ / 2))};
 		float scl = (float)sqrtf(powf(objPos.x, 2.0f) + powf(objPos.z, 2.0f));
 		if (scl < rad_) {
 			if (num_ == 1) {
@@ -110,5 +111,7 @@ Vector3 Stage::Sliding(Vector3 objPos) {
 	objPos -= correction;
 	float scl = (float)sqrtf(powf(objPos.x, 2.0f) + powf(objPos.z, 2.0f));
 	scl *= -4;
+	if (scl >= -36)
+		return {.0f, .0f, .0f};
 	return {objPos.x / scl, objPos.y / scl, objPos.z / scl};
 }

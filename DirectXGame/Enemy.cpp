@@ -59,13 +59,13 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 	}
 	else if (random_number > percentageDash_)
 	{
-		state_ = new EnemyStateNothing();
+		state_ = new EnemyStateStop();
 		state_->SetTimer();
 		state_->GetSpotDistance(this);
 	}
 	else
 	{
-		state_ = new EnemyStateNothing();
+		state_ = new EnemyStateStop();
 		state_->SetTimer();
 		state_->GetSpotDistance(this);
 	}
@@ -86,13 +86,15 @@ void Enemy::Update() {
 
 	worldTransform_.rotation_ += rotationSpeed_;
 	
-	/*if (stage_->GetMode(worldTransform_.translation_) != underGrand) {
-		worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_);
+	if (stage_->GetMode(worldTransform_.translation_) != underGrand) {
+		worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_)-30;
 	}
 	if (stage_->GetMode(worldTransform_.translation_) == underGrand) {
 		acceleration_.y += stage_->grav_;
 		worldTransform_.translation_.y -= acceleration_.y;
-	}*/
+	}
+	if (worldTransform_.translation_.y <= -60)
+		worldTransform_.translation_ = stage_->Respown();
 
 	//ImGui::Text("Random Number %s: %d", name_, random_number);
 	ImGui::Text("EnemyCount %s: %d", name_, GetObjects().size());
