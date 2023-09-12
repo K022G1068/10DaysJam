@@ -7,6 +7,7 @@ void Stage::Initialize(int num) {
 	model_ = Model::CreateFromOBJ("Stage", true);
 	for (int i = 0; i < 4; i++) {
 		worldTransform_[i].Initialize();
+		worldTransform_[i].scale_ = {5.0f, 5.0f, 5.0f};
 		worldTransform_[i].rotation_.y += 1.57f * i;
 		worldTransform_[i].UpdateMatrix();
 	}
