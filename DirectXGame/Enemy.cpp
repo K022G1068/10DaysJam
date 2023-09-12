@@ -97,17 +97,25 @@ void Enemy::Update() {
 	
 
 	//Collider
-	Collider::OnUpdate();
-
-	FlyingToGoal();
-
-	if (GetIsGoal())
+	if (!GetIsGoal())
 	{
-		ChangeState(new EnemyStateStop);
+		Collider::OnUpdate();
+
+		FlyingToGoal();
+
+		if (GetIsGoal()) {
+			ChangeState(new EnemyStateStop);
+		}
+		worldTransform_.translation_ += velocity_;
+
+		worldTransform_.UpdateMatrix();
 	}
-	worldTransform_.translation_ += velocity_;
+	else
+	{
+		velocity_ = {0,0,0};
+		collisionVelocity_ = {0, 0, 0};
+	}
 	
-	worldTransform_.UpdateMatrix();
 }
 
 void Enemy::Movement() { 
@@ -226,25 +234,27 @@ void EnemyStateApproachGoal::Update(Enemy* e) {
 
 void EnemyStateStop::Update(Enemy* e) { 
 	ImGui::Text("Stop state");
-	Vector3 velocity = {0, 0, 0};
-	e->SetVelocity(velocity);
-	stopTime_--;
-	if (stopTime_ <=0 )
+	if (!e->GetIsGoal())
 	{
-		stopTime_ = 0;
-		countTime_ = 0;
-		e->SetRandomNumber(1000);
-		if (e->GetRandomNumber() > e->GetPercetageDash())
-		{
-			GetSpotDistance(e);
-			GetEnemyDistance(e);
-			e->ChangeState(new EnemyStateApproachEnemy);
-		} else {
-			GetSpotDistance(e);
-			GetEnemyDistance(e);
-			e->ChangeState(new EnemyStateApproachSpot);
+		Vector3 velocity = {0, 0, 0};
+		e->SetVelocity(velocity);
+		stopTime_--;
+		if (stopTime_ <= 0) {
+			stopTime_ = 0;
+			countTime_ = 0;
+			e->SetRandomNumber(1000);
+			if (e->GetRandomNumber() > e->GetPercetageDash()) {
+				GetSpotDistance(e);
+				GetEnemyDistance(e);
+				e->ChangeState(new EnemyStateApproachEnemy);
+			} else {
+				GetSpotDistance(e);
+				GetEnemyDistance(e);
+				e->ChangeState(new EnemyStateApproachSpot);
+			}
 		}
 	}
+	
 }
 
 void EnemyStateApproachEnemy::Update(Enemy* e) {
