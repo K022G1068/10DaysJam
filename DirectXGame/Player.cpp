@@ -63,6 +63,7 @@ void Player::Update() {
 	Move();
 	worldTransform_.rotation_ += rotationSpeed_;
 	worldTransform_.translation_ += velocity_;
+	worldTransform_.UpdateMatrix();
 	worldTransform_.translation_ += spotVelocity_;
 	//プレイヤーの回転速度を徐々に遅くする
 	rotationSpeed_.y -= 0.0001f;
@@ -139,6 +140,8 @@ void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ =
 void Player::OnCollision() { 
 	Collider* collidedObject = GetCollidedCollider();
 	Vector3 ObjectRotationSpeed = collidedObject->GetRotationSpeed();
+	dash_->DisactivateDash(easing_);
+	velocity_ = {0, 0, 0};
 	if (rotationSpeed_.y <= ObjectRotationSpeed.y)
 	{
 		isFlying_ = true;
@@ -210,8 +213,8 @@ void Player::Move() {
 
 
 			ImGui::Text("TotalDash", Length(totalDash));
-			worldTransform_.translation_ += move;
-			worldTransform_.UpdateMatrix();
+			velocity_ = move;
+			
 		}
 		
 	} else {
