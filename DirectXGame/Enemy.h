@@ -11,6 +11,7 @@
 #include "Dash.h"
 #include <cstdlib>
 #include <ctime>
+#include "Stage.h"
 
 enum class Phase {
 	ApproachGoal,
@@ -132,6 +133,7 @@ public:
 	void SetNearEnemyBool(bool nearenemy) { nearEnemy_ = nearenemy; };
 	void SetNearestEnemyName(const char* name) { nearestEnemyName_ = name; };
 	void SetNearestEnemyPosition(Vector3 pos) { nearestEnemyPos_ = pos; };
+	void SetStage(Stage* stage) { stage_ = stage; };
 
 private:
 	WorldTransform worldTransform_;
@@ -163,6 +165,8 @@ private:
 
 	Easing easing_;
 	Easing easing2_;
+	Stage* stage_ = nullptr;
+	Vector3 acceleration_ = {0, 0, 0};
 
 	const char* nearestEnemyName_ = "";
 	Vector3 nearestEnemyPos_ = {0, 0, 0};

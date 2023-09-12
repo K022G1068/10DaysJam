@@ -2,6 +2,7 @@
 
 void FollowCamera::Initialize() { 
 	viewProjection_.Initialize(); 
+	viewProjection_.rotation_.x = 0.2f;
 }
 
 void FollowCamera::Update() { 

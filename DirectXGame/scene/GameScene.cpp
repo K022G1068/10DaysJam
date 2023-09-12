@@ -102,6 +102,7 @@ void GameScene::Initialize() {
 	//enemy_->SetSpot(spotPosition);
 	//enemy_->InitializeGauge(model_, modelGaugeBox_);
 	player_->SetGoal(goalPosition);
+	player_->SetStage(stage_);
 	objects_.push_back(player_);
 	//Initialize enemy
 	for (int i = 0; i < MAX_ENEMY; i++) {
@@ -114,6 +115,7 @@ void GameScene::Initialize() {
 		obj->SetSpot(spotPosition3);
 		obj->SetRandomNumber(i * 1000);
 		obj->InitializeGauge(model_, modelGaugeBox_);
+		obj->SetStage(stage_);
 		obj->GetRandomRotation(i);
 		enemies_.push_back(obj);
 		objects_.push_back(obj);

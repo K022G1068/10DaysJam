@@ -5,6 +5,7 @@
 #include "Model.h"
 #include "Gauge.h"
 #include "Dash.h"
+#include "Stage.h"
 
 class Player : public Collider
 {
@@ -29,12 +30,14 @@ public:
 	void FlyingToGoal();
 	const char* GetName() override { return name_; };
 	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
+	void SetStage(Stage* stage) { stage_ = stage; };
 
 private:
 	WorldTransform worldTransform_;
 	const ViewProjection* viewProjection_ = nullptr;
 	Vector3 colliderPos_;
 	Model* model_ = nullptr;
+	Stage* stage_ = nullptr;
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
 	float radius_ = 11.0f;
@@ -52,6 +55,7 @@ private:
 	Vector3 totalCollisionDash = {0, 0, 0};
 	float collisionPower_ = 0.0f;
 	const float kCharacterSpeed = 0.5f;
+	Vector3 acceleration_ = {0, 0, 0};
 	//Gamepad
 	XINPUT_STATE joyState_;
 	XINPUT_STATE prevjoyState_;

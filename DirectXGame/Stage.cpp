@@ -9,7 +9,7 @@ void Stage::Initialize(int num, Vector3 Pos) {
 		worldTransform_[i].Initialize();
 		worldTransform_[i].translation_ = Pos;
 		worldTransform_[i].rotation_.y += 1.57f * i;
-		worldTransform_[i].scale_ = {5.0f,5.0f,5.0f};
+		worldTransform_[i].scale_ = {5.0f, 5.0f, 5.0f};
 		worldTransform_[i].UpdateMatrix();
 	}
 }
