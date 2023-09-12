@@ -264,6 +264,12 @@ void EnemyStateApproachEnemy::Update(Enemy* e) {
 	ImGui::Text("%s NearestEnemy name: %s",e->GetName(), nearestEnemyName_);
 	toEnemy_ = e->GetWorldTransform().translation_ - nearestEnemyPos_;
 	Move(toEnemy_, e);
+
+	//If there is no collision
+	if (Length(toEnemy_) <= 0.1f)
+	{
+		e->ChangeState(new EnemyStateStop);
+	}
 }
 
 void EnemyStateApproachSpot::Update(Enemy* e) { 
