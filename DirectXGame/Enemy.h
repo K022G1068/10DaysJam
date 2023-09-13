@@ -1,6 +1,6 @@
 #pragma once
-#define STOP_MIN 60.0f
-#define STOP_MAX 180.0f
+#define STOP_MIN 30.0f
+#define STOP_MAX 90.0f
 #define GOAL_DEEPEST 70.0f
 
 #include "Base.h"

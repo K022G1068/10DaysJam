@@ -309,7 +309,7 @@ void Player::Move() {
 			{
 				move *= dash_->EaseInQuad(easing_) * 0.8f;
 				totalDash += dash_->EaseInQuad(easing_) * 0.8f;
-				if (Length(totalDash) >= 50.0f)
+				if (Length(totalDash) >= 25.0f)
 				{
 					dash_->DisactivateDash(easing_);
 				}

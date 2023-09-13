@@ -152,7 +152,7 @@ void Enemy::Update() {
 		if (GetIsGoal()) {
 			ChangeState(new EnemyStateStop);
 		}
-		worldTransform_.translation_ += velocity_ * 2.0f;
+		worldTransform_.translation_ += velocity_ * 1.4f;
 		worldTransform_.translation_ += spotVelocity_;
 		worldTransform_.translation_ += dashVelocity_;
 
@@ -297,8 +297,8 @@ void Enemy::SetPositionLerp(Vector3 pos) {
 void Enemy::DoDash(Vector3 direction) {
 	if (dash_->GetDash()) {
 		ImGui::Text("%s is dashing", name_);
-		direction *= dash_->EaseInQuad(easing_) * 15.2f;
-		totalDash += dash_->EaseInQuad(easing_) * 15.2f;
+		direction *= dash_->EaseInQuad(easing_) * 10.2f;
+		totalDash += dash_->EaseInQuad(easing_) * 10.2f;
 		direction.y = 0.0f;
 		worldTransform_.translation_ += direction;
 		if (Length(totalDash) >= 50.0f) {
