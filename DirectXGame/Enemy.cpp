@@ -290,8 +290,8 @@ void Enemy::SetPositionLerp(Vector3 pos) {
 void Enemy::DoDash(Vector3 direction) {
 	if (dash_->GetDash()) {
 		ImGui::Text("%s is dashing", name_);
-		direction *= dash_->EaseInQuad(easing_) * 10.2f;
-		totalDash += dash_->EaseInQuad(easing_) * 10.2f;
+		direction *= dash_->EaseInQuad(easing_) * 15.2f;
+		totalDash += dash_->EaseInQuad(easing_) * 15.2f;
 		direction.y = 0.0f;
 		worldTransform_.translation_ += direction;
 		if (Length(totalDash) >= 50.0f) {
