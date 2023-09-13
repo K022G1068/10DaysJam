@@ -49,6 +49,7 @@ private:
 	uint32_t textureHandle_ = 0u;
 	Input* input_ = nullptr;
 	float radius_ = 5.5f;
+	float gaugeRadius_ = 11.0f;
 	bool showCollider_ = true;
 	bool isFlying_ = false;
 	const char* name_;

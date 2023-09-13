@@ -47,7 +47,7 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 	// Gauge
 	gauge_ = new Gauge();
 	Vector3 gaugePos_(0.0f, 15.0f, 0.0f);
-	gauge_->Initialize(gaugeModel, gaugeModelBox, gaugePos_, viewProjection_, radius_);
+	gauge_->Initialize(gaugeModel, gaugeModelBox, gaugePos_, viewProjection_, gaugeRadius_);
 	//gauge_->SetParent(&worldTransform_);
 
 	//State initialize
@@ -77,7 +77,9 @@ void Enemy::Update() {
 	//ImGui::Text("EnemyCount %s: %d", name_, GetObjects().size());
 	worldTransform_.rotation_ += rotationSpeed_;
 	
-
+	ImGui::Text(
+	    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
+	    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
 	/*ImGui::Text("GoalPos %s: %f %f %f", name_, goalPos_.x, goalPos_.y, goalPos_.z);
 	ImGui::Text("Stop Time %s: %d", name_, state_->GetTimer());
 	ImGui::Text("Count Time %s: %d", name_, state_->GetCountTimer());
@@ -101,7 +103,8 @@ void Enemy::Update() {
 		// Reduce rotation;
 		rotationSpeed_.y -= 0.0001f;
 		state_->SetDash(dash_);
-
+		Collider::OnUpdate();
+		state_->Update(this);
 		// State update
 		if (goal_->GetGoalieList().size() == goalNumber_ - 1) {
 			ChangeState(new EnemyStateApproachGoal);
@@ -121,7 +124,7 @@ void Enemy::Update() {
 			dash_->SetCanDash(true);
 		}
 
-		state_->Update(this);
+		
 	
 
 		{
@@ -138,7 +141,7 @@ void Enemy::Update() {
 		if (easing_.time <= easing_.duration) {
 			easing_.time += 0.01f;
 		}
-		Collider::OnUpdate();
+
 		currentGoalCount = (int)goal_->GetGoalieList().size();
 		FlyingToGoal();
 		if (stage_->GetMode(worldTransform_.translation_) != underGrand) {

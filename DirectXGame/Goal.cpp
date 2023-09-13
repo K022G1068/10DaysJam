@@ -8,10 +8,10 @@ void Goal::Initialize(Model* model, Vector3& goalPosition, ViewProjection& viewP
 	worldTransform_.translation_ = goalPosition;
 
 	//Collider
-	Vector3 colliderPos(0, 15.0f, 0.0f);
+	Vector3 colliderPos(0, 15.0f, 15.0f);
 	Collider::BaseInit(viewProjection, showCollider_, name_);
-	Collider::SetCollider(colliderPos, radius_);
 	Collider::SetColliderParent(&worldTransform_);
+	Collider::SetCollider(colliderPos, radius_);
 
 	//Attribute
 	SetAttribute(kCollisionAttributeGoal);
@@ -20,9 +20,13 @@ void Goal::Initialize(Model* model, Vector3& goalPosition, ViewProjection& viewP
 
 void Goal::Update() {
 	ImGui::Begin("Goal ImGui");
+	ImGui::Text(
+	    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
+	    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
 	ImGui::Text("Goal Count %d", goalieList_.size());
 	ImGui::Text("Koma Count %d", komaCount_);
 	ImGui::End();
+
 
 	Collider::OnUpdate();
 	worldTransform_.UpdateMatrix(); 

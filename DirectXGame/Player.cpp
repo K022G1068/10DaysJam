@@ -45,7 +45,7 @@ void Player::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 	// Gauge
 	gauge_ = new Gauge();
 	Vector3 gaugePos_(0.0f, 100.0f, 0.0f);
-	gauge_->Initialize(gaugeModel, gaugeModelBox,gaugePos_, viewProjection_, radius_);
+	gauge_->Initialize(gaugeModel, gaugeModelBox,gaugePos_, viewProjection_, gaugeRadius_);
 	
 }
 
@@ -53,8 +53,10 @@ Player::~Player() {}
 
 void Player::Update() {
 
-	
 	worldTransform_.rotation_ += rotationSpeed_;
+	ImGui::Text(
+	    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
+	    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
 	if (!GetIsGoal())
 	{
 		rotationSpeed_.y -= 0.0001f;
