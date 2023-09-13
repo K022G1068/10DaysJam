@@ -104,14 +104,14 @@ void GameScene::Initialize() {
 	Vector3 railPosition(0, 0, 0.0f);
 	Vector3 goalPosition(0, -25.0f, 280.0f);
 	Vector3 stagePosition(0, -30.0f, 300.0f);
-	Vector3 spotPosition1(0.0f, -30.0f, 175.0f);
-	Vector3 spotPosition2(0.0f, -30.0f, 230.0f);
-	Vector3 spotPosition3(0.0f, -30.0f, 60.0f);
-	Vector3 spotPosition4(-200.0f, -30.0f, 0.0f);
-	Vector3 spotPosition5(200.0f, -30.0f, 0.0f);
-	Vector3 spotPosition6(-45.0f, -30.0f, 225.0f);
-	Vector3 spotPosition7(45.0f, -30.0f, 215.0f);
-	Vector3 spotPosition8(0.0f, -30.0f, 258.0f);
+	Vector3 spotPosition1(0.0f, -15.0f, 175.0f);
+	Vector3 spotPosition2(0.0f, -15.0f, 220.0f);
+	Vector3 spotPosition3(0.0f, -15.0f, 60.0f);
+	Vector3 spotPosition4(-200.0f, -15.0f, 0.0f);
+	Vector3 spotPosition5(200.0f, -15.0f, 0.0f);
+	Vector3 spotPosition6(-45.0f, -15.0f, 225.0f);
+	Vector3 spotPosition7(45.0f, -15.0f, 215.0f);
+	Vector3 spotPosition8(0.0f, -15.0f, 260.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
 
 	followCamera_->Initialize();
@@ -307,20 +307,20 @@ void GameScene::Draw() {
 	stage_->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
 
-	for (Enemy* enemy : enemies_) {
-		enemy->DrawPrimitive();
-	}
+	//for (Enemy* enemy : enemies_) {
+	//	enemy->DrawPrimitive();
+	//}
 
-	player_->DrawPrimitive();
-	goal_->DrawPrimitive();
-	spot1_->DrawPrimitive();
-	spot2_->DrawPrimitive();
-	spot3_->DrawPrimitive();
-	spot4_->DrawPrimitive();
-	spot5_->DrawPrimitive();
-	spot6_->DrawPrimitive();
-	spot7_->DrawPrimitive();
-	spot8_->DrawPrimitive();
+	//player_->DrawPrimitive();
+	//goal_->DrawPrimitive();
+	//spot1_->DrawPrimitive();
+	//spot2_->DrawPrimitive();
+	//spot3_->DrawPrimitive();
+	//spot4_->DrawPrimitive();
+	//spot5_->DrawPrimitive();
+	//spot6_->DrawPrimitive();
+	//spot7_->DrawPrimitive();
+	//spot8_->DrawPrimitive();
 	
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

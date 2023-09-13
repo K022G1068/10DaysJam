@@ -55,16 +55,16 @@ Player::~Player() {}
 void Player::Update() {
 
 	worldTransform_.rotation_ += rotationSpeed_;
-	ImGui::Text(
-	    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
-	    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
-	ImGui::Text("Player isGoal %d", GetIsGoal());
-	ImGui::Text("Goalie size %d", goal_->GetGoalieList().size());
-	ImGui::Text("Goal number %d", gameManager_->GetGoalNumber());
+	//ImGui::Text(
+	//    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
+	//    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
+	//ImGui::Text("Player isGoal %d", GetIsGoal());
+	//ImGui::Text("Goalie size %d", goal_->GetGoalieList().size());
+	//ImGui::Text("Goal number %d", gameManager_->GetGoalNumber());
 
 	if (!GetIsGoal())
 	{
-		rotationSpeed_.y -= 0.0005f;
+		rotationSpeed_.y -= 0.00035f;
 		worldTransform_.rotation_ += rotationSpeed_;
 		worldTransform_.translation_ += velocity_;
 
@@ -101,7 +101,7 @@ void Player::Update() {
 		if (rotationSpeed_.y >= MAX_ROTATION) {
 			kCharacterSpeed = MAX_CHARACTER_SPEED;
 		}
-		ImGui::Text("Character speed %f", kCharacterSpeed);
+		//ImGui::Text("Character speed %f", kCharacterSpeed);
 		if (Length(spotVelocity_) >= 0) {
 			countSpotFlyingTimer_++;
 			if (countSpotFlyingTimer_ >= 60) {
@@ -134,8 +134,8 @@ void Player::Update() {
 		currentGoalCount = (int)goal_->GetGoalieList().size();
 		FlyingToGoal();
 		// ImGui
-		ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
-		ImGui::DragFloat3("Rotation", &rotationSpeed_.x, 0.001f);
+		//ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
+		//ImGui::DragFloat3("Rotation", &rotationSpeed_.x, 0.001f);
 	}
 	else
 	{
@@ -225,12 +225,12 @@ void Player::FlyingToGoal() {
 		//How far is the object going to fly
 		float limit = collisionPower_ * 50.0f + 50.0f;
 
-		ImGui::Text("Limit %f", limit);
+		//ImGui::Text("Limit %f", limit);
 		if (goal_->GetGoalieList().size() <= gameManager_->GetGoalNumber()) {
 
 			totalCollisionDash +=
 			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
-			ImGui::Text("Totaldash %f", Length(totalCollisionDash));
+			//ImGui::Text("Totaldash %f", Length(totalCollisionDash));
 			worldTransform_.translation_ +=
 			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
 			if (Length(totalCollisionDash) >= limit) {
@@ -243,7 +243,7 @@ void Player::FlyingToGoal() {
 		{
 			totalCollisionDash +=
 			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 3.0f;
-			ImGui::Text("Totaldash %f", Length(totalCollisionDash));
+			//ImGui::Text("Totaldash %f", Length(totalCollisionDash));
 			worldTransform_.translation_ +=
 			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 3.0f;
 			if (Length(totalCollisionDash) >= limit) {
@@ -327,7 +327,7 @@ void Player::Move() {
 			move = TransformNormal(move, rotmat);
 
 			if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && dash_->GetCanDash()) {
-				ImGui::Text("DASSSHHHH" );
+				//ImGui::Text("DASSSHHHH" );
 				dash_->ActivateDash();
 				float reduceAmount = 0.3f * MAX_ROTATION;
 				rotationSpeed_.y -= reduceAmount;
@@ -349,13 +349,13 @@ void Player::Move() {
 			
 
 
-			ImGui::Text("TotalDash", Length(totalDash));
+			//ImGui::Text("TotalDash", Length(totalDash));
 			velocity_ = move;
 			
 		}
 		
 	} else {
-		ImGui::Text("No controller detected");
+		//ImGui::Text("No controller detected");
 	}
 	
 	worldTransform_.translation_ += stage_->Sliding(worldTransform_.translation_);

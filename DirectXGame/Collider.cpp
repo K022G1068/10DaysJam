@@ -11,7 +11,7 @@ void Collider::BaseInit(ViewProjection& viewProjection, bool& show, const char* 
 void Collider::OnUpdate() {
 	color_ = WHITE_;
 	// ImGui
-	ImGui::Checkbox(name_, &showCollider_);
+	//ImGui::Checkbox(name_, &showCollider_);
 	SetShowCollider(showCollider_);
 
 	if (rotationSpeed_.y >= MAX_ROTATION)

@@ -1,11 +1,12 @@
 #include "Spot.h"
 
 void Spot::Initialize(Model* model, Vector3& spotPosition, ViewProjection& viewProjection) {
-	assert(model);
+	//assert(model);
 	modelSpot_ = model;
 	BaseInit(viewProjection, showCollider_, name_);
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = spotPosition;
+	worldTransform_.rotation_.x = 0.2f;
 
 	// Collider
 	Vector3 colliderPos(0.0f, 0.0f, 0.0f);
@@ -19,7 +20,7 @@ void Spot::Initialize(Model* model, Vector3& spotPosition, ViewProjection& viewP
 }
 
 void Spot::Update() {
-	worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_) - 30;
+	worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_) - 29;
 	Collider::OnUpdate();
 	worldTransform_.UpdateMatrix();
 }
@@ -32,7 +33,7 @@ void Spot::DrawPrimitive() { Collider::DrawCollider(); }
 
 void Spot::IncreaseRotationSpeed(Collider* collider) {
 	Vector3 rotationspeed = collider->GetRotationSpeed();
-	ImGui::Text("Collider %f %f %f", rotationspeed);
+	//ImGui::Text("Collider %f %f %f", rotationspeed);
 	rotationspeed += 0.001f;
 	rotationspeed.x = 0.0f;
 	rotationspeed.z = 0.0f;
@@ -40,8 +41,8 @@ void Spot::IncreaseRotationSpeed(Collider* collider) {
 	collider->SetIsOnSpot(true);
 	Vector3 direction = {0, 0, 0};
 	if (rotationspeed.y >= MAX_ROTATION) {
-		ImGui::Text("Spot countime %d", countTime_);
-		ImGui::Text("Collided object %s", collider->GetName());
+		//ImGui::Text("Spot countime %d", countTime_);
+		//ImGui::Text("Collided object %s", collider->GetName());
 		countTime_++;
 		SetRandomDirection();
 		if (countTime_ >= MAX_STAY_TIME) {

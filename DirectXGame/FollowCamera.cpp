@@ -33,7 +33,7 @@ void FollowCamera::Update() {
 		rotation = Normalize(rotation) * kCharacterRotationSpeed;
 		rotation.z = 0.0f;
 	} else {
-		ImGui::Text("No controller detected");
+		//ImGui::Text("No controller detected");
 	}
 	viewProjection_.rotation_ += rotation;
 	

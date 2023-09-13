@@ -68,12 +68,12 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 void Enemy::Update() {
 
 	// ImGui::Text("Random Number %s: %d", name_, random_number);
-	ImGui::Text("isGoal %s: %d", name_, GetIsGoal());
+	//ImGui::Text("isGoal %s: %d", name_, GetIsGoal());
 	worldTransform_.rotation_ += rotationSpeed_;
 
-	ImGui::Text(
-	    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
-	    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
+	//ImGui::Text(
+	//    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
+	//    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
 	/*ImGui::Text("GoalPos %s: %f %f %f", name_, goalPos_.x, goalPos_.y, goalPos_.z);
 	ImGui::Text("Stop Time %s: %d", name_, state_->GetTimer());
 	ImGui::Text("Count Time %s: %d", name_, state_->GetCountTimer());
@@ -90,11 +90,11 @@ void Enemy::Update() {
 	// ImGui::Text("Nearenemy bool %d",nearEnemy_);
 	// ImGui::Text("Nearenemy name %s: %s", name_, nearestEnemyName_);
 
-	ImGui::Text("%s can dash: %d", name_, dash_->GetCanDash());
+	//ImGui::Text("%s can dash: %d", name_, dash_->GetCanDash());
 	// Collider
 	if (!GetIsGoal()) {
 		// Reduce rotation;
-		rotationSpeed_.y -= 0.0001f;
+		rotationSpeed_.y -= 0.00015f;
 		state_->SetDash(dash_);
 		Collider::OnUpdate();
 		state_->Update(this);
@@ -196,10 +196,10 @@ void Enemy::Update() {
 }
 
 void Enemy::Movement() {
-	ImGui::Begin("Enemy movement");
-	ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
-	ImGui::DragFloat3("RotationSpeed", &rotationSpeed_.x, 0.001f);
-	ImGui::End();
+	//ImGui::Begin("Enemy movement");
+	//ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
+	//ImGui::DragFloat3("RotationSpeed", &rotationSpeed_.x, 0.001f);
+	//ImGui::End();
 }
 
 void Enemy::OnCollision() {
@@ -243,12 +243,12 @@ void Enemy::FlyingToGoal() {
 		// How far is the object going to fly
 		float limit = collisionPower_ * 25.0f + 50.0f;
 
-		ImGui::Text("Enemy Limit %f", limit);
+		//ImGui::Text("Enemy Limit %f", limit);
 		if (goal_->GetGoalieList().size() <= gameManager_->GetGoalNumber())
 		{
 			totalCollisionDash +=
 			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 3.0f;
-			ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
+			//ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
 			worldTransform_.translation_ +=
 			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 3.0f;
 			if (Length(totalCollisionDash) >= limit) {
@@ -267,7 +267,7 @@ void Enemy::FlyingToGoal() {
 		{
 			totalCollisionDash +=
 			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 3.0f;
-			ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
+			//ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
 			worldTransform_.translation_ +=
 			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 3.0f;
 			if (Length(totalCollisionDash) >= limit) {
@@ -296,7 +296,7 @@ void Enemy::SetPositionLerp(Vector3 pos) {
 
 void Enemy::DoDash(Vector3 direction) {
 	if (dash_->GetDash()) {
-		ImGui::Text("%s is dashing", name_);
+		//ImGui::Text("%s is dashing", name_);
 		direction *= dash_->EaseInQuad(easing_) * 10.2f;
 		totalDash += dash_->EaseInQuad(easing_) * 10.2f;
 		direction.y = 0.0f;
@@ -363,11 +363,11 @@ void EnemyStateApproachGoal::Update(Enemy* e) {
 	toGoal_ = e->GetWorldTransform().translation_ - goalPos_;
 	Move(toGoal_, e);
 
-	ImGui::Text("%f %f %f", velocity_);
+	//ImGui::Text("%f %f %f", velocity_);
 }
 
 void EnemyStateStop::Update(Enemy* e) {
-	ImGui::Text("Stop state");
+	//ImGui::Text("Stop state");
 	if (!e->GetIsGoal()) {
 		Vector3 velocity = {0, 0, 0};
 		e->SetVelocity(velocity);
@@ -398,7 +398,7 @@ void EnemyStateStop::Update(Enemy* e) {
 
 void EnemyStateApproachEnemy::Update(Enemy* e) {
 	if (e->GetNearEnemyBool()) {
-		ImGui::Text("Approach enemy state");
+		//ImGui::Text("Approach enemy state");
 
 		/*ImGui::Text(
 		    "%s Position: %f %f %f", e->GetName(), e->GetWorldTransform().translation_.x,
@@ -433,16 +433,16 @@ void EnemyStateApproachEnemy::Update(Enemy* e) {
 
 void EnemyStateApproachSpot::Update(Enemy* e) {
 	GetSpotDistance(e);
-	ImGui::Text("%s To Spot state", e->GetName());
+	//ImGui::Text("%s To Spot state", e->GetName());
 
 	toSpot_ = e->GetWorldTransform().translation_ - nearestSpotPos_;
 	Move(toSpot_, e);
 
-	ImGui::Text("toSpot length %s  %f", e->GetName(), Length(toSpot_));
+	//ImGui::Text("toSpot length %s  %f", e->GetName(), Length(toSpot_));
 	if (e->GetIsOnSpot()) {
 		stopTime_--;
 		GetEnemyDistance(e);
-		ImGui::Text("%s StopTime %d", e->GetName(), stopTime_);
+		//ImGui::Text("%s StopTime %d", e->GetName(), stopTime_);
 		if (stopTime_ <= 0) {
 
 			if (e->GetNearEnemyBool()) {
@@ -583,13 +583,13 @@ void BaseEnemyState::EasingInitialize() {
 void EnemyStateNothing::Update(Enemy* e) {
 	GetEnemyDistance(e);
 	GetSpotDistance(e);
-	ImGui::Text(
-	    "%s NearestEnemy Position: %f %f %f", e->GetName(), e->GetNearestEnemyPosition().x,
-	    e->GetNearestEnemyPosition().y, e->GetNearestEnemyPosition().z);
-	ImGui::Text(
-	    "%s NearestSpot: %f %f %f", e->GetName(), nearestSpotPos_.x, nearestSpotPos_.y,
-	    nearestSpotPos_.z);
-	ImGui::Text("Nearenemy bool %d", e->GetNearEnemyBool());
+	//ImGui::Text(
+	//    "%s NearestEnemy Position: %f %f %f", e->GetName(), e->GetNearestEnemyPosition().x,
+	//    e->GetNearestEnemyPosition().y, e->GetNearestEnemyPosition().z);
+	//ImGui::Text(
+	//    "%s NearestSpot: %f %f %f", e->GetName(), nearestSpotPos_.x, nearestSpotPos_.y,
+	//    nearestSpotPos_.z);
+	//ImGui::Text("Nearenemy bool %d", e->GetNearEnemyBool());
 }
 
 
