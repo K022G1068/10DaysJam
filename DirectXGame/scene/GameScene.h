@@ -1,5 +1,5 @@
 #pragma once
-#define MAX_ENEMY 3
+#define MAX_ENEMY 6
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -74,6 +74,8 @@ private: // メンバ変数
 	Spot* spot1_ = nullptr;
 	Spot* spot2_ = nullptr;
 	Spot* spot3_ = nullptr;
+	Spot* spot4_ = nullptr;
+	Spot* spot5_ = nullptr;
 	Skydome* skydome_ = nullptr;
 	Stage* stage_ = nullptr;
 	GameManager* gameManager_ = nullptr;

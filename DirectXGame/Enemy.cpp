@@ -225,7 +225,7 @@ void Enemy::OnCollision() {
 		if (strcmp(collidedObject->GetName(), "Spot") != 0)
 		{
 			collisionVelocity_ = {0, 0, 0};
-			collisionPower_ = (ObjectRotationSpeed.y - rotationSpeed_.y) * 20.0f;
+			collisionPower_ = (ObjectRotationSpeed.y - rotationSpeed_.y) * 10.0f;
 			toGoal_ = worldTransform_.translation_ - goalPos_;
 			float lenght = Length(toGoal_);
 			toGoal_.x /= lenght;
@@ -259,7 +259,7 @@ float Enemy::GetRandomRotationDegree() {
 void Enemy::FlyingToGoal() {
 	if (isFlying_) {
 		// How far is the object going to fly
-		float limit = collisionPower_ * 10.0f + 50.0f;
+		float limit = collisionPower_ * 25.0f + 50.0f;
 
 		ImGui::Text("Enemy Limit %f", limit);
 		totalCollisionDash += collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
@@ -290,8 +290,8 @@ void Enemy::SetPositionLerp(Vector3 pos) {
 void Enemy::DoDash(Vector3 direction) {
 	if (dash_->GetDash()) {
 		ImGui::Text("%s is dashing", name_);
-		direction *= dash_->EaseInQuad(easing_) * -1.2f;
-		totalDash += dash_->EaseInQuad(easing_) * -1.2f;
+		direction *= dash_->EaseInQuad(easing_) * 8.2f;
+		totalDash += dash_->EaseInQuad(easing_) * 8.2f;
 		direction.y = 0.0f;
 		worldTransform_.translation_ += direction;
 		if (Length(totalDash) >= 50.0f) {
@@ -375,7 +375,7 @@ void EnemyStateStop::Update(Enemy* e) {
 				GetEnemyDistance(e);
 				if (dash_->GetCanDash()) {
 					
-					float reduceAmount = 0.3f * MAX_ROTATION;
+					float reduceAmount = 0.1f * MAX_ROTATION;
 					Vector3 rotationSpeed = e->GetRotationSpeed();
 					rotationSpeed.y -= reduceAmount;
 					e->SetRotationSpeed(rotationSpeed);
@@ -454,7 +454,7 @@ void EnemyStateApproachSpot::Update(Enemy* e) {
 				GetSpotDistance(e);
 				GetEnemyDistance(e);
 				if (dash_->GetCanDash()) {
-					float reduceAmount = 0.3f * MAX_ROTATION;
+					float reduceAmount = 0.1f * MAX_ROTATION;
 					Vector3 rotationSpeed = e->GetRotationSpeed();
 					rotationSpeed.y -= reduceAmount;
 					e->SetRotationSpeed(rotationSpeed);

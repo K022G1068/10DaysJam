@@ -15,6 +15,8 @@ GameScene::~GameScene() {
 	delete spot1_;
 	delete spot2_;
 	delete spot3_;
+	delete spot4_;
+	delete spot5_;
 	delete skydome_;
 	delete stage_;
 	delete gameManager_;
@@ -63,6 +65,8 @@ void GameScene::Initialize() {
 	spot1_ = new Spot();
 	spot2_ = new Spot();
 	spot3_ = new Spot();
+	spot4_ = new Spot();
+	spot5_ = new Spot();
 	skydome_ = new Skydome();
 	stage_ = new Stage();
 	gameManager_ = new GameManager();
@@ -88,6 +92,8 @@ void GameScene::Initialize() {
 	Vector3 spotPosition1(80.0f, -30.0f, 200.0f);
 	Vector3 spotPosition2(-70.0f, -30.0f, 150.0f);
 	Vector3 spotPosition3(-10.0f, -30.0f,-50.0f);
+	Vector3 spotPosition4(-100.0f, -30.0f,-50.0f);
+	Vector3 spotPosition5(100.0f, -30.0f,-50.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
 	
 	followCamera_->Initialize();
@@ -98,6 +104,8 @@ void GameScene::Initialize() {
 	spot1_->Initialize(modelSpot_, spotPosition1, viewProjection_);
 	spot2_->Initialize(modelSpot_, spotPosition2, viewProjection_);
 	spot3_->Initialize(modelSpot_, spotPosition3, viewProjection_);
+	spot4_->Initialize(modelSpot_, spotPosition4, viewProjection_);
+	spot5_->Initialize(modelSpot_, spotPosition5, viewProjection_);
 	goal_->Initialize(modelGoal_, goalPosition, viewProjection_);
 	stage_->Initialize(1, stagePosition);
 	//enemy_->SetGoal(goalPosition);
@@ -109,6 +117,8 @@ void GameScene::Initialize() {
 	spot1_->SetStage(stage_);
 	spot2_->SetStage(stage_);
 	spot3_->SetStage(stage_);
+	spot4_->SetStage(stage_);
+	spot5_->SetStage(stage_);
 	objects_.push_back(player_);
 	gameManager_->Initialize();
 	gameManager_->GetGoal(goal_);
@@ -122,6 +132,8 @@ void GameScene::Initialize() {
 		obj->SetSpot(spotPosition1);
 		obj->SetSpot(spotPosition2);
 		obj->SetSpot(spotPosition3);
+		obj->SetSpot(spotPosition4);
+		obj->SetSpot(spotPosition5);
 		obj->SetGoal(goal_);
 		obj->SetRandomNumber(i * 1000);
 		obj->InitializeGauge(model_, modelGaugeBox_);
@@ -152,6 +164,8 @@ void GameScene::Update() {
 	spot1_->Update();
 	spot2_->Update();
 	spot3_->Update();
+	spot4_->Update();
+	spot5_->Update();
 	skydome_->Update();
 	stage_->Update();
 	gameManager_->Update();
@@ -196,6 +210,8 @@ void GameScene::Update() {
 	CollisionManager::GetInstance()->Register(spot1_);
 	CollisionManager::GetInstance()->Register(spot2_);
 	CollisionManager::GetInstance()->Register(spot3_);
+	CollisionManager::GetInstance()->Register(spot4_);
+	CollisionManager::GetInstance()->Register(spot5_);
 	CollisionManager::GetInstance()->CheckAllCollisions();
 	CollisionManager::GetInstance()->ClearList();
 
@@ -234,6 +250,8 @@ void GameScene::Draw() {
 	spot1_->Draw(viewProjection_);
 	spot2_->Draw(viewProjection_);
 	spot3_->Draw(viewProjection_);
+	spot4_->Draw(viewProjection_);
+	spot5_->Draw(viewProjection_);
 	stage_->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
 
@@ -246,6 +264,8 @@ void GameScene::Draw() {
 	spot1_->DrawPrimitive();
 	spot2_->DrawPrimitive();
 	spot3_->DrawPrimitive();
+	spot4_->DrawPrimitive();
+	spot5_->DrawPrimitive();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
