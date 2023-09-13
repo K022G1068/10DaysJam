@@ -4,6 +4,13 @@
 void GameManager::Initialize() {
 	std::srand(static_cast<unsigned>(std::time(nullptr)) * 1000);
 	goalNumber_ = (std::rand() % 7 + 1) ;
+
+	for (int i = 0; i < 8; i++) {
+		sprintf_s(directory_, 32, "GoalNumber/%d.png", i);
+		textureHandle_[i] = TextureManager::Load(directory_);
+	}
+	textureHandle_[8] = TextureManager::Load("GoalNumber/Whatnumber.png");
+	UI_->Create(textureHandle_[8], {0, 0});
 }
 
 void GameManager::Update() { ;
@@ -26,3 +33,5 @@ void GameManager::Update() { ;
 }
 
 void GameManager::Restart() {}
+
+void GameManager::Draw() { UI_->Draw(); }
