@@ -220,6 +220,7 @@ void Player::OnCollision() {
 	{
 		dash_->DisactivateDash(easing_);
 		velocity_ = {0, 0, 0};
+		isStoping_ = true;
 	}
 	
 	if (rotationSpeed_.y <= ObjectRotationSpeed.y)
@@ -239,7 +240,7 @@ void Player::OnCollision() {
 	}
 	else
 	{
-		isStoping_ = true;
+		
 	}
 }
 
