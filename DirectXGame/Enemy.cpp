@@ -365,7 +365,6 @@ void EnemyStateStop::Update(Enemy* e) {
 		e->SetVelocity(velocity);
 		stopTime_--;
 		if (stopTime_ <= 0) {
-			stopTime_ = 0;
 			e->SetRandomNumber(1000);
 			if (e->GetRandomNumber() < e->GetPercetageDash()) {
 				GetSpotDistance(e);
@@ -377,6 +376,8 @@ void EnemyStateStop::Update(Enemy* e) {
 					rotationSpeed.y -= reduceAmount;
 					e->SetRotationSpeed(rotationSpeed);
 					e->ChangeState(new EnemyStateApproachEnemy);
+					GetSpotDistance(e);
+					GetEnemyDistance(e);
 				}
 			} else {
 				e->ChangeState(new EnemyStateApproachSpot);
@@ -441,10 +442,12 @@ void EnemyStateApproachSpot::Update(Enemy* e) {
 		stopTime_--;
 		ImGui::Text("%s Stop Time %d", e->GetName(), stopTime_);
 		if (stopTime_ <= 0) {
-			GetSpotDistance(e);
-			GetEnemyDistance(e);
+			
 			if (e->GetNearEnemyBool()) {
+				GetSpotDistance(e);
+				GetEnemyDistance(e);
 				e->ChangeState(new EnemyStateApproachEnemy);
+
 				if (dash_->GetCanDash()) {
 					dash_->ActivateDash();
 					float reduceAmount = 0.3f * MAX_ROTATION;
@@ -452,6 +455,7 @@ void EnemyStateApproachSpot::Update(Enemy* e) {
 					rotationSpeed.y -= reduceAmount;
 					e->SetRotationSpeed(rotationSpeed);
 				}
+			
 				stopTime_ = 0;
 			}
 			else
