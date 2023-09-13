@@ -37,9 +37,9 @@ void FollowCamera::Update() {
 	}
 	viewProjection_.rotation_ += rotation;
 	
-	if (viewProjection_.rotation_.x >= 0.2f)
+	if (viewProjection_.rotation_.x >= 0.5f)
 	{
-		viewProjection_.rotation_.x = 0.2f;
+		viewProjection_.rotation_.x = 0.5f;
 	}
 	if (viewProjection_.rotation_.x <= -0.2f) {
 		viewProjection_.rotation_.x = -0.2f;

@@ -152,7 +152,7 @@ void Enemy::Update() {
 		if (GetIsGoal()) {
 			ChangeState(new EnemyStateStop);
 		}
-		worldTransform_.translation_ += velocity_ * 2.0f;
+		worldTransform_.translation_ += velocity_ * 1.1f;
 		worldTransform_.translation_ += spotVelocity_;
 		worldTransform_.translation_ += dashVelocity_;
 
@@ -244,21 +244,44 @@ void Enemy::FlyingToGoal() {
 		float limit = collisionPower_ * 25.0f + 50.0f;
 
 		ImGui::Text("Enemy Limit %f", limit);
-		totalCollisionDash +=
-		    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
-		ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
-		worldTransform_.translation_ +=
-		    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
-		if (Length(totalCollisionDash) >= limit) {
-			dash_->DisactivateDash(easing2_);
-			totalCollisionDash = {0.0f, 0.0f, 0.0f};
-			collisionVelocity_ = {0, 0, 0};
+		if (goal_->GetGoalieList().size() <= gameManager_->GetGoalNumber())
+		{
+			totalCollisionDash +=
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+			ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
+			worldTransform_.translation_ +=
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+			if (Length(totalCollisionDash) >= limit) {
+				dash_->DisactivateDash(easing2_);
+				totalCollisionDash = {0.0f, 0.0f, 0.0f};
+				collisionVelocity_ = {0, 0, 0};
 
-			// Stop the object
-			// state_->SetTimer();
-			this->ChangeState(new EnemyStateStop);
-			isFlying_ = false;
+				// Stop the object
+				// state_->SetTimer();
+				this->ChangeState(new EnemyStateStop);
+				isFlying_ = false;
+			}
 		}
+
+		else
+		{
+			totalCollisionDash +=
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 5.0f;
+			ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
+			worldTransform_.translation_ +=
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 5.0f;
+			if (Length(totalCollisionDash) >= limit) {
+				dash_->DisactivateDash(easing2_);
+				totalCollisionDash = {0.0f, 0.0f, 0.0f};
+				collisionVelocity_ = {0, 0, 0};
+
+				// Stop the object
+				// state_->SetTimer();
+				this->ChangeState(new EnemyStateStop);
+				isFlying_ = false;
+			}
+		}
+	
 	}
 }
 
@@ -274,8 +297,8 @@ void Enemy::SetPositionLerp(Vector3 pos) {
 void Enemy::DoDash(Vector3 direction) {
 	if (dash_->GetDash()) {
 		ImGui::Text("%s is dashing", name_);
-		direction *= dash_->EaseInQuad(easing_) * 15.2f;
-		totalDash += dash_->EaseInQuad(easing_) * 15.2f;
+		direction *= dash_->EaseInQuad(easing_) * 10.2f;
+		totalDash += dash_->EaseInQuad(easing_) * 10.2f;
 		direction.y = 0.0f;
 		worldTransform_.translation_ += direction;
 		if (Length(totalDash) >= 50.0f) {

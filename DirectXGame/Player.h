@@ -13,6 +13,7 @@
 #include "Stage.h"
 
 class Goal;
+class GameManager;
 class Player : public Collider
 {
 public:
@@ -41,6 +42,7 @@ public:
 	float GetRandomRotationDegree();
 	void SetGoal(Goal* goal) { goal_ = goal; };
 	void StopMovement();
+	void SetGameManager(GameManager* manager) { gameManager_ = manager; };
 
 private:
 	WorldTransform worldTransform_;
@@ -71,6 +73,7 @@ private:
 	int currentGoalCount = 0;
 	int countStopTime = 0;
 	bool isStoping_ = false;
+	GameManager* gameManager_;
 	//Gamepad
 	XINPUT_STATE joyState_;
 	XINPUT_STATE prevjoyState_;
