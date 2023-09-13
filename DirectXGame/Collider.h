@@ -141,5 +141,6 @@ public:
 	virtual void SetVelocity(Vector3 velocity) = 0;
 	void SetSpotVelocity(Vector3 velo) { spotVelocity_ = velo; };
 	virtual void SetPositionLerp(Vector3 pos) = 0;
+	Vector3 GetColliderWorldPosition();
 	virtual ~Collider();
 };

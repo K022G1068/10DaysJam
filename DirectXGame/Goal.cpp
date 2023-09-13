@@ -8,10 +8,10 @@ void Goal::Initialize(Model* model, Vector3& goalPosition, ViewProjection& viewP
 	worldTransform_.translation_ = goalPosition;
 
 	//Collider
-	Vector3 colliderPos(0, 15.0f, 0.0f);
+	Vector3 colliderPos(0, 15.0f, 15.0f);
 	Collider::BaseInit(viewProjection, showCollider_, name_);
-	Collider::SetCollider(colliderPos, radius_);
 	Collider::SetColliderParent(&worldTransform_);
+	Collider::SetCollider(colliderPos, radius_);
 
 	//Attribute
 	SetAttribute(kCollisionAttributeGoal);

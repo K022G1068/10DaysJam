@@ -47,7 +47,7 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 	// Gauge
 	gauge_ = new Gauge();
 	Vector3 gaugePos_(0.0f, 15.0f, 0.0f);
-	gauge_->Initialize(gaugeModel, gaugeModelBox, gaugePos_, viewProjection_, radius_);
+	gauge_->Initialize(gaugeModel, gaugeModelBox, gaugePos_, viewProjection_, gaugeRadius_);
 	//gauge_->SetParent(&worldTransform_);
 
 	//State initialize
