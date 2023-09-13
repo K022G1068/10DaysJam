@@ -58,6 +58,10 @@ void Player::Update() {
 	ImGui::Text(
 	    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
 	    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
+	ImGui::Text("Player isGoal %d", GetIsGoal());
+	ImGui::Text("Goalie size %d", goal_->GetGoalieList().size());
+	ImGui::Text("Goal number %d", gameManager_->GetGoalNumber());
+
 	if (!GetIsGoal())
 	{
 		rotationSpeed_.y -= 0.0005f;
@@ -200,11 +204,11 @@ void Player::Reset() {
 	dash_->DisactivateDash(easing_);
 	collisionPower_ = 0.0f;
 	totalCollisionDash = {0, 0, 0};
-	goalPos_ = {0, 0, 0};
 	toGoal_ = {0, 0, 0};
 	currentGoalCount = 0;
+	SetIsGoal(false);
 	worldTransform_.UpdateMatrix();
-
+	
 }
 
 Vector3 Player::GetWorldPosition() {
@@ -235,8 +239,7 @@ void Player::FlyingToGoal() {
 				collisionVelocity_ = {0, 0, 0};
 				isFlying_ = false;
 			}
-		}
-		else
+		} else
 		{
 			totalCollisionDash +=
 			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 3.0f;

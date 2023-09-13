@@ -69,11 +69,12 @@ void GameManager::Draw() {
 }
 
 void GameManager::Restart() {
+	goalNumber_ = (std::rand() % 3 + 4);
 	win_ = false;
 	lose_ = false;
 	isOver_ = false;
-	std::srand(static_cast<unsigned>(std::time(nullptr)) * 1000);
-	goalNumber_ = (std::rand() % 3 + 4);
+	countTime_ = 0;
+	goalNumberUI_ = Sprite::Create(textureHandle_[goalNumber_], basePos_);
 }
 
 

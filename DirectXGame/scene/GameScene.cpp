@@ -386,16 +386,16 @@ void GameScene::Reset() {
 	    {-60.0f, -30.0f, 120.0f + -40.0f},
         {-70.0f, -30.0f, 80.0f + -40.0f }
     };
-	goal_->Reset();
-	gameManager_->Restart();
 	objects_.clear();
-	player_->Reset();
-	objects_.push_back(player_);
+	goal_->Reset();
+
 	for (int i = 0; i < MAX_ENEMY; i++) {
 		enemies_[i]->ResetPosition(enemiesPosition[i]);
 		enemies_[i]->Reset(i);
 		objects_.push_back(enemies_[i]);
 	}
-	
+	player_->Reset();
+	objects_.push_back(player_);
+	gameManager_->Restart();
 	
 }

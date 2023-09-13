@@ -603,6 +603,7 @@ void Enemy::Reset(int num) {
 	worldTransform_.rotation_.x = 0.0f;
 	worldTransform_.rotation_.z = 0.0f;
 	isFlying_ = false;
+	SetIsGoal(false);
 	worldTransform_.UpdateMatrix();
 }
 
