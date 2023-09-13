@@ -194,4 +194,6 @@ private:
 	//Object list
 	//std::list<Enemy*> enemies_;
 	//std::list<Collider*> objects_;
+
+	float a_ = 0.0f;
 };

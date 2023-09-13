@@ -99,7 +99,16 @@ void Enemy::Update() {
 	state_->Update(this);
 	worldTransform_.rotation_ += rotationSpeed_;
 	
-	
+	{
+		if (rotationSpeed_.y - 0.06f == 0.0f) {
+		a_ = 0.0f;
+	} else {
+		a_ = (rotationSpeed_.y - 0.06f) * 4.16f * 100.0f;
+	}
+
+	percentageDash_ = int(a_);
+	percentageSpot_ = 100 - int(a_);
+	}
 	//ImGui::Text("Random Number %s: %d", name_, random_number);
 	//ImGui::Text("EnemyCount %s: %d", name_, GetObjects().size());
 	
@@ -350,8 +359,7 @@ void EnemyStateStop::Update(Enemy* e) {
 		if (stopTime_ <= 0) {
 			stopTime_ = 0;
 			e->SetRandomNumber(1000);
-			if (e->GetRandomNumber() > e->GetPercetageDash()) {
-				e->ChangeState(new EnemyStateApproachEnemy);
+			if (e->GetRandomNumber() < e->GetPercetageDash()) {
 				GetSpotDistance(e);
 				GetEnemyDistance(e);
 				if (dash_->GetCanDash()) {
