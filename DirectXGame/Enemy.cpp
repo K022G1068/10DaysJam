@@ -74,7 +74,7 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 void Enemy::Update() {
 	
 	//ImGui::Text("Random Number %s: %d", name_, random_number);
-	//ImGui::Text("EnemyCount %s: %d", name_, GetObjects().size());
+	ImGui::Text("isGoal %s: %d", name_, GetIsGoal());
 	worldTransform_.rotation_ += rotationSpeed_;
 	
 	ImGui::Text(
@@ -176,8 +176,7 @@ void Enemy::Update() {
 				ChangeState(new EnemyStateStop);
 			}
 		}
-		
-		
+	
 	}
 	else
 	{

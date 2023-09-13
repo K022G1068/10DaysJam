@@ -61,7 +61,23 @@ void CollisionManager::CheckAllCollisions() {
 }
 
 bool CollisionManager::SphereCollisionCheck(Collider* s1, Collider* s2) {
-	Vector3 distanceVector = Subtract(s1->GetColliderWorldPosition(), s2->GetColliderWorldPosition());
+	Vector3 firstPos;
+	Vector3 secondPos;
+	if (strcmp(s1->GetName(), "Goal") == 0)
+	{
+		firstPos = s1->GetColliderWorldPosition();
+	}
+	else
+	{
+		firstPos = s1->GetWorldPosition();
+	}
+
+	if (strcmp(s2->GetName(), "Goal") == 0) {
+		secondPos = s2->GetColliderWorldPosition();
+	} else {
+		secondPos = s2->GetWorldPosition();
+	}
+	Vector3 distanceVector = Subtract(firstPos, secondPos);
 	float distanceSq = Dot(distanceVector, distanceVector);
 	float sumRadius = s1->GetCollider().radius + s2->GetCollider().radius;
 	return distanceSq <= (sumRadius * sumRadius);
