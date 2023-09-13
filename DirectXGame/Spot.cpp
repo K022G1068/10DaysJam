@@ -37,6 +37,7 @@ void Spot::IncreaseRotationSpeed(Collider* collider) {
 	rotationspeed.x = 0.0f;
 	rotationspeed.z = 0.0f;
 	collider->SetRotationSpeed(rotationspeed);
+	collider->SetIsOnSpot(true);
 	Vector3 direction = {0, 0, 0};
 	if (rotationspeed.y >= MAX_ROTATION) {
 		ImGui::Text("Spot countime %d", countTime_);
@@ -47,7 +48,7 @@ void Spot::IncreaseRotationSpeed(Collider* collider) {
 			countTime_ = 0;
 			Matrix4x4 rotMat = MakeRotationMatrixY(degree_);
 			direction = TransformNormal(worldTransform_.translation_, rotMat);
-			direction = Normalize(direction) * 5.0f;
+			direction = Normalize(direction) * 0.8f;
 			direction.y = 0.0f;
 			collider->SetSpotVelocity(direction);
 		}

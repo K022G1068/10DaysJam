@@ -35,7 +35,7 @@ void Player::Initialize(
 	easing2_.duration = 20.0f;
 	easing2_.change = 10;
 
-	SetRotationSpeed({0.0f, 0.3f, 0.0f});
+	SetRotationSpeed({0.0f, 0.06f, 0.0f});
 	//Attribute
 	SetAttribute(kCollisionAttributePlayer);
 	SetMaskAttribute(kCollisionAttributeEnemy);
@@ -252,9 +252,9 @@ void Player::Move() {
 			
 			if (dash_->GetDash() == true)
 			{
-				move *= dash_->EaseInQuad(easing_) * 5.0f;
-				totalDash += dash_->EaseInQuad(easing_) * 5.0f;
-				if (Length(totalDash) >= 150.0f)
+				move *= dash_->EaseInQuad(easing_) * 0.8f;
+				totalDash += dash_->EaseInQuad(easing_) * 0.8f;
+				if (Length(totalDash) >= 50.0f)
 				{
 					dash_->DisactivateDash(easing_);
 				}

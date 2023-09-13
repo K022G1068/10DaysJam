@@ -32,7 +32,7 @@ private:
 	Collider* collidedObject_ = nullptr;
 	bool isGoal_ = false;
 	std::list<Collider*> objects_;
-	
+	bool isOnSpot_ = false;
 
 protected:
 	Vector3 rotationSpeed_;
@@ -142,5 +142,7 @@ public:
 	void SetSpotVelocity(Vector3 velo) { spotVelocity_ = velo; };
 	virtual void SetPositionLerp(Vector3 pos) = 0;
 	Vector3 GetColliderWorldPosition();
+	void SetIsOnSpot(bool isOn) { isOnSpot_ = isOn; };
+	bool GetIsOnSpot() { return isOnSpot_; };
 	virtual ~Collider();
 };
