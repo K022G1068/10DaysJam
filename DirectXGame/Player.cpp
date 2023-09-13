@@ -107,7 +107,6 @@ void Player::Update() {
 		}
 		if (stage_->GetMode(worldTransform_.translation_) == underGrand &&
 		    worldTransform_.translation_.y <= -120)
-			worldTransform_.translation_.y <= -60)
 		{
 			worldTransform_.translation_ = stage_->Respown();
 			isStoping_ = true;
