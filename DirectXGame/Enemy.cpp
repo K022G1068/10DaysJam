@@ -152,7 +152,7 @@ void Enemy::Update() {
 		if (GetIsGoal()) {
 			ChangeState(new EnemyStateStop);
 		}
-		worldTransform_.translation_ += velocity_ * 1.4f;
+		worldTransform_.translation_ += velocity_ * 1.1f;
 		worldTransform_.translation_ += spotVelocity_;
 		worldTransform_.translation_ += dashVelocity_;
 

@@ -97,7 +97,7 @@ void GameScene::Initialize() {
 	Vector3 stagePosition(0, -30.0f, 300.0f);
 	Vector3 spotPosition1(0.0f, -30.0f, 175.0f);
 	Vector3 spotPosition2(0.0f, -30.0f, 230.0f);
-	Vector3 spotPosition3(0.0f, -30.0f, 0.0f);
+	Vector3 spotPosition3(0.0f, -30.0f, 60.0f);
 	Vector3 spotPosition4(-200.0f, -30.0f, 0.0f);
 	Vector3 spotPosition5(200.0f, -30.0f, 0.0f);
 	Vector3 spotPosition6(-45.0f, -30.0f, 225.0f);

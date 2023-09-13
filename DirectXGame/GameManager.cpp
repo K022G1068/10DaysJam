@@ -4,9 +4,7 @@
 void GameManager::Initialize() {
 	std::srand(static_cast<unsigned>(std::time(nullptr)) * 1000);
 	goalNumber_ = (std::rand() % 3 + 4) ;
-	UI_ = new Sprite();
-	number1_ = new Sprite();
-	number2_ = new Sprite();
+	
 	for (int i = 0; i < 8; i++) {
 		sprintf_s(directory_, 32, "GoalNumber/%d.png", i);
 		textureHandle_[i] = TextureManager::Load(directory_);
