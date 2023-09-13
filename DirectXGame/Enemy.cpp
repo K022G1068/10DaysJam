@@ -365,7 +365,6 @@ void EnemyStateStop::Update(Enemy* e) {
 		e->SetVelocity(velocity);
 		stopTime_--;
 		if (stopTime_ <= 0) {
-			stopTime_ = 0;
 			e->SetRandomNumber(1000);
 			if (e->GetRandomNumber() < e->GetPercetageDash()) {
 				GetSpotDistance(e);
@@ -377,6 +376,8 @@ void EnemyStateStop::Update(Enemy* e) {
 					rotationSpeed.y -= reduceAmount;
 					e->SetRotationSpeed(rotationSpeed);
 					e->ChangeState(new EnemyStateApproachEnemy);
+					GetSpotDistance(e);
+					GetEnemyDistance(e);
 				}
 			} else {
 				e->ChangeState(new EnemyStateApproachSpot);
