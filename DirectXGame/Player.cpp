@@ -62,10 +62,23 @@ void Player::Update() {
 		rotationSpeed_.y -= 0.0001f;
 		worldTransform_.rotation_ += rotationSpeed_;
 		worldTransform_.translation_ += velocity_;
+
+		//is Stoping
+		if (isStoping_)
+		{
+			velocity_ = {0, 0, 0};
+		}
+
+		StopMovement();
+
 		if (stage_->GetMode(worldTransform_.translation_) == onGrand) {
 			worldTransform_.translation_.y =
 			    stage_->GetGrandPosY(worldTransform_.translation_) - 30;
-			Move();
+			if (!isStoping_)
+			{
+				Move();
+			}
+			
 		}
 		if (stage_->GetMode(worldTransform_.translation_) == underGrand) {
 			acceleration_.y += stage_->grav_;
@@ -152,6 +165,18 @@ float Player::GetRandomRotationDegree() {
 	return (std::rand() % 629) / 100.0f;
 }
 
+void Player::StopMovement() {
+	if (isStoping_)
+	{
+		countStopTime++;
+		if (countStopTime >= STOP_TIME) {
+			countStopTime = 0;
+			isStoping_ = false;
+		}
+	}
+	
+}
+
 Vector3 Player::GetWorldPosition() {
 	Vector3 worldPos;
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
@@ -189,6 +214,7 @@ void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ =
 void Player::OnCollision() { 
 	Collider* collidedObject = GetCollidedCollider();
 	Vector3 ObjectRotationSpeed = collidedObject->GetRotationSpeed();
+	
 	if (strcmp(collidedObject->GetName(), "Goal") != 0 &&
 	    strcmp(collidedObject->GetName(), "Spot") != 0)
 	{
@@ -210,6 +236,10 @@ void Player::OnCollision() {
 			collisionVelocity_ = toGoal_;
 			
 		}
+	}
+	else
+	{
+		isStoping_ = true;
 	}
 }
 

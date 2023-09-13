@@ -2,6 +2,7 @@
 #define GOAL_DEEPEST 70.0f
 #define MIN_CHARACTER_SPEED 0.5F
 #define MAX_CHARACTER_SPEED 0.75F
+#define STOP_TIME 90
 
 #include "Base.h"
 #include "Input.h"
@@ -39,6 +40,7 @@ public:
 	void SetPositionLerp(Vector3 pos) override;
 	float GetRandomRotationDegree();
 	void SetGoal(Goal* goal) { goal_ = goal; };
+	void StopMovement();
 
 private:
 	WorldTransform worldTransform_;
@@ -67,6 +69,8 @@ private:
 	float kCharacterSpeed = 0.5f;
 	Vector3 acceleration_ = {0, 0, 0};
 	int currentGoalCount = 0;
+	int countStopTime = 0;
+	bool isStoping_ = false;
 	//Gamepad
 	XINPUT_STATE joyState_;
 	XINPUT_STATE prevjoyState_;
