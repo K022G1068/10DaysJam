@@ -11,6 +11,7 @@
 #include "Gauge.h"
 #include "Dash.h"
 #include "Stage.h"
+#include "Sprite.h"
 
 class Goal;
 class GameManager;
@@ -43,7 +44,7 @@ public:
 	void SetGoal(Goal* goal) { goal_ = goal; };
 	void StopMovement();
 	void SetGameManager(GameManager* manager) { gameManager_ = manager; };
-
+	void DrawSprite();
 	//Reset
 	void Reset();
 
@@ -77,6 +78,10 @@ private:
 	int currentGoalCount = 0;
 	int countStopTime = 0;
 	bool isStoping_ = false;
+	Sprite* canDashSprite_ = nullptr;
+	Sprite* cannotDashSprite_ = nullptr;
+	uint32_t canDashTexture_ = 0u;
+	uint32_t cannotDashTexture_ = 0u;
 	GameManager* gameManager_;
 	//Gamepad
 	XINPUT_STATE joyState_;

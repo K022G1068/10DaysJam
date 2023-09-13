@@ -40,6 +40,14 @@ void Player::Initialize(
 	//Attribute
 	SetAttribute(kCollisionAttributePlayer);
 	SetMaskAttribute(kCollisionAttributeEnemy);
+	
+	//texture
+	canDashTexture_ = TextureManager::Load("Tossin/TossinOK.png");
+	cannotDashTexture_ = TextureManager::Load("Tossin/TossinNG.png");
+
+	//Sprite
+	canDashSprite_ = Sprite::Create(canDashTexture_, {0, 0});
+	cannotDashSprite_ = Sprite::Create(cannotDashTexture_, {0, 0});
 }
 
 void Player::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
@@ -183,6 +191,15 @@ void Player::StopMovement() {
 			countStopTime = 0;
 			isStoping_ = false;
 		}
+	}
+	
+}
+
+void Player::DrawSprite() { 
+	if (dash_->GetCanDash()) {
+		canDashSprite_->Draw();
+	} else {
+		cannotDashSprite_->Draw();
 	}
 	
 }

@@ -10,6 +10,7 @@ class FollowCamera {
 public:
 	void Initialize();
 	void Update();
+	void Reset();
 	void SetTarget(const WorldTransform* target) { target_ = target; };
 	const ViewProjection& GetViewProjection() { return viewProjection_; };
 

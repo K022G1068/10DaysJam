@@ -345,6 +345,7 @@ void GameScene::Draw() {
 	else
 	{
 		gameManager_->Draw();
+		player_->DrawSprite();
 	}
 	//  スプライト描画後処理
 	Sprite::PostDraw();
@@ -397,5 +398,6 @@ void GameScene::Reset() {
 	player_->Reset();
 	objects_.push_back(player_);
 	gameManager_->Restart();
+	followCamera_->Reset();
 	
 }
