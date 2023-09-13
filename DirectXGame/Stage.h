@@ -21,9 +21,10 @@ public:
 	ObjMode GetMode(Vector3 objPos);
 	~Stage();
 	Vector3 Respown();
-	float grav_ = 0.125f;
+	float grav_ = (float)1/32;
 	Vector3 Sliding(Vector3 objPos);
 	Vector3 GetSpotRot(Vector3 objPos);
+	int GetRespaenTime() { return respawnTime_; }
 
 private:
 	int num_; // 扇の個数
@@ -31,4 +32,5 @@ private:
 	Model* model_ = nullptr;
 	float rad_ = 444.f;
 	Vector3 correction = {.0f, .0f, 300.0f};
+	int respawnTime_ = 60;
 };

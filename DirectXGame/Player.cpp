@@ -74,6 +74,7 @@ void Player::Update() {
 		if (stage_->GetMode(worldTransform_.translation_) == onGrand) {
 			worldTransform_.translation_.y =
 			    stage_->GetGrandPosY(worldTransform_.translation_) - 30;
+			acceleration_ = {.0f, .0f, .0f};
 			if (!isStoping_)
 			{
 				Move();
@@ -104,7 +105,7 @@ void Player::Update() {
 			}
 		}
 		if (stage_->GetMode(worldTransform_.translation_) == underGrand &&
-		    worldTransform_.translation_.y <= -60)
+		    worldTransform_.translation_.y <= -120)
 			worldTransform_.translation_ = stage_->Respown();
 
 		// Gauge
