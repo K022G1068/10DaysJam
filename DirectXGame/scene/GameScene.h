@@ -109,5 +109,8 @@ private: // メンバ変数
 	uint32_t titleTextureHandle_ = 0;
 	uint32_t winTexture_ = 0;
 	uint32_t loseTexture_ = 0;
+
+	XINPUT_STATE joyState_;
+	XINPUT_STATE prevjoyState_;
 	
 };

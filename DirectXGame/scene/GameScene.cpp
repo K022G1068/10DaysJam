@@ -254,12 +254,24 @@ void GameScene::Update() {
 	{
 		if (gameManager_->GetWinBool())
 		{
-			
-		} else if (gameManager_->GetLoseBool())
+			if (Input::GetInstance()->GetJoystickState(0, joyState_)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, prevjoyState_)) {
+					if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A) &&
+					    !(prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+						Reset();
+					}
+				}
+			}
+		} 
+		else if (gameManager_->GetLoseBool())
 		{
-			if (input_->PushKey(DIK_SPACE))
-			{
-				Reset();
+			if (Input::GetInstance()->GetJoystickState(0, joyState_)) {
+				if (Input::GetInstance()->GetJoystickStatePrevious(0, prevjoyState_)) {
+					if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A) &&
+					    !(prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+						Reset();
+					}
+				}
 			}
 		}
 		
