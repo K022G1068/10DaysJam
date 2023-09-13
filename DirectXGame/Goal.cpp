@@ -1,7 +1,7 @@
 #include "Goal.h"
 
 void Goal::Initialize(Model* model, Vector3& goalPosition, ViewProjection& viewProjection) {
-	assert(model);
+	//assert(model);
 	modelGoal_ = model;
 	BaseInit(viewProjection, showCollider_, name_);
 	worldTransform_.Initialize();
@@ -19,13 +19,13 @@ void Goal::Initialize(Model* model, Vector3& goalPosition, ViewProjection& viewP
 }
 
 void Goal::Update() {
-	ImGui::Begin("Goal ImGui");
-	ImGui::Text(
-	    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
-	    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
-	ImGui::Text("Goal Count %d", goalieList_.size());
-	ImGui::Text("Koma Count %d", komaCount_);
-	ImGui::End();
+	//ImGui::Begin("Goal ImGui");
+	//ImGui::Text(
+	//    "collider world pos %s: %f %f %f", name_, Collider::GetColliderWorldPosition().x,
+	//    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
+	//ImGui::Text("Goal Count %d", goalieList_.size());
+	//ImGui::Text("Koma Count %d", komaCount_);
+	//ImGui::End();
 
 
 	Collider::OnUpdate();
@@ -48,14 +48,14 @@ void Goal::OnCollision() {
 	auto it = std::find(goalieList_.begin(), goalieList_.end(), collidedObject);
 	if (it != goalieList_.end()) {
 		// Element found in the list
-		ImGui::Text("Collided Object is in the list ");
+		//ImGui::Text("Collided Object is in the list ");
 		return;
 	} else {
 		// Element not found in the list
 		komaCount_++;
 		goalieList_.push_back(collidedObject);
 		collidedObject->SetPositionLerp({0, -30.0f, 250.0f});
-		ImGui::Text("Added collided object ");
+		//ImGui::Text("Added collided object ");
 	}
 }
 

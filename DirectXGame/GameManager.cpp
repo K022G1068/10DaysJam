@@ -19,11 +19,11 @@ void GameManager::Initialize() {
 
 void GameManager::Update() { ;
 	goalieList_ = goal_->GetGoalieList(); 
-	ImGui::Begin("GameManager");
-	ImGui::Text("Goal number %d", goalNumber_);
-	ImGui::Text("Win %d", win_);
-	ImGui::Text("Lose %d", lose_);
-	ImGui::End();
+	//ImGui::Begin("GameManager");
+	//ImGui::Text("Goal number %d", goalNumber_);
+	//ImGui::Text("Win %d", win_);
+	//ImGui::Text("Lose %d", lose_);
+	//ImGui::End();
 
 	currentNumberUI_ = Sprite::Create(textureHandle_[goalieList_.size()], {currentGoalNumberUIPos_});
 	currentNumberUI_->SetSize(goalNumberUISize_);

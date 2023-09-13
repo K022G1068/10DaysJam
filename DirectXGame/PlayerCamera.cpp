@@ -16,17 +16,17 @@ void PlayerCamera::Update() {
 	viewProjection_.matView = Inverse(worldTransform_.matWorld_);
 	
 	//ImGui
-	ImGui::Begin("Camera");
+	//ImGui::Begin("Camera");
 	float sliderTrans[3] = {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
 	    worldTransform_.translation_.z};
-	ImGui::DragFloat3("Translate", sliderTrans, 0.01f);
+	//ImGui::DragFloat3("Translate", sliderTrans, 0.01f);
 	worldTransform_.translation_ = {sliderTrans[0], sliderTrans[1], sliderTrans[2]};
 	float sliderRot[3] = {
 	    worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z};
-	ImGui::DragFloat3("Rotate", sliderRot, 0.01f);
+	//ImGui::DragFloat3("Rotate", sliderRot, 0.01f);
 	worldTransform_.rotation_ = {sliderRot[0], sliderRot[1], sliderRot[2]};
-	ImGui::End();
+	//ImGui::End();
 }
 
 Vector3 PlayerCamera::GetWorldPosition() {
@@ -59,7 +59,7 @@ void PlayerCamera::CameraMovement() {
 	 }
 	 else
 	 {
-		 ImGui::Text("No controller detected");
+		 //ImGui::Text("No controller detected");
 	 }
 
 
