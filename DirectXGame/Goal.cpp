@@ -74,4 +74,6 @@ void Goal::SetPositionLerp(Vector3 pos) {
 	worldTransform_.translation_ = Lerp(worldTransform_.translation_, pos, 0.2f);
 }
 
+void Goal::Reset() { goalieList_.clear(); }
+
 Goal::~Goal() {}

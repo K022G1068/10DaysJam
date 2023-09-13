@@ -13,6 +13,9 @@ public:
 	void Restart();
 	void GetGoal(Goal* goal) { goal_ = goal; };
 	int GetGoalNumber() { return goalNumber_; };
+	bool GetIsover() { return isOver_; };
+	bool GetWinBool() { return win_; }; 
+	bool GetLoseBool() { return lose_; }; 
 	void Draw();
 
 private:
@@ -20,6 +23,7 @@ private:
 	bool goalNumberFull_ = false;
 	bool win_ = false;
 	bool lose_ = false;
+	bool isOver_ = false;
 	Goal* goal_;
 	std::vector<Collider*> goalieList_;
 	Vector2 baseSize_ = {1280, 720};

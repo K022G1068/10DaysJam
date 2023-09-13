@@ -99,6 +99,8 @@ public:
 	void Movement();
 	~Enemy();
 	void OnCollision() override;
+	void Reset(int num);
+	void ResetPosition(Vector3 resetPos);
 	
 	//Enemy state
 	void ChangeState(BaseEnemyState* enemyState);

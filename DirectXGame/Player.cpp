@@ -183,6 +183,30 @@ void Player::StopMovement() {
 	
 }
 
+void Player::Reset() {
+	SetIsGoal(false);
+	worldTransform_.translation_ = restartPos_;
+	rotationSpeed_.y = 0.06f; 
+	rotationSpeed_.z = 0.0f; 
+	rotationSpeed_.x = 0.0f; 
+	worldTransform_.rotation_.x = 0.0f;
+	worldTransform_.rotation_.z = 0.0f;
+	isStoping_ = false;
+	isFlying_ = false;
+	velocity_ = {0, 0, 0};
+	collisionVelocity_ = {0, 0, 0};
+	totalCollisionDash = {0, 0, 0};
+	dash_->DisactivateDash(easing_);
+	dash_->DisactivateDash(easing_);
+	collisionPower_ = 0.0f;
+	totalCollisionDash = {0, 0, 0};
+	goalPos_ = {0, 0, 0};
+	toGoal_ = {0, 0, 0};
+	currentGoalCount = 0;
+	worldTransform_.UpdateMatrix();
+
+}
+
 Vector3 Player::GetWorldPosition() {
 	Vector3 worldPos;
 	worldPos.x = worldTransform_.matWorld_.m[3][0];

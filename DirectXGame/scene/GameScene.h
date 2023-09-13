@@ -51,6 +51,10 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void Delete();
+
+	void Reset();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -58,6 +62,8 @@ private: // メンバ変数
 	
 	Sprite* sprite_ = nullptr;
 	Sprite* titleScene_ = nullptr;
+	Sprite* winSprite_ = nullptr;
+	Sprite* loseSprite_ = nullptr;
 	
 	
 	WorldTransform worldTransform_;
@@ -66,7 +72,7 @@ private: // メンバ変数
 
 	//Instances
 	Player* player_ = nullptr;
-	std::list<Enemy*> enemies_;
+	std::vector<Enemy*> enemies_;
 	std::list<Collider*> objects_;
 	//Enemy* enemy_ = nullptr;
 	FollowCamera* followCamera_ = nullptr;
@@ -101,5 +107,7 @@ private: // メンバ変数
 	//Texture
 	uint32_t textureHandle_ = 0;
 	uint32_t titleTextureHandle_ = 0;
+	uint32_t winTexture_ = 0;
+	uint32_t loseTexture_ = 0;
 	
 };

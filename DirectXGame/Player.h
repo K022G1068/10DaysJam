@@ -44,6 +44,9 @@ public:
 	void StopMovement();
 	void SetGameManager(GameManager* manager) { gameManager_ = manager; };
 
+	//Reset
+	void Reset();
+
 private:
 	WorldTransform worldTransform_;
 	const ViewProjection* viewProjection_ = nullptr;
@@ -70,6 +73,7 @@ private:
 	float collisionPower_ = 0.0f;
 	float kCharacterSpeed = 0.5f;
 	Vector3 acceleration_ = {0, 0, 0};
+	Vector3 restartPos_ = {0.0f, -30.0f, 10.0f};
 	int currentGoalCount = 0;
 	int countStopTime = 0;
 	bool isStoping_ = false;

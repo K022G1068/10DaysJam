@@ -28,13 +28,27 @@ void GameManager::Update() { ;
 	currentNumberUI_ = Sprite::Create(textureHandle_[goalieList_.size()], {currentGoalNumberUIPos_});
 	currentNumberUI_->SetSize(goalNumberUISize_);
 	currentNumberUI_->SetPosition(currentGoalNumberUIPos_);
+	if (goalieList_.size() > 0) {
+		for (int i = 0; i < goalieList_.size(); i++) {
+			if (i != goalNumber_) {
+				if (strcmp(goalieList_[i]->GetName(), "Player") == 0) {
+					isOver_ = true;
+					lose_ = true;
+				}
+			}
+		}
+	}
 	if (goalieList_.size() >= goalNumber_)
 	{
 		if (strcmp(goalieList_[goalNumber_ - 1]->GetName(), "Player") == 0) {
 			win_ = true;
+			isOver_ = true;
 		} else {
 			lose_ = true;
+			isOver_ = true;
 		}
+
+		
 	}
 	
 	if (countTime_ >= 90) {
@@ -48,10 +62,16 @@ void GameManager::Update() { ;
 	
 }
 
-void GameManager::Restart() {}
-
-void GameManager::Draw() { 
-	UI_->Draw(); 
+void GameManager::Draw() {
+	UI_->Draw();
 	goalNumberUI_->Draw();
 	currentNumberUI_->Draw();
 }
+
+void GameManager::Restart() {
+	win_ = false;
+	lose_ = false;
+	isOver_ = false;
+}
+
+

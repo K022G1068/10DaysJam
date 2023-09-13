@@ -144,5 +144,6 @@ public:
 	Vector3 GetColliderWorldPosition();
 	void SetIsOnSpot(bool isOn) { isOnSpot_ = isOn; };
 	bool GetIsOnSpot() { return isOnSpot_; };
+	void ResetGoal() { isGoal_ = false; };
 	virtual ~Collider();
 };

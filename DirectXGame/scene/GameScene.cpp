@@ -41,6 +41,10 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
 	// Read
+	winTexture_ = TextureManager::Load("winorlose/Win.png");
+	loseTexture_ = TextureManager::Load("winorlose/Lose.png");
+
+
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	modelGaugeBox_ = Model::CreateFromOBJ("Gage", true);
 	modelGoal_ = Model::CreateFromOBJ("Goal", true);
@@ -59,6 +63,11 @@ void GameScene::Initialize() {
 	modelEnemies_.push_back(modelEnemy5_);
 	modelEnemies_.push_back(modelEnemy6_);
 	model_ = Model::Create();
+
+
+	//Texture
+	winSprite_ = Sprite::Create(winTexture_, {0, 0});
+	loseSprite_ = Sprite::Create(loseTexture_, {0, 0});
 
 	// Instances
 	player_ = new Player();
@@ -176,67 +185,87 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	// enemy_->Update();
-	player_->Update();
-	goal_->Update();
-	spot1_->Update();
-	spot2_->Update();
-	spot3_->Update();
-	spot4_->Update();
-	spot5_->Update();
-	spot6_->Update();
-	spot7_->Update();
-	spot8_->Update();
-	skydome_->Update();
-	stage_->Update();
-	gameManager_->Update();
-	// Enemy update
-	for (Enemy* enemy : enemies_) {
-		if (enemy) {
-			enemy->Update();
-		}
-	}
 
-	// Remove enemy if goal
+	if (!gameManager_->GetIsover())
 	{
-		if (objects_.remove_if([](Collider* object) {
-			    if (object->GetIsGoal()) {
-				    return true;
-			    }
-			    return false;
-		    })) {
-			for (Enemy* enemy : enemies_) {
-				if (enemy) {
+		// enemy_->Update();
+		player_->Update();
+		goal_->Update();
+		spot1_->Update();
+		spot2_->Update();
+		spot3_->Update();
+		spot4_->Update();
+		spot5_->Update();
+		spot6_->Update();
+		spot7_->Update();
+		spot8_->Update();
+		skydome_->Update();
+		stage_->Update();
+		gameManager_->Update();
+		// Enemy update
+		for (Enemy* enemy : enemies_) {
+			if (enemy) {
+				enemy->Update();
+			}
+		}
 
-					enemy->SetObjects(objects_);
+		// Remove enemy if goal
+		{
+			if (objects_.remove_if([](Collider* object) {
+				    if (object->GetIsGoal()) {
+					    return true;
+				    }
+				    return false;
+			    })) {
+				for (Enemy* enemy : enemies_) {
+					if (enemy) {
+
+						enemy->SetObjects(objects_);
+					}
 				}
 			}
 		}
+
+		// Follow camera
+		followCamera_->Update();
+		viewProjection_.matView = followCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+		viewProjection_.TransferMatrix();
+
+		// Collision
+		CollisionManager::GetInstance()->Register(player_);
+		CollisionManager::GetInstance()->Register(goal_);
+		for (Enemy* enemy : enemies_) {
+			CollisionManager::GetInstance()->Register(enemy);
+		}
+
+		CollisionManager::GetInstance()->Register(spot1_);
+		CollisionManager::GetInstance()->Register(spot2_);
+		CollisionManager::GetInstance()->Register(spot3_);
+		CollisionManager::GetInstance()->Register(spot4_);
+		CollisionManager::GetInstance()->Register(spot5_);
+		CollisionManager::GetInstance()->Register(spot6_);
+		CollisionManager::GetInstance()->Register(spot7_);
+		CollisionManager::GetInstance()->Register(spot8_);
+		CollisionManager::GetInstance()->CheckAllCollisions();
+		CollisionManager::GetInstance()->ClearList();
 	}
-
-	// Follow camera
-	followCamera_->Update();
-	viewProjection_.matView = followCamera_->GetViewProjection().matView;
-	viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
-	viewProjection_.TransferMatrix();
-
-	// Collision
-	CollisionManager::GetInstance()->Register(player_);
-	CollisionManager::GetInstance()->Register(goal_);
-	for (Enemy* enemy : enemies_) {
-		CollisionManager::GetInstance()->Register(enemy);
+	else
+	{
+		if (gameManager_->GetWinBool())
+		{
+			
+		} else if (gameManager_->GetLoseBool())
+		{
+			if (input_->PushKey(DIK_SPACE))
+			{
+				Reset();
+			}
+		}
+		
+		//Reset();
 	}
-
-	CollisionManager::GetInstance()->Register(spot1_);
-	CollisionManager::GetInstance()->Register(spot2_);
-	CollisionManager::GetInstance()->Register(spot3_);
-	CollisionManager::GetInstance()->Register(spot4_);
-	CollisionManager::GetInstance()->Register(spot5_);
-	CollisionManager::GetInstance()->Register(spot6_);
-	CollisionManager::GetInstance()->Register(spot7_);
-	CollisionManager::GetInstance()->Register(spot8_);
-	CollisionManager::GetInstance()->CheckAllCollisions();
-	CollisionManager::GetInstance()->ClearList();
+	
 }
 
 void GameScene::Draw() {
@@ -261,6 +290,7 @@ void GameScene::Draw() {
 #pragma region 3Dオブジェクト描画
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
+	
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw(viewProjection_);
 	}
@@ -291,6 +321,7 @@ void GameScene::Draw() {
 	spot6_->DrawPrimitive();
 	spot7_->DrawPrimitive();
 	spot8_->DrawPrimitive();
+	
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -302,9 +333,69 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	gameManager_->Draw();
+	
+	if (gameManager_->GetIsover())
+	{
+		if (gameManager_->GetWinBool()) {
+			winSprite_->Draw();
+		} else if (gameManager_->GetLoseBool()) {
+			loseSprite_->Draw();
+		}
+	}
+	else
+	{
+		gameManager_->Draw();
+	}
 	//  スプライト描画後処理
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::Delete() {
+	delete player_;
+	delete model_;
+	delete followCamera_;
+	delete modelGaugeBox_;
+	delete modelPlayer_;
+	delete goal_;
+	delete spot1_;
+	delete spot2_;
+	delete spot3_;
+	delete spot4_;
+	delete spot5_;
+	delete spot6_;
+	delete spot7_;
+	delete spot8_;
+	delete skydome_;
+	delete stage_;
+	delete gameManager_;
+
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
+		enemy = nullptr;
+	}
+}
+
+void GameScene::Reset() { 
+	Vector3 enemiesPosition[6] = {
+	    {50.0f,  -30.0f, 160.0f + -40.0f},
+        {60.0f,  -30.0f, 120.0f + -40.0f},
+	    {70.0f,  -30.0f, 80.0f + -40.0f },
+        {-50.0f, -30.0f, 160.0f + -40.0f},
+	    {-60.0f, -30.0f, 120.0f + -40.0f},
+        {-70.0f, -30.0f, 80.0f + -40.0f }
+    };
+	goal_->Reset();
+	gameManager_->Restart();
+	objects_.clear();
+	player_->Reset();
+	objects_.push_back(player_);
+	for (int i = 0; i < MAX_ENEMY; i++) {
+		enemies_[i]->ResetPosition(enemiesPosition[i]);
+		enemies_[i]->Reset(i);
+		objects_.push_back(enemies_[i]);
+	}
+	
+	
 }

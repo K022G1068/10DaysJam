@@ -591,3 +591,19 @@ void EnemyStateNothing::Update(Enemy* e) {
 	    nearestSpotPos_.z);
 	ImGui::Text("Nearenemy bool %d", e->GetNearEnemyBool());
 }
+
+
+void Enemy::Reset(int num) { 
+	SetIsGoal(false);
+	SetRandomNumber(num); 
+	SetRandomRotationSpeed(num);
+	ChangeState(new EnemyStateStop);
+	rotationSpeed_.z = 0.0f;
+	rotationSpeed_.x = 0.0f;
+	worldTransform_.rotation_.x = 0.0f;
+	worldTransform_.rotation_.z = 0.0f;
+	isFlying_ = false;
+	worldTransform_.UpdateMatrix();
+}
+
+void Enemy::ResetPosition(Vector3 resetPos) { worldTransform_.translation_ = resetPos; }

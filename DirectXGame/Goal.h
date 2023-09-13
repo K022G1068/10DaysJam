@@ -18,6 +18,7 @@ public:
 	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
 	std::vector<Collider*> GetGoalieList() { return goalieList_; };
 	void SetPositionLerp(Vector3 pos) override;
+	void Reset();
 	~Goal();
 
 private:
