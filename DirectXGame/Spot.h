@@ -26,7 +26,7 @@ public:
 private:
 	WorldTransform worldTransform_;
 	Model* modelSpot_ = nullptr;
-	float radius_ = 8.0f;
+	float radius_ = 6.0f;
 	bool showCollider_ = true;
 	float degree_ = 0.0f;
 	const char* name_ = "Spot";
