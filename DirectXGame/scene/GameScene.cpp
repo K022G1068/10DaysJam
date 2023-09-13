@@ -85,9 +85,9 @@ void GameScene::Initialize() {
 	Vector3 railPosition(0, 0, 0.0f);
 	Vector3 goalPosition(0, -20.0f, 250.0f);
 	Vector3 stagePosition(0, -30.0f, 300.0f);
-	Vector3 spotPosition1(200.0f, -30.0f, 250.0f);
-	Vector3 spotPosition2(-200.0f, -30.0f, 250.0f);
-	Vector3 spotPosition3(0.0f, -30.0f, -250.0f);
+	Vector3 spotPosition1(100.0f, -30.0f, 150.0f);
+	Vector3 spotPosition2(-100.0f, -30.0f, 150.0f);
+	Vector3 spotPosition3(0.0f, -30.0f, -150.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
 	
 	followCamera_->Initialize();

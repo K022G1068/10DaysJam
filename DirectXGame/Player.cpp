@@ -143,8 +143,13 @@ void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ =
 void Player::OnCollision() { 
 	Collider* collidedObject = GetCollidedCollider();
 	Vector3 ObjectRotationSpeed = collidedObject->GetRotationSpeed();
-	dash_->DisactivateDash(easing_);
-	velocity_ = {0, 0, 0};
+	if (strcmp(collidedObject->GetName(), "Goal") != 0 &&
+	    strcmp(collidedObject->GetName(), "Spot") != 0)
+	{
+		dash_->DisactivateDash(easing_);
+		velocity_ = {0, 0, 0};
+	}
+	
 	if (rotationSpeed_.y <= ObjectRotationSpeed.y)
 	{
 		isFlying_ = true;

@@ -137,7 +137,13 @@ void Enemy::Update() {
 			worldTransform_.translation_.y -= acceleration_.y;
 		}
 		if (worldTransform_.translation_.y <= -60)
+		{
+			velocity_ = {0, 0, 0};
+			spotVelocity_ = {0, 0, 0};
+			collisionVelocity_ = {0, 0, 0};
 			worldTransform_.translation_ = stage_->Respown();
+		}
+			
 
 		if (GetIsGoal()) {
 			ChangeState(new EnemyStateStop);
@@ -408,16 +414,15 @@ void EnemyStateApproachEnemy::Update(Enemy* e) {
 void EnemyStateApproachSpot::Update(Enemy* e) { 
 	GetSpotDistance(e);
 	ImGui::Text("%s To Spot state", e->GetName());
-	ImGui::Text(
-	    "%s NearestSpot: %f %f %f", e->GetName(), nearestSpotPos_.x, nearestSpotPos_.y,
-	    nearestSpotPos_.z);
+	
 	toSpot_ = e->GetWorldTransform().translation_ - nearestSpotPos_;
 	Move(toSpot_, e);
-	ImGui::Text("Spot and %s  %f", e->GetName(), Length(toSpot_));
+	
 	//ImGui::Text("Stop time %s  %d", e->GetName(), stopTime_);
 	if (Length(toSpot_) <= 0.5f)
 	{
 		stopTime_--;
+		ImGui::Text("%s Stop Time %d", e->GetName(), stopTime_);
 		if (stopTime_ <= 0) {
 			GetSpotDistance(e);
 			GetEnemyDistance(e);
