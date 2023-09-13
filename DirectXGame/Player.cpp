@@ -343,7 +343,9 @@ void Player::Move() {
 			Matrix4x4 rotmat = MakeRotationMatrixY(viewProjection_->rotation_.y);
 			move = TransformNormal(move, rotmat);
 
-			if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && dash_->GetCanDash()) {
+			if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A) &&
+			    !(prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_A) &&
+			    dash_->GetCanDash()) {
 				//ImGui::Text("DASSSHHHH" );
 				dash_->ActivateDash();
 				float reduceAmount = 0.3f * MAX_ROTATION;
