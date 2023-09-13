@@ -1,4 +1,8 @@
 #pragma once
+#define GOAL_DEEPEST 70.0f
+#define MIN_CHARACTER_SPEED 0.5F
+#define MAX_CHARACTER_SPEED 0.75F
+
 #include "Base.h"
 #include "Input.h"
 #include "Collider.h"
@@ -7,6 +11,7 @@
 #include "Dash.h"
 #include "Stage.h"
 
+class Goal;
 class Player : public Collider
 {
 public:
@@ -32,6 +37,8 @@ public:
 	void SetVelocity(Vector3 velocity) override { velocity_ = velocity; };
 	void SetStage(Stage* stage) { stage_ = stage; };
 	void SetPositionLerp(Vector3 pos) override;
+	float GetRandomRotationDegree();
+	void SetGoal(Goal* goal) { goal_ = goal; };
 
 private:
 	WorldTransform worldTransform_;
@@ -45,8 +52,9 @@ private:
 	bool showCollider_ = true;
 	bool isFlying_ = false;
 	const char* name_;
-	Gauge* gauge_;
-	Dash* dash_;
+	Gauge* gauge_ = nullptr;
+	Dash* dash_ = nullptr;
+	Goal* goal_ = nullptr;
 	Easing easing_;
 	Easing easing2_;
 	Vector3 goalPos_ = {0, 0, 0};
@@ -55,8 +63,9 @@ private:
 	Vector3 collisionVelocity_ = {0, 0, 0};
 	Vector3 totalCollisionDash = {0, 0, 0};
 	float collisionPower_ = 0.0f;
-	const float kCharacterSpeed = 0.5f;
+	float kCharacterSpeed = 0.5f;
 	Vector3 acceleration_ = {0, 0, 0};
+	int currentGoalCount = 0;
 	//Gamepad
 	XINPUT_STATE joyState_;
 	XINPUT_STATE prevjoyState_;

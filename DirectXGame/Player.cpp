@@ -1,4 +1,5 @@
 ﻿#include "Player.h"
+#include "Goal.h"
 
 void Player::Initialize(
     Model* model, Vector3& playerPosition, ViewProjection& viewProjection,
@@ -53,58 +54,101 @@ Player::~Player() {}
 void Player::Update() {
 
 	
-	//Move();
 	worldTransform_.rotation_ += rotationSpeed_;
-	worldTransform_.translation_ += velocity_;
-	if (stage_->GetMode(worldTransform_.translation_) == onGrand) {
-		worldTransform_.translation_.y = stage_->GetGrandPosY(worldTransform_.translation_) - 30;
-		Move();
-	}
-	if (stage_->GetMode(worldTransform_.translation_) == underGrand) {
-		acceleration_.y += stage_->grav_;
-		worldTransform_.translation_.y -= acceleration_.y;
-	}
-	worldTransform_.UpdateMatrix();
-	worldTransform_.translation_ += spotVelocity_;
-	//プレイヤーの回転速度を徐々に遅くする
-	rotationSpeed_.y -= 0.0001f;
-
-	if (Length(spotVelocity_) >= 0)
+	if (!GetIsGoal())
 	{
-		countSpotFlyingTimer_++;
-		if (countSpotFlyingTimer_ >= 60)
-		{
-			spotVelocity_ = {0, 0, 0};
-			countSpotFlyingTimer_ = 0;
+		rotationSpeed_.y -= 0.0001f;
+		worldTransform_.rotation_ += rotationSpeed_;
+		worldTransform_.translation_ += velocity_;
+		if (stage_->GetMode(worldTransform_.translation_) == onGrand) {
+			worldTransform_.translation_.y =
+			    stage_->GetGrandPosY(worldTransform_.translation_) - 30;
+			Move();
+		}
+		if (stage_->GetMode(worldTransform_.translation_) == underGrand) {
+			acceleration_.y += stage_->grav_;
+			worldTransform_.translation_.y -= acceleration_.y;
+		}
+		worldTransform_.UpdateMatrix();
+		worldTransform_.translation_ += spotVelocity_;
+		// プレイヤーの回転速度を徐々に遅くする
+		
+		kCharacterSpeed = (((rotationSpeed_.y - MIN_ROTATION) / (MAX_ROTATION - MIN_ROTATION)) * (MAX_CHARACTER_SPEED - MIN_CHARACTER_SPEED)) + MIN_CHARACTER_SPEED;
+		if (rotationSpeed_.y <= MIN_ROTATION) {
+			kCharacterSpeed = MIN_CHARACTER_SPEED;
+		}
+		if (rotationSpeed_.y >= MAX_ROTATION) {
+			kCharacterSpeed = MAX_CHARACTER_SPEED;
+		}
+		ImGui::Text("Character speed %f", kCharacterSpeed);
+		if (Length(spotVelocity_) >= 0) {
+			countSpotFlyingTimer_++;
+			if (countSpotFlyingTimer_ >= 60) {
+				spotVelocity_ = {0, 0, 0};
+				countSpotFlyingTimer_ = 0;
+			}
+		}
+		if (stage_->GetMode(worldTransform_.translation_) == underGrand &&
+		    worldTransform_.translation_.y <= -60)
+			worldTransform_.translation_ = stage_->Respown();
+
+		// Gauge
+		gauge_->GetCameraRotation(viewProjection_->rotation_.y);
+		gauge_->SetPosition(worldTransform_.translation_);
+		gauge_->GetRotation(rotationSpeed_);
+		gauge_->Update();
+
+		// Dash
+		if (rotationSpeed_.y < 0.3f * MAX_ROTATION) {
+			dash_->SetCanDash(false);
+		} else {
+			dash_->SetCanDash(true);
+		}
+
+		Collider::OnUpdate();
+		currentGoalCount = (int)goal_->GetGoalieList().size();
+		FlyingToGoal();
+		// ImGui
+		ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
+		ImGui::DragFloat3("Rotation", &rotationSpeed_.x, 0.001f);
+	}
+	else
+	{
+		rotationSpeed_.y -= 0.001f;
+		velocity_ = {0, 0, 0};
+		collisionVelocity_ = {0, 0, 0};
+		worldTransform_.translation_ = Lerp(
+		    worldTransform_.translation_,
+		    {goalPos_.x, goalPos_.y, goalPos_.z + GOAL_DEEPEST - (currentGoalCount * 10.0f)},
+		    0.01f);
+		worldTransform_.rotation_.x = GetRandomRotationDegree();
+		worldTransform_.rotation_.z = GetRandomRotationDegree();
+
+		if (worldTransform_.rotation_.x >= 0.4f) {
+			worldTransform_.rotation_.x = 0.4f;
+		}
+		if (worldTransform_.rotation_.x <= -0.4f) {
+			worldTransform_.rotation_.x = -0.4f;
+		}
+		if (worldTransform_.rotation_.z >= 0.4f) {
+			worldTransform_.rotation_.z = 0.4f;
+		}
+		if (worldTransform_.rotation_.z <= -0.4f) {
+			worldTransform_.rotation_.z = -0.4f;
+		}
+
+		if (rotationSpeed_.y <= 0) {
+			rotationSpeed_.y = 0;
 		}
 	}
-	if (stage_->GetMode(worldTransform_.translation_) ==
-	    underGrand&&worldTransform_.translation_.y <= -60)
-		worldTransform_.translation_ = stage_->Respown();
-	
-	//Gauge
-	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
-	gauge_->SetPosition(worldTransform_.translation_);
-	gauge_->GetRotation(rotationSpeed_);
-	gauge_->Update();
-
-	//Dash
-	if (rotationSpeed_.y < 0.3f * MAX_ROTATION) {
-		dash_->SetCanDash(false);
-	} else {
-		dash_->SetCanDash(true);
-	}
-
-
-	Collider::OnUpdate();
-	FlyingToGoal();
-	//ImGui
-	ImGui::DragFloat3("Position", &worldTransform_.translation_.x, 0.8f);
-	ImGui::DragFloat3("Rotation", &rotationSpeed_.x, 0.001f);
 	
 	worldTransform_.UpdateMatrix();
 }
 
+float Player::GetRandomRotationDegree() {
+	std::srand(static_cast<unsigned>(std::time(nullptr)) + 1000);
+	return (std::rand() % 629) / 100.0f;
+}
 
 Vector3 Player::GetWorldPosition() {
 	Vector3 worldPos;
@@ -235,7 +279,10 @@ void Player::Move() {
 
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection);
-	gauge_->Draw(viewProjection);
+	if (!GetIsGoal())
+	{
+		gauge_->Draw(viewProjection);
+	}
 }
 
 void Player::DrawPrimitive() { 

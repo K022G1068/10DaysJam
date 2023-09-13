@@ -72,46 +72,10 @@ void Enemy::InitializeGauge(Model* gaugeModel, Model* gaugeModelBox) {
 }
 
 void Enemy::Update() {
-	//Reduce rotation;
-	rotationSpeed_.y -= 0.0001f;
-	state_->SetDash(dash_);
 	
-	// State update
-	if (goal_->GetGoalieList().size() == goalNumber_ - 1)
-	{
-		ChangeState(new EnemyStateApproachGoal);
-	}
-	
-	//Gauge
-	gauge_->GetCameraRotation(viewProjection_->rotation_.y);
-	gauge_->SetPosition(worldTransform_.translation_);
-	gauge_->GetRotation(rotationSpeed_);
-	gauge_->Update();
-
-	//Dash
-	// Dash
-	if (rotationSpeed_.y < 0.3f * MAX_ROTATION) {
-		dash_->SetCanDash(false);
-	} else {
-		dash_->SetCanDash(true);
-	}
-
-	state_->Update(this);
-	worldTransform_.rotation_ += rotationSpeed_;
-	
-	{
-		if (rotationSpeed_.y - 0.06f == 0.0f) {
-		a_ = 0.0f;
-	} else {
-		a_ = (rotationSpeed_.y - 0.06f) * 4.16f * 100.0f;
-	}
-
-	percentageDash_ = int(a_);
-	percentageSpot_ = 100 - int(a_);
-	}
 	//ImGui::Text("Random Number %s: %d", name_, random_number);
 	//ImGui::Text("EnemyCount %s: %d", name_, GetObjects().size());
-	
+	worldTransform_.rotation_ += rotationSpeed_;
 	
 
 	/*ImGui::Text("GoalPos %s: %f %f %f", name_, goalPos_.x, goalPos_.y, goalPos_.z);
@@ -134,6 +98,43 @@ void Enemy::Update() {
 	//Collider
 	if (!GetIsGoal())
 	{
+		// Reduce rotation;
+		rotationSpeed_.y -= 0.0001f;
+		state_->SetDash(dash_);
+
+		// State update
+		if (goal_->GetGoalieList().size() == goalNumber_ - 1) {
+			ChangeState(new EnemyStateApproachGoal);
+		}
+
+		// Gauge
+		gauge_->GetCameraRotation(viewProjection_->rotation_.y);
+		gauge_->SetPosition(worldTransform_.translation_);
+		gauge_->GetRotation(rotationSpeed_);
+		gauge_->Update();
+
+		// Dash
+		//  Dash
+		if (rotationSpeed_.y < 0.3f * MAX_ROTATION) {
+			dash_->SetCanDash(false);
+		} else {
+			dash_->SetCanDash(true);
+		}
+
+		state_->Update(this);
+	
+
+		{
+			if (rotationSpeed_.y - 0.06f == 0.0f) {
+				a_ = 0.0f;
+			} else {
+				a_ = (rotationSpeed_.y - 0.06f) * 4.16f * 100.0f;
+			}
+
+			percentageDash_ = int(a_);
+			percentageSpot_ = 100 - int(a_);
+		}
+
 		if (easing_.time <= easing_.duration) {
 			easing_.time += 0.01f;
 		}
@@ -177,6 +178,7 @@ void Enemy::Update() {
 	}
 	else
 	{
+		rotationSpeed_.y -= 0.001f;
 		velocity_ = {0,0,0};
 		collisionVelocity_ = {0, 0, 0};
 		worldTransform_.translation_ = Lerp(
@@ -198,6 +200,9 @@ void Enemy::Update() {
 		}
 		if (worldTransform_.rotation_.z <= -0.4f) {
 			worldTransform_.rotation_.z = -0.4f;
+		}
+		if (rotationSpeed_.y <= 0) {
+			rotationSpeed_.y = 0;
 		}
 	}
 	worldTransform_.UpdateMatrix();
@@ -333,8 +338,10 @@ void Enemy::ApproachSpot() {}
 void Enemy::ApproachEnemy() {}
 
 void Enemy::Draw(ViewProjection& viewProjection) {
-	gauge_->Draw(viewProjection);
 	model_->Draw(worldTransform_, viewProjection);
+	if (!GetIsGoal()) {
+		gauge_->Draw(viewProjection);
+	}
 }
 
 void Enemy::DrawPrimitive() { 

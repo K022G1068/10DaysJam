@@ -104,6 +104,7 @@ void GameScene::Initialize() {
 	//enemy_->SetSpot(spotPosition);
 	//enemy_->InitializeGauge(model_, modelGaugeBox_);
 	player_->SetGoal(goalPosition);
+	player_->SetGoal(goal_);
 	player_->SetStage(stage_);
 	spot1_->SetStage(stage_);
 	spot2_->SetStage(stage_);
