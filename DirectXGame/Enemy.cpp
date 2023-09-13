@@ -134,6 +134,9 @@ void Enemy::Update() {
 	//Collider
 	if (!GetIsGoal())
 	{
+		if (easing_.time <= easing_.duration) {
+			easing_.time += 0.01f;
+		}
 		Collider::OnUpdate();
 		currentGoalCount = (int)goal_->GetGoalieList().size();
 		FlyingToGoal();
@@ -274,14 +277,12 @@ void Enemy::SetPositionLerp(Vector3 pos) {
 }
 
 void Enemy::DoDash(Vector3 direction) {
-	if (easing_.time <= easing_.duration) {
-		easing_.time += 0.01f;
-	}
 
-	if (dash_->GetDash() == true) {
+
+	if (dash_->GetDash()) {
 		ImGui::Text("%s is dashing", name_);
-		direction *= dash_->EaseInQuad(easing_) * -5.0f;
-		totalDash += dash_->EaseInQuad(easing_) * -5.0f;
+		direction *= dash_->EaseInQuad(easing_) * -3.0f;
+		totalDash += dash_->EaseInQuad(easing_) * -3.0f;
 		direction.y = 0.0f;
 		worldTransform_.translation_ += direction;
 		if (Length(totalDash) >= 150.0f) {
@@ -368,6 +369,7 @@ void EnemyStateStop::Update(Enemy* e) {
 					Vector3 rotationSpeed = e->GetRotationSpeed();
 					rotationSpeed.y -= reduceAmount;
 					e->SetRotationSpeed(rotationSpeed);
+					e->ChangeState(new EnemyStateApproachEnemy);
 				}
 			} else {
 				e->ChangeState(new EnemyStateApproachSpot);
@@ -393,7 +395,7 @@ void EnemyStateApproachEnemy::Update(Enemy* e) {
 		toEnemy_ = e->GetWorldTransform().translation_ - e->GetNearestEnemyPosition();
 		//ImGui::Text("%s ToEnemy: %f %f %f", e->GetName(), toEnemy_.x, toEnemy_.y, toEnemy_.z);
 		//ImGui::Text("%s ToEnemyLength: %f", e->GetName(), Length(toEnemy_));
-		if (dash_->GetCanDash())
+		if (dash_->GetDash())
 		{
 			Vector3 toEnemyNormal = Normalize(toEnemy_);
 			e->DoDash(toEnemyNormal);
