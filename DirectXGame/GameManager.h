@@ -25,8 +25,8 @@ private:
 	Vector2 baseSize_ = {1280, 720};
 	Vector2 basePos_ = {0, 0};
 	Vector2 goalNumberUIPos_ = {-110, -30};
+	Vector2 currentGoalNumberUIPos_ = {-10, 60};
 	Vector2 goalNumberUISize_ = {350, 196};
-
 
 	char directory_[32];
 	//Texture
