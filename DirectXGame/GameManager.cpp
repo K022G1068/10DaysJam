@@ -72,6 +72,8 @@ void GameManager::Restart() {
 	win_ = false;
 	lose_ = false;
 	isOver_ = false;
+	std::srand(static_cast<unsigned>(std::time(nullptr)) * 1000);
+	goalNumber_ = (std::rand() % 3 + 4);
 }
 
 
