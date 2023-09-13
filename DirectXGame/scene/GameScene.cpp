@@ -1,11 +1,11 @@
 #include "GameScene.h"
+#include "AxisIndicator.h"
 #include "TextureManager.h"
 #include <cassert>
-#include "AxisIndicator.h"
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { 
+GameScene::~GameScene() {
 	delete player_;
 	delete model_;
 	delete followCamera_;
@@ -15,6 +15,8 @@ GameScene::~GameScene() {
 	delete spot1_;
 	delete spot2_;
 	delete spot3_;
+	delete spot4_;
+	delete spot5_;
 	delete skydome_;
 	delete stage_;
 	delete gameManager_;
@@ -35,7 +37,7 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetVisible(true);
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
-	//Read
+	// Read
 	modelPlayer_ = Model::CreateFromOBJ("Player", true);
 	modelGaugeBox_ = Model::CreateFromOBJ("Gage", true);
 	modelGoal_ = Model::CreateFromOBJ("Goal", true);
@@ -54,20 +56,22 @@ void GameScene::Initialize() {
 	modelEnemies_.push_back(modelEnemy5_);
 	modelEnemies_.push_back(modelEnemy6_);
 	model_ = Model::Create();
-	
-	//Instances
+
+	// Instances
 	player_ = new Player();
-	//enemy_ = new Enemy();
+	// enemy_ = new Enemy();
 	followCamera_ = new FollowCamera();
 	goal_ = new Goal();
 	spot1_ = new Spot();
 	spot2_ = new Spot();
 	spot3_ = new Spot();
+	spot4_ = new Spot();
+	spot5_ = new Spot();
 	skydome_ = new Skydome();
 	stage_ = new Stage();
 	gameManager_ = new GameManager();
 
-	//Initialize
+	// Initialize
 	Vector3 playerPosition(0, -30.0f, 100.0f);
 	Vector3 enemiesPosition[6] = {
 	    {30.0f,  -30.0f, 20.0f},
@@ -77,9 +81,9 @@ void GameScene::Initialize() {
         {-60.0f, -30.0f, 20.0f},
         {60.0f,  -30.0f, 20.0f}
     };
-	
+
 	const char* enemiesName[6] = {
-	   "Enemy1", "Enemy2", "Enemy3", "Enemy4", "Enemy5", "Enemy6",
+	    "Enemy1", "Enemy2", "Enemy3", "Enemy4", "Enemy5", "Enemy6",
 	};
 
 	Vector3 railPosition(0, 0, 0.0f);
@@ -87,32 +91,38 @@ void GameScene::Initialize() {
 	Vector3 stagePosition(0, -30.0f, 300.0f);
 	Vector3 spotPosition1(80.0f, -30.0f, 200.0f);
 	Vector3 spotPosition2(-70.0f, -30.0f, 150.0f);
-	Vector3 spotPosition3(-10.0f, -30.0f,-50.0f);
+	Vector3 spotPosition3(-10.0f, -30.0f, -50.0f);
+	Vector3 spotPosition4(-100.0f, -30.0f, -50.0f);
+	Vector3 spotPosition5(100.0f, -30.0f, -50.0f);
 	player_->Initialize(modelPlayer_, playerPosition, viewProjection_, "Player");
-	
+
 	followCamera_->Initialize();
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
-	//enemy_->SetViewProjection(&followCamera_->GetViewProjection());
+	// enemy_->SetViewProjection(&followCamera_->GetViewProjection());
 	player_->InitializeGauge(model_, modelGaugeBox_);
 	spot1_->Initialize(modelSpot_, spotPosition1, viewProjection_);
 	spot2_->Initialize(modelSpot_, spotPosition2, viewProjection_);
 	spot3_->Initialize(modelSpot_, spotPosition3, viewProjection_);
+	spot4_->Initialize(modelSpot_, spotPosition4, viewProjection_);
+	spot5_->Initialize(modelSpot_, spotPosition5, viewProjection_);
 	goal_->Initialize(modelGoal_, goalPosition, viewProjection_);
 	stage_->Initialize(1, stagePosition);
-	//enemy_->SetGoal(goalPosition);
-	//enemy_->SetSpot(spotPosition);
-	//enemy_->InitializeGauge(model_, modelGaugeBox_);
+	// enemy_->SetGoal(goalPosition);
+	// enemy_->SetSpot(spotPosition);
+	// enemy_->InitializeGauge(model_, modelGaugeBox_);
 	player_->SetGoal(goalPosition);
 	player_->SetGoal(goal_);
 	player_->SetStage(stage_);
 	spot1_->SetStage(stage_);
 	spot2_->SetStage(stage_);
 	spot3_->SetStage(stage_);
+	spot4_->SetStage(stage_);
+	spot5_->SetStage(stage_);
 	objects_.push_back(player_);
 	gameManager_->Initialize();
 	gameManager_->GetGoal(goal_);
-	//Initialize enemy
+	// Initialize enemy
 	for (int i = 0; i < MAX_ENEMY; i++) {
 		Enemy* obj = new Enemy();
 		obj->SetGameManager(gameManager_);
@@ -122,16 +132,18 @@ void GameScene::Initialize() {
 		obj->SetSpot(spotPosition1);
 		obj->SetSpot(spotPosition2);
 		obj->SetSpot(spotPosition3);
+		obj->SetSpot(spotPosition4);
+		obj->SetSpot(spotPosition5);
 		obj->SetGoal(goal_);
 		obj->SetRandomNumber(i * 1000);
 		obj->InitializeGauge(model_, modelGaugeBox_);
 		obj->SetStage(stage_);
-	
+
 		obj->SetRandomRotationSpeed(i);
 		enemies_.push_back(obj);
 		objects_.push_back(obj);
 	}
-	//enemies_.push_back(player_)
+	// enemies_.push_back(player_)
 	for (Enemy* enemy : enemies_) {
 		enemy->SetObjects(objects_);
 		enemy->SetPlayer(player_);
@@ -140,37 +152,37 @@ void GameScene::Initialize() {
 		enemy->GetEnemyDistance();
 		enemy->GetSpotDistance();
 	}
-	//Texture
+	// Texture
 	skydome_->Initialize(modelSkydome_);
-
 }
 
 void GameScene::Update() {
-	//enemy_->Update();
+	// enemy_->Update();
 	player_->Update();
 	goal_->Update();
 	spot1_->Update();
 	spot2_->Update();
 	spot3_->Update();
+	spot4_->Update();
+	spot5_->Update();
 	skydome_->Update();
 	stage_->Update();
 	gameManager_->Update();
-	//Enemy update
+	// Enemy update
 	for (Enemy* enemy : enemies_) {
 		if (enemy) {
 			enemy->Update();
 		}
 	}
 
-	//Remove enemy if goal
+	// Remove enemy if goal
 	{
 		if (objects_.remove_if([](Collider* object) {
-			if (object->GetIsGoal()) {
-				return true;
-			}
-			return false;
-			}))
-		{
+			    if (object->GetIsGoal()) {
+				    return true;
+			    }
+			    return false;
+		    })) {
 			for (Enemy* enemy : enemies_) {
 				if (enemy) {
 
@@ -192,17 +204,15 @@ void GameScene::Update() {
 	for (Enemy* enemy : enemies_) {
 		CollisionManager::GetInstance()->Register(enemy);
 	}
-	
+
 	CollisionManager::GetInstance()->Register(spot1_);
 	CollisionManager::GetInstance()->Register(spot2_);
 	CollisionManager::GetInstance()->Register(spot3_);
+	CollisionManager::GetInstance()->Register(spot4_);
+	CollisionManager::GetInstance()->Register(spot5_);
 	CollisionManager::GetInstance()->CheckAllCollisions();
 	CollisionManager::GetInstance()->ClearList();
-
-	
 }
-
-
 
 void GameScene::Draw() {
 
@@ -234,18 +244,22 @@ void GameScene::Draw() {
 	spot1_->Draw(viewProjection_);
 	spot2_->Draw(viewProjection_);
 	spot3_->Draw(viewProjection_);
+	spot4_->Draw(viewProjection_);
+	spot5_->Draw(viewProjection_);
 	stage_->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
 
 	for (Enemy* enemy : enemies_) {
 		enemy->DrawPrimitive();
 	}
-	
+
 	player_->DrawPrimitive();
 	goal_->DrawPrimitive();
 	spot1_->DrawPrimitive();
 	spot2_->DrawPrimitive();
 	spot3_->DrawPrimitive();
+	spot4_->DrawPrimitive();
+	spot5_->DrawPrimitive();
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -257,8 +271,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-
-	// スプライト描画後処理
+	// gameManager_->Draw();
+	//  スプライト描画後処理
 	Sprite::PostDraw();
 
 #pragma endregion
