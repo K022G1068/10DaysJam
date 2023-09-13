@@ -1,6 +1,6 @@
 #pragma once
 #define FULL_CIRCLE 6.28f
-#define MAX_STAY_TIME 180
+#define MAX_STAY_TIME 300
 #include "Model.h"
 #include "Collider.h"
 #include <cstdlib>
@@ -26,7 +26,7 @@ public:
 private:
 	WorldTransform worldTransform_;
 	Model* modelSpot_ = nullptr;
-	float radius_ = 15.0f;
+	float radius_ = 6.0f;
 	bool showCollider_ = true;
 	float degree_ = 0.0f;
 	const char* name_ = "Spot";

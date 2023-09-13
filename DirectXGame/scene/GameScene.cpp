@@ -83,7 +83,7 @@ void GameScene::Initialize() {
 	};
 
 	Vector3 railPosition(0, 0, 0.0f);
-	Vector3 goalPosition(0, -20.0f, 250.0f);
+	Vector3 goalPosition(0, -25.0f, 280.0f);
 	Vector3 stagePosition(0, -30.0f, 300.0f);
 	Vector3 spotPosition1(80.0f, -30.0f, 200.0f);
 	Vector3 spotPosition2(-70.0f, -30.0f, 150.0f);
