@@ -259,7 +259,7 @@ float Enemy::GetRandomRotationDegree() {
 void Enemy::FlyingToGoal() {
 	if (isFlying_) {
 		// How far is the object going to fly
-		float limit = collisionPower_ * 50.0f + 50.0f;
+		float limit = collisionPower_ * 10.0f + 50.0f;
 
 		ImGui::Text("Enemy Limit %f", limit);
 		totalCollisionDash += collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;

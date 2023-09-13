@@ -6,9 +6,9 @@ void Goal::Initialize(Model* model, Vector3& goalPosition, ViewProjection& viewP
 	BaseInit(viewProjection, showCollider_, name_);
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = goalPosition;
-
+	
 	//Collider
-	Vector3 colliderPos(0, 15.0f, 15.0f);
+	Vector3 colliderPos(0, 15.0f, 12.0f);
 	Collider::BaseInit(viewProjection, showCollider_, name_);
 	Collider::SetColliderParent(&worldTransform_);
 	Collider::SetCollider(colliderPos, radius_);
