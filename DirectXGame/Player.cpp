@@ -275,7 +275,7 @@ void Player::Move() {
 			move = TransformNormal(move, rotmat);
 
 			if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prevjoyState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && dash_->GetCanDash()) {
-				ImGui::Text("DASSSHHHH" );
+				
 				dash_->ActivateDash();
 				float reduceAmount = 0.3f * MAX_ROTATION;
 				rotationSpeed_.y -= reduceAmount;
@@ -283,6 +283,7 @@ void Player::Move() {
 			
 			if (dash_->GetDash() == true)
 			{
+				ImGui::Text("DASSSHHHH");
 				move *= dash_->EaseInQuad(easing_) * 0.8f;
 				totalDash += dash_->EaseInQuad(easing_) * 0.8f;
 				if (Length(totalDash) >= 50.0f)
