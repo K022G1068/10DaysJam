@@ -232,6 +232,13 @@ Vector3 Lerp(Vector3 objPos, Vector3 targetPos, float time) {
 
 	return result;
 }
+Vector2 LerpV2(Vector2 objPos, Vector2 targetPos, float time) {
+	Vector2 result;
+	result.x = Lerp(objPos.x, targetPos.x, time);
+	result.y = Lerp(objPos.y, targetPos.y, time);
+	return result;
+}
+
 Vector3 Subtract(const Vector3& m1, const Vector3& m2) {
 	Vector3 result;
 

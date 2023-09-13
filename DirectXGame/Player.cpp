@@ -1,5 +1,6 @@
 ﻿#include "Player.h"
 #include "Goal.h"
+#include "GameManager.h"
 
 void Player::Initialize(
     Model* model, Vector3& playerPosition, ViewProjection& viewProjection,
@@ -192,14 +193,33 @@ void Player::FlyingToGoal() {
 		float limit = collisionPower_ * 50.0f + 50.0f;
 
 		ImGui::Text("Limit %f", limit);
-		totalCollisionDash += collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
-		ImGui::Text("Totaldash %f", Length(totalCollisionDash));
-		worldTransform_.translation_ += collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
-		if (Length(totalCollisionDash) >= limit) {
-			dash_->DisactivateDash(easing2_);
-			totalCollisionDash = {0.0f,0.0f,0.0f};
-			collisionVelocity_ = {0, 0, 0};
-			isFlying_ = false;
+		if (goal_->GetGoalieList().size() <= gameManager_->GetGoalNumber()) {
+
+			totalCollisionDash +=
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+			ImGui::Text("Totaldash %f", Length(totalCollisionDash));
+			worldTransform_.translation_ +=
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+			if (Length(totalCollisionDash) >= limit) {
+				dash_->DisactivateDash(easing2_);
+				totalCollisionDash = {0.0f, 0.0f, 0.0f};
+				collisionVelocity_ = {0, 0, 0};
+				isFlying_ = false;
+			}
+		}
+		else
+		{
+			totalCollisionDash +=
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 5.0f;
+			ImGui::Text("Totaldash %f", Length(totalCollisionDash));
+			worldTransform_.translation_ +=
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 5.0f;
+			if (Length(totalCollisionDash) >= limit) {
+				dash_->DisactivateDash(easing2_);
+				totalCollisionDash = {0.0f, 0.0f, 0.0f};
+				collisionVelocity_ = {0, 0, 0};
+				isFlying_ = false;
+			}
 		}
 	}
 }

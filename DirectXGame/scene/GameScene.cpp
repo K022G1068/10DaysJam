@@ -122,6 +122,7 @@ void GameScene::Initialize() {
 	objects_.push_back(player_);
 	gameManager_->Initialize();
 	gameManager_->GetGoal(goal_);
+	player_->SetGameManager(gameManager_);
 	// Initialize enemy
 	for (int i = 0; i < MAX_ENEMY; i++) {
 		Enemy* obj = new Enemy();
@@ -271,7 +272,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	// gameManager_->Draw();
+	//gameManager_->Draw();
 	//  スプライト描画後処理
 	Sprite::PostDraw();
 
