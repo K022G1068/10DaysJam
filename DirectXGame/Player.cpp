@@ -60,7 +60,7 @@ void Player::Update() {
 	    Collider::GetColliderWorldPosition().y, Collider::GetColliderWorldPosition().z);
 	if (!GetIsGoal())
 	{
-		rotationSpeed_.y -= 0.0001f;
+		rotationSpeed_.y -= 0.0005f;
 		worldTransform_.rotation_ += rotationSpeed_;
 		worldTransform_.translation_ += velocity_;
 
@@ -239,10 +239,10 @@ void Player::FlyingToGoal() {
 		else
 		{
 			totalCollisionDash +=
-			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 5.0f;
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 3.0f;
 			ImGui::Text("Totaldash %f", Length(totalCollisionDash));
 			worldTransform_.translation_ +=
-			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 5.0f;
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 3.0f;
 			if (Length(totalCollisionDash) >= limit) {
 				dash_->DisactivateDash(easing2_);
 				totalCollisionDash = {0.0f, 0.0f, 0.0f};

@@ -152,7 +152,7 @@ void Enemy::Update() {
 		if (GetIsGoal()) {
 			ChangeState(new EnemyStateStop);
 		}
-		worldTransform_.translation_ += velocity_ * 1.1f;
+		worldTransform_.translation_ += velocity_ * 1.2f;
 		worldTransform_.translation_ += spotVelocity_;
 		worldTransform_.translation_ += dashVelocity_;
 
@@ -247,10 +247,10 @@ void Enemy::FlyingToGoal() {
 		if (goal_->GetGoalieList().size() <= gameManager_->GetGoalNumber())
 		{
 			totalCollisionDash +=
-			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 3.0f;
 			ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
 			worldTransform_.translation_ +=
-			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 5.0f;
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * -collisionPower_ * 3.0f;
 			if (Length(totalCollisionDash) >= limit) {
 				dash_->DisactivateDash(easing2_);
 				totalCollisionDash = {0.0f, 0.0f, 0.0f};
@@ -266,10 +266,10 @@ void Enemy::FlyingToGoal() {
 		else
 		{
 			totalCollisionDash +=
-			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 5.0f;
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 3.0f;
 			ImGui::Text("enemy Totaldash %f", Length(totalCollisionDash));
 			worldTransform_.translation_ +=
-			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 5.0f;
+			    collisionVelocity_ * dash_->EaseInQuad(easing2_) * collisionPower_ * 3.0f;
 			if (Length(totalCollisionDash) >= limit) {
 				dash_->DisactivateDash(easing2_);
 				totalCollisionDash = {0.0f, 0.0f, 0.0f};

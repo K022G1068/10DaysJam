@@ -1,6 +1,6 @@
 #pragma once
 #define FULL_CIRCLE 6.28f
-#define MAX_STAY_TIME 200
+#define MAX_STAY_TIME 120
 #include "Model.h"
 #include "Collider.h"
 #include <cstdlib>
